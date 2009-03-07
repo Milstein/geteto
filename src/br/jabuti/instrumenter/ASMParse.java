@@ -1866,15 +1866,15 @@ int k = 0;
     catch(LookaheadSuccess ls) { return true; }
   }
 
-  private boolean jj_3_1() {
-    if (jj_scan_token(IDENTIFIER)) return true;
-    if (jj_scan_token(COLON)) return true;
-    return false;
-  }
-
   private boolean jj_3_2() {
     if (jj_scan_token(DOT)) return true;
     if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  private boolean jj_3_1() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    if (jj_scan_token(COLON)) return true;
     return false;
   }
 
