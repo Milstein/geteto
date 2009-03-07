@@ -32,8 +32,8 @@ import br.jabuti.util.*;
 import java.util.*;
 import java.io.*;
 
-import org.apache.bcel.classfile.*;
-import org.apache.bcel.generic.*;
+import org.aspectj.apache.bcel.classfile.*;
+import org.aspectj.apache.bcel.generic.*;
 
 import br.jabuti.criteria.*;
 
@@ -440,7 +440,7 @@ class SourcePanel extends JPanel {
 	                                        sourceColor.setElementAt(new Integer(c), srcLine);
 	                                    }
 									} catch (ArrayIndexOutOfBoundsException aobe) {
-										//System.out.println("Exceção gerada");									
+										//System.out.println("Exceï¿½ï¿½o gerada");									
 									}
 									//System.out.println( "\tBytecode position: " + ih.getPosition() );
 									//System.out.println( "\tSource line position: " + srcLine );
@@ -454,7 +454,7 @@ class SourcePanel extends JPanel {
 	                                            sourceColor.setElementAt(new Integer(c), srcLine);
 	                                        }
 										} catch (ArrayIndexOutOfBoundsException aobe) {
-											//System.out.println("Exceção gerada");									
+											//System.out.println("Exceï¿½ï¿½o gerada");									
 										}
 										//System.out.println( "\tBytecode position: " + ih.getPosition() );
 										//System.out.println( "\tSource line position: " + srcLine );

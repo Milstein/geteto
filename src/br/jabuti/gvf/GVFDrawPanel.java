@@ -39,8 +39,8 @@ import br.jabuti.util.*;
 import java.util.*;
 import java.awt.font.*;
 
-import org.apache.bcel.classfile.*;
-import org.apache.bcel.generic.*;
+import org.aspectj.apache.bcel.classfile.*;
+import org.aspectj.apache.bcel.generic.*;
 
 import br.jabuti.graph.*;
 

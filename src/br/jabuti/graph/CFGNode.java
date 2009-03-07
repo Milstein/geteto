@@ -22,8 +22,8 @@ package br.jabuti.graph;
 import java.util.*;
 
 import br.jabuti.util.*;
-import org.apache.bcel.generic.IINC;
-import org.apache.bcel.generic.Instruction;
+import org.aspectj.apache.bcel.generic.IINC;
+import org.aspectj.apache.bcel.generic.Instruction;
 import br.jabuti.verifier.*;
 
 /**

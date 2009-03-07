@@ -20,7 +20,7 @@
 package br.jabuti.verifier;
 
 
-import org.apache.bcel.generic.*;
+import org.aspectj.apache.bcel.generic.*;
 
 
 /** <p>This class represents a configuration of the execution stack

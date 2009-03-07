@@ -20,7 +20,7 @@
 package br.jabuti.cmdtool;
 
 
-import org.apache.bcel.generic.*;
+import org.aspectj.apache.bcel.generic.*;
 
 import java.io.*;
 import java.util.*;

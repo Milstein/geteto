@@ -28,7 +28,7 @@ import br.jabuti.graph.*;
 import br.jabuti.project.*;
 import br.jabuti.util.*;
 
-import org.apache.bcel.classfile.*;
+import org.aspectj.apache.bcel.classfile.*;
 
 import br.jabuti.criteria.*;
 

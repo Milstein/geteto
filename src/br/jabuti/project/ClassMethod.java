@@ -23,8 +23,8 @@ import java.util.*;
 
 import br.jabuti.graph.*;
 import br.jabuti.util.*;
-import org.apache.bcel.generic.*;
-import org.apache.bcel.classfile.*;
+import org.aspectj.apache.bcel.generic.*;
+import org.aspectj.apache.bcel.classfile.*;
 
 import br.jabuti.criteria.AbstractCriterion;
 import br.jabuti.criteria.Criterion;
@@ -441,8 +441,8 @@ public class ClassMethod {
 						boolean isRequired = false;
 						GraphNode curNode =
 							((ReduceNode) nodes[z]).getOriginalNode();
-						// Verifica se o nó que pertence ao super-bloco 
-						// faz parte do conjunto de requisitos do critério
+						// Verifica se o nï¿½ que pertence ao super-bloco 
+						// faz parte do conjunto de requisitos do critï¿½rio
 						if (criterion.getRequirementByLabel(curNode.getLabel())
 							!= null) {
 							for (int i = 0; i < required.length; i++) {

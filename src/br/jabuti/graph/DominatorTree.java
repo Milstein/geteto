@@ -22,8 +22,8 @@ package br.jabuti.graph;
 
 
 import java.util.*;
-import org.apache.bcel.classfile.*;
-import org.apache.bcel.generic.*;
+import org.aspectj.apache.bcel.classfile.*;
+import org.aspectj.apache.bcel.generic.*;
 
 
 /**

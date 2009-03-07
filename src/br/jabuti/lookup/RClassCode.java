@@ -20,13 +20,13 @@
 package br.jabuti.lookup;
 
 
-import org.apache.bcel.classfile.*;
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.Instruction;
-import org.apache.bcel.generic.InstructionHandle;
-import org.apache.bcel.generic.InstructionList;
-import org.apache.bcel.generic.InvokeInstruction;
-import org.apache.bcel.generic.MethodGen;
+import org.aspectj.apache.bcel.classfile.*;
+import org.aspectj.apache.bcel.generic.ConstantPoolGen;
+import org.aspectj.apache.bcel.generic.Instruction;
+import org.aspectj.apache.bcel.generic.InstructionHandle;
+import org.aspectj.apache.bcel.generic.InstructionList;
+import org.aspectj.apache.bcel.generic.InvokeInstruction;
+import org.aspectj.apache.bcel.generic.MethodGen;
 
 import java.io.*;
 import java.util.Vector;
@@ -41,7 +41,7 @@ import br.jabuti.util.Persistency;
  extends the class and which classes implements it (if it is 
  an interface).<BR>
  In addition, it stores complete information about the class 
- itself. For that it uses a {@link org.apache.bcel.classfile.JavaClass}
+ itself. For that it uses a {@link org.aspectj.apache.bcel.classfile.JavaClass}
  object
  </p>
 

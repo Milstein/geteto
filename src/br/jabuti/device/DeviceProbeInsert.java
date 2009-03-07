@@ -21,7 +21,7 @@ package br.jabuti.device;
 
 
 import br.jabuti.verifier.*;
-import org.apache.bcel.classfile.*;
+import org.aspectj.apache.bcel.classfile.*;
 import java.util.*;
 
 import br.jabuti.lookup.*;

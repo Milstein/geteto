@@ -20,8 +20,8 @@
 package br.jabuti.graph;
 
 
-import org.apache.bcel.classfile.*;
-import org.apache.bcel.generic.*;
+import org.aspectj.apache.bcel.classfile.*;
+import org.aspectj.apache.bcel.generic.*;
 
 import java.io.*;
 import java.util.*;
@@ -39,7 +39,7 @@ import br.jabuti.verifier.*;
 
  @version: 0.00001
  @author: Auri Marcelo Rizzo Vincenzi
- Márcio Eduardo Delamaro
+ Mï¿½rcio Eduardo Delamaro
 
  */
 
@@ -201,7 +201,7 @@ public class ClassSummary {
     }
  	
     /**
-     Capturar e imprimir as informações sobre definições e usuos de variáveis.
+     Capturar e imprimir as informaï¿½ï¿½es sobre definiï¿½ï¿½es e usuos de variï¿½veis.
      Gerar o CFG por metodo de cada uma das classes.
      */
  	

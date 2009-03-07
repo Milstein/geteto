@@ -24,8 +24,8 @@ import java.io.*;
 
 import br.jabuti.lookup.*;
 
-import org.apache.bcel.util.*;
-import org.apache.bcel.classfile.*;
+import org.aspectj.apache.bcel.util.*;
+import org.aspectj.apache.bcel.classfile.*;
 
 import br.jabuti.util.*;
 import br.jabuti.project.JabutiProject;

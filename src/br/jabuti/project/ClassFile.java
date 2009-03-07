@@ -25,8 +25,8 @@ import java.io.*;
 import br.jabuti.criteria.Criterion;
 import br.jabuti.lookup.*;
 
-import org.apache.bcel.generic.*;
-import org.apache.bcel.classfile.*;
+import org.aspectj.apache.bcel.generic.*;
+import org.aspectj.apache.bcel.classfile.*;
 
 import br.jabuti.criteria.*;
 

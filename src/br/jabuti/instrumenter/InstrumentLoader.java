@@ -26,7 +26,7 @@ import java.util.*;
 
 import br.jabuti.util.*;
 
-import org.apache.bcel.util.ClassPath;
+import org.aspectj.apache.bcel.util.ClassPath;
 
 
 /** This is the class that implements the functionality of a

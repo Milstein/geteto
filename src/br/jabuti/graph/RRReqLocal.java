@@ -23,7 +23,7 @@ package br.jabuti.graph;
 import java.util.*;
 
 import br.jabuti.verifier.InstructionNode;
-import org.apache.bcel.generic.*;
+import org.aspectj.apache.bcel.generic.*;
 
 
 public class RRReqLocal implements RoundRobinExecutor {

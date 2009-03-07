@@ -20,8 +20,8 @@
 package br.jabuti.verifier;
 
 
-import org.apache.bcel.classfile.*;
-import org.apache.bcel.generic.*;
+import org.aspectj.apache.bcel.classfile.*;
+import org.aspectj.apache.bcel.generic.*;
 
 import java.util.*;
 import java.util.zip.*;
@@ -353,7 +353,7 @@ public class InstructionGraph extends Graph {
                             continue nextException;
                         }
                     }
-                    // procura quem trata da interrupção
+                    // procura quem trata da interrupï¿½ï¿½o
                     for (int k = i - 1; k >= 0; k--) {
                         InstructionNode dftk = (InstructionNode) dft[k];
 

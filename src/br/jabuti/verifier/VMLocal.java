@@ -20,12 +20,12 @@
 package br.jabuti.verifier;
 
 
-import org.apache.bcel.generic.*;
+import org.aspectj.apache.bcel.generic.*;
 
 
 /** <p>This class represents one configuration of the local
  variables. It is basicaly an array of 
- {@link org.apache.bcel.generic.Type} objects.
+ {@link org.aspectj.apache.bcel.generic.Type} objects.
  */
 
 public class VMLocal {

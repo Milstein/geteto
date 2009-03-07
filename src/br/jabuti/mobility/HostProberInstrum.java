@@ -20,8 +20,8 @@
 package br.jabuti.mobility;
 
 
-import org.apache.bcel.classfile.*;
-import org.apache.bcel.generic.*;
+import org.aspectj.apache.bcel.classfile.*;
+import org.aspectj.apache.bcel.generic.*;
 
 import java.io.*;
 import java.util.*;

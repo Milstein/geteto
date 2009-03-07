@@ -20,7 +20,7 @@
 package br.jabuti.verifier;
 
 
-import org.apache.bcel.generic.*;
+import org.aspectj.apache.bcel.generic.*;
 import br.jabuti.util.*;
 import java.util.*;
 import br.jabuti.graph.*;

@@ -12,9 +12,9 @@ options {
 PARSER_BEGIN(ASMParse)
 package br.jabuti.instrumenter;
 
-import org.apache.bcel.classfile.*;
-import org.apache.bcel.generic.*;
-import org.apache.bcel.*;
+import org.aspectj.apache.bcel.classfile.*;
+import org.aspectj.apache.bcel.generic.*;
+import org.aspectj.apache.bcel.*;
 import java.util.*;
 import java.io.*;
 import br.jabuti.util.*;
@@ -49,7 +49,7 @@ Vector v;
         v = x;
     }
     
-    public void accept(org.apache.bcel.generic.Visitor v)
+    public void accept(org.aspectj.apache.bcel.generic.Visitor v)
     {
     }
 

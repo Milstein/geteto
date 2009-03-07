@@ -22,8 +22,8 @@ package br.jabuti.lookup;
 
 import java.io.*;
 import java.util.*;
-import org.apache.bcel.classfile.*;
-import org.apache.bcel.util.*;
+import org.aspectj.apache.bcel.classfile.*;
+import org.aspectj.apache.bcel.util.*;
 import br.jabuti.util.*;
 
 
@@ -49,8 +49,8 @@ public class ClassClosure {
     }
     
     public ClassClosure() {
-        cp = ClassPath.SYSTEM_CLASS_PATH;
-    }
+        this(System.getProperty("sun.boot.class.path"));
+    } 
     
     public String[] getClosure(String className) {
         return getClosure(className, true, null);

@@ -21,7 +21,7 @@ package br.jabuti.graph;
 
 
 import br.jabuti.verifier.*;
-import org.apache.bcel.generic.*;
+import org.aspectj.apache.bcel.generic.*;
 
 
 public class CFGSuperNode extends CFGCallNode {

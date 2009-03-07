@@ -24,8 +24,8 @@ import java.util.*;
 import java.io.*;
 
 import br.jabuti.util.*;
-import org.apache.bcel.classfile.*;
-import org.apache.bcel.generic.*;
+import org.aspectj.apache.bcel.classfile.*;
+import org.aspectj.apache.bcel.generic.*;
 import br.jabuti.verifier.*;
 
 
@@ -229,7 +229,7 @@ public class CFG extends Graph {
             }
               
  O trecho acima foi substituido pela instrucao abaixo. Na construcao
- do InstructionGraph, jah eh calculado se um no é um super ou nao.
+ do InstructionGraph, jah eh calculado se um no ï¿½ um super ou nao.
  */
 
 			boolean isSuperCall = x.isSuper;

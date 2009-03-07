@@ -22,8 +22,8 @@ package br.jabuti.mobility;
 
 import br.jabuti.verifier.*;
 import br.jabuti.probe.*;
-import org.apache.bcel.classfile.*;
-import org.apache.bcel.generic.*;
+import org.aspectj.apache.bcel.classfile.*;
+import org.aspectj.apache.bcel.generic.*;
 import java.util.*;
 
 import br.jabuti.lookup.*;
@@ -210,7 +210,7 @@ private Collection classList; // list of class to class instrument
 */
     protected JavaClass doMethodInstrument(JavaClass java_class)
     {
-    	/* o trecho abaixo é inserido no inicio do metodo run no
+    	/* o trecho abaixo ï¿½ inserido no inicio do metodo run no
     	 * agente sendo testado ele corresponde a:
     	 if ( hostDestino == null )
     	 {

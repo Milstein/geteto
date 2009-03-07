@@ -20,7 +20,7 @@
 package br.jabuti.instrumenter;
 
 
-import org.apache.bcel.generic.*;
+import org.aspectj.apache.bcel.generic.*;
 
 
 /** This is the class that implements the functionality of a

@@ -26,7 +26,7 @@ import java.util.zip.*;
 import java.util.jar.*;
 import java.io.*;
 
-import org.apache.bcel.classfile.*;
+import org.aspectj.apache.bcel.classfile.*;
 
 
 /**
@@ -252,7 +252,7 @@ public class Program implements Serializable {
         }
         
         // elimina aquelas classes que nao pertencem ao escopo
-        // e que não possuem sub-classe ou implementação
+        // e que nï¿½o possuem sub-classe ou implementaï¿½ï¿½o
 		en = classes.elements();
         while (en.hasMoreElements())
         {
@@ -262,7 +262,7 @@ public class Program implements Serializable {
 				continue;
 			}		// this class is not of interest
 			if ( dc.implementations.size() == dc.subclasses.size())
-			{ // se são iguais, ambos são 0
+			{ // se sï¿½o iguais, ambos sï¿½o 0
 				classes.remove(dc.name);
 			}
         }

@@ -21,7 +21,7 @@ package br.jabuti.graph;
 
 
 import java.util.*;
-import org.apache.bcel.generic.*;
+import org.aspectj.apache.bcel.generic.*;
 import br.jabuti.verifier.*;
 
 

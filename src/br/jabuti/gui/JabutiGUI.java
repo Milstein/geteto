@@ -37,9 +37,9 @@ import java.io.*;
 import java.util.*;
 import java.net.*;
 
-import org.apache.bcel.classfile.*;
-import org.apache.bcel.generic.ClassGen;
-import org.apache.bcel.generic.ConstantPoolGen;
+import org.aspectj.apache.bcel.classfile.*;
+import org.aspectj.apache.bcel.generic.ClassGen;
+import org.aspectj.apache.bcel.generic.ConstantPoolGen;
 
 import br.jabuti.criteria.*;
 import br.jabuti.device.ProberServer;

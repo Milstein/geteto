@@ -20,8 +20,8 @@
 package br.jabuti.device;
 
 
-import org.apache.bcel.classfile.*;
-import org.apache.bcel.util.ClassPath;
+import org.aspectj.apache.bcel.classfile.*;
+import org.aspectj.apache.bcel.util.ClassPath;
 
 import java.io.*;
 import java.util.*;
