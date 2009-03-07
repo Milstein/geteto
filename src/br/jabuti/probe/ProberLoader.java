@@ -80,7 +80,6 @@ public class ProberLoader {
 	}
 
 	public static void main(String args[]) throws Throwable {
-		br.jabuti.util.Persistency.init();
 		String classPath = null;
 		String workDir = null;
 		String projectName = null;

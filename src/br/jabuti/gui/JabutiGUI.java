@@ -394,7 +394,6 @@ public class JabutiGUI extends JFrame {
 			if (args.length == 1)
 				ToolConstants.setSTDERR(args[0]);
 
-			br.jabuti.util.Persistency.init();
 			mainWindow = new JabutiGUI();
 			mainWindow.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 			mainWindow.addWindowListener(new WindowAdapter() {

@@ -68,7 +68,6 @@ public class HostProberInstrum {
 
     public static void main(String args[]) throws Throwable {
 //        String classPath = null;
-    	br.jabuti.util.Persistency.init();
         String workDir = null;
         String projName = null;
         String baseClass = null; // The class file to be executed

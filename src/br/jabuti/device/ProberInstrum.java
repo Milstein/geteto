@@ -79,7 +79,6 @@ public class ProberInstrum {
     }
 
     public static void main(String args[]) throws Throwable {
-    	br.jabuti.util.Persistency.init();
     	String workDir = null;
         String projectName = null;
         JabutiProject project = null;
