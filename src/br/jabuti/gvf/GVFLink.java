@@ -40,15 +40,7 @@ import java.awt.Graphics;
 import java.awt.geom.*;
 import java.util.Vector;
 
-import com.graphbuilder.curve.BSpline;
-import com.graphbuilder.curve.ControlPath;
-import com.graphbuilder.curve.CubicBSpline;
-import com.graphbuilder.curve.GroupIterator;
-import com.graphbuilder.curve.MultiPath;
-import com.graphbuilder.curve.NaturalCubicSpline;
-import com.graphbuilder.curve.Point;
-import com.graphbuilder.curve.ShapeMultiPath;
-
+import prefuse.util.GraphicsLib;
 
 public class GVFLink implements GVFDisplayable {
 
@@ -109,25 +101,25 @@ public class GVFLink implements GVFDisplayable {
     	
         g.setColor( getColor() );
         
-        ControlPath cp = new ControlPath();
-        for (int i = 2; i < points.size(); i += 2)
+        
+        // Draw the line
+        Shape line = null;
+        float[] pts = new float[points.size() - 2];
+        
+        for (int i = 2, j = 0; i < points.size(); i += 2)
         {
         	Integer t = (Integer) points.get(i);
-        	int x0 = t.intValue();
+        	int x0 = t.intValue() + ADJUST_X;
         	t = (Integer) points.get(i+1);
-        	int y0 = t.intValue();
-            MyPoint pt = new MyPoint(x0+ADJUST_X, y0+ADJUST_Y);
-            cp.addPoint(pt);
-        }
-        GroupIterator gi = new GroupIterator("0:n-1", cp.numPoints());
-        // NaturalCubicSpline bs = new NaturalCubicSpline(cp, gi);
-         CubicBSpline bs = new CubicBSpline(cp, gi);
-        bs.setInterpolateEndpoints(true);
-//        bs.setClosed(false);
-        ShapeMultiPath mp = new ShapeMultiPath();
-        bs.appendTo(mp);
-        drawShape(g, mp);
+        	int y0 = t.intValue() + ADJUST_Y;
 
+        	pts[j++] = x0;
+        	pts[j++] = y0;
+        }
+        line = GraphicsLib.cardinalSpline(pts, (float) 0.1, false);
+        drawShape(g, line);
+        
+        // Draw the arrowhead
         int i = points.size();
         Integer t = (Integer) points.get(i-2);
     	int x0 = t.intValue();
@@ -228,32 +220,3 @@ public class GVFLink implements GVFDisplayable {
     	points.add(new Integer(y));
     }
 }
-
-class MyPoint implements Point
-{
-double[] xy;
-
-	public MyPoint(int a, int b)
-	{
-		this((double) a, (double) b);
-	}
-	
-	
-	public MyPoint(double d, double e) {
-		xy = new double[2];
-		xy[0] = d;
-		xy[1] = e;
-	}
-
-
-	public void setLocation(double[] arg0) {
-		xy[0] = arg0[0];
-		xy[1] = arg0[1];
-	}
-
-
-	public double[] getLocation() {
-		return xy;
-	}
-}
-
