@@ -25,7 +25,7 @@ import org.apache.bcel.generic.*;
 
 /** <p>This class represents one configuration of the local
  variables. It is basicaly an array of 
- {@link de.fub.bytecode.generic.Type} objects.
+ {@link org.apache.bcel.generic.Type} objects.
  */
 
 public class VMLocal {

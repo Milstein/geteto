@@ -41,7 +41,7 @@ import br.jabuti.util.Persistency;
  extends the class and which classes implements it (if it is 
  an interface).<BR>
  In addition, it stores complete information about the class 
- itself. For that it uses a {@link de.fub.bytecode.classfile.JavaClass}
+ itself. For that it uses a {@link org.apache.bcel.classfile.JavaClass}
  object
  </p>
 
@@ -170,7 +170,7 @@ import br.jabuti.util.Persistency;
     		
     		
     		met = jc.getClassName() + "." + mv[i].getName()+ mv[i].getSignature();
-    		System.out.println("Metodo Aplicação = " + met);
+    		System.out.println("Metodo Aplicaï¿½ï¿½o = " + met);
     		System.out.println("Metodo Parametro = " + assinatura);
     		
     		if (met.equals(assinatura))

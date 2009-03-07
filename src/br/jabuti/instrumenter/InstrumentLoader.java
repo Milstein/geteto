@@ -19,11 +19,6 @@
 
 package br.jabuti.instrumenter;
 
-
-// import de.fub.bytecode.classfile.*;
-// import de.fub.bytecode.generic.*;
-// import de.fub.bytecode.*;
-
 import java.lang.reflect.*;
 import java.io.*;
 import java.net.*;

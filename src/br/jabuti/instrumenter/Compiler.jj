@@ -1,18 +1,23 @@
 options {
-   JAVA_UNICODE_ESCAPE = false;
-   STATIC = false;
-   IGNORE_CASE = true;
+	CACHE_TOKENS = true;
+	DEBUG_PARSER = false;
+	DEBUG_TOKEN_MANAGER = false;
+	ERROR_REPORTING = false;
+	IGNORE_CASE = true;
+	JAVA_UNICODE_ESCAPE = false;
+	SANITY_CHECK = true;
+	STATIC = false;
 }
 
 PARSER_BEGIN(ASMParse)
-package instrumenter;
+package br.jabuti.instrumenter;
 
-import de.fub.bytecode.classfile.*;
-import de.fub.bytecode.generic.*;
-import de.fub.bytecode.*;
+import org.apache.bcel.classfile.*;
+import org.apache.bcel.generic.*;
+import org.apache.bcel.*;
 import java.util.*;
 import java.io.*;
-import util.*;
+import br.jabuti.util.*;
 
 
 public class ASMParse 
@@ -44,7 +49,7 @@ Vector v;
         v = x;
     }
     
-    public void accept(de.fub.bytecode.generic.Visitor v)
+    public void accept(org.apache.bcel.generic.Visitor v)
     {
     }
 
