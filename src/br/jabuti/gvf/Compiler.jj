@@ -1,9 +1,12 @@
 options {
-   JAVA_UNICODE_ESCAPE = false;
-   STATIC = false;
-   IGNORE_CASE = true;
-   DEBUG_TOKEN_MANAGER = false;
-   DEBUG_PARSER = false;
+	CACHE_TOKENS = true;
+	DEBUG_PARSER = false;
+	DEBUG_TOKEN_MANAGER = false;
+	ERROR_REPORTING = false;
+	IGNORE_CASE = true;
+	JAVA_UNICODE_ESCAPE = false;
+	SANITY_CHECK = true;
+	STATIC = false;
 }
 
 PARSER_BEGIN(DotParser)
