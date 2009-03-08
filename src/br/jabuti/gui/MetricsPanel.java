@@ -56,7 +56,7 @@ class SortFilterModel extends AbstractTableModel {
         columnTip = new String[Metrics.metrics.length + 1];
         columnTip[0] = new String( "Instrumented Classes" );
         for( int i = 0; i < Metrics.metrics.length; i++ ) {
-        	columnTip[i+1] = Metrics.metrics[i][1];
+        	columnTip[i+1] = Metrics.metrics[i].getDescription();
         }
     }
 
@@ -194,7 +194,7 @@ public class MetricsPanel extends JScrollPane {
             columnNames = new String[Metrics.metrics.length + 1];
             columnNames[0] = new String("Class Name");
             for (int i = 0; i < Metrics.metrics.length; i++) {
-                columnNames[i + 1] = Metrics.metrics[i][0].toUpperCase();
+                columnNames[i + 1] = Metrics.metrics[i].getName().toUpperCase();
             }
 	  
             //String[] classNames = classes;

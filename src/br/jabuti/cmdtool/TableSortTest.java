@@ -17,7 +17,7 @@
 */
 
 
-package br.jabuti.metrics;
+package br.jabuti.cmdtool;
 
 
 /**
@@ -34,6 +34,7 @@ import javax.swing.table.*;
 import org.w3c.dom.Document;
 
 import br.jabuti.lookup.*;
+import br.jabuti.metrics.Metrics;
 
 import br.jabuti.util.*;
 
@@ -56,7 +57,7 @@ class SortFilterModel extends AbstractTableModel {
         columnTip = new String[Metrics.metrics.length + 1];
         columnTip[0] = new String( "Instrumented Classes" );
         for( int i = 0; i < Metrics.metrics.length; i++ ) {
-        	columnTip[i+1] = Metrics.metrics[i][1];
+        	columnTip[i+1] = Metrics.metrics[i].getDescription();
         }
     }
 
@@ -201,7 +202,7 @@ public class TableSortTest extends JFrame {
             columnNames = new String[Metrics.metrics.length + 1];
             columnNames[0] = new String("Class Name");
             for (int i = 0; i < Metrics.metrics.length; i++) {
-                columnNames[i + 1] = Metrics.metrics[i][0];
+                columnNames[i + 1] = Metrics.metrics[i].getName();
             }
 	  
             //String[] classNames = p.getCodeClasses();

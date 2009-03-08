@@ -3242,7 +3242,7 @@ public class JabutiGUI extends JFrame {
 			columns = new String[Metrics.metrics.length + 1];
 			columns[0] = new String("Class File Name");
 			for (int i = 0; i < Metrics.metrics.length; i++) {
-				columns[i + 1] = Metrics.metrics[i][0].toUpperCase();
+				columns[i + 1] = Metrics.metrics[i].getName().toUpperCase();
 			}
 
 			// String[] classNames = classes;

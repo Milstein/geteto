@@ -80,7 +80,7 @@ public class TableSorterPanel extends JScrollPane {
 			MyHeaderRenderer mhr = new MyHeaderRenderer();
 
 			if (JabutiGUI.isMetricsPanel() && i > 0)
-				mhr.setToolTip(Metrics.metrics[i - 1][1]);
+				mhr.setToolTip(Metrics.metrics[i - 1].getDescription());
 			else
 				mhr
 						.setToolTip("Click (SHIFT+Click) to sort increasing (decreasing) by "
