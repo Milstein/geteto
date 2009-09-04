@@ -3,8 +3,8 @@
     This file is part of Jabuti.
 
     Jabuti is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as 
-    published by the Free Software Foundation, either version 3 of the      
+    it under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation, either version 3 of the
     License, or (at your option) any later version.
 
     Jabuti is distributed in the hope that it will be useful,
@@ -85,7 +85,7 @@ public class GraphViz
    /**
     * Where is your dot program located? It will be called externally.
     */
-   private final static String DOT_W        = "c:\\Arquivos de programas\\ATT\\GraphViz\\bin\\dot.exe";
+   private final static String DOT_W        = "c:\\Arquivos de programas\\Graphviz2.22\\bin\\dot.exe";
    private final static String DOT_L        = "/usr/bin/dot";
    private static String DOT = null;
 
@@ -97,7 +97,7 @@ public class GraphViz
    /**
     * Constructor: creates a new GraphViz object that will contain
     * a graph.
- * @throws FileNotFoundException 
+ * @throws FileNotFoundException
     */
    public GraphViz() throws FileNotFoundException {
 	   if ( DOT == null )
@@ -114,18 +114,18 @@ public class GraphViz
 		   }
 		   else
 		   {
-			   DOT = JOptionPane.showInputDialog(null, "Please enter path:", 
+			   DOT = JOptionPane.showInputDialog(null, "Please enter path:",
 					   "Cannot find GraphViz layouter (dot).", JOptionPane.ERROR_MESSAGE);
-			   
+
 		   }
 		   while ( DOT != null )
 		   {
 			   File f = new File(DOT);
 			   if ( f.isFile() && f.canRead() )
 				   break;
-			   DOT = JOptionPane.showInputDialog(null, "Please enter path:", 
+			   DOT = JOptionPane.showInputDialog(null, "Please enter path:",
 					   "Cannot find GraphViz layouter at " + DOT, JOptionPane.ERROR_MESSAGE);
-			   
+
 		   }
 		   if ( DOT == null )
 		   {
@@ -173,13 +173,13 @@ public class GraphViz
    {
       File dot;
       byte[] img_stream = null;
-   
+
       try {
          dot = writeDotSourceToFile(dot_source);
          if (dot != null)
          {
             img_stream = get_img_stream(dot);
-            if (dot.delete() == false) 
+            if (dot.delete() == false)
                System.err.println("Warning: "+dot.getAbsolutePath()+" could not be deleted!");
             return img_stream;
          }
@@ -191,19 +191,19 @@ public class GraphViz
    {
       File dot;
       String img_stream = null;
-   
+
       try {
          dot = writeDotSourceToFile(dot_source);
          if (dot != null)
          {
             img_stream = get_dot_stream(dot);
-            if (dot.delete() == false) 
+            if (dot.delete() == false)
                System.err.println("Warning: "+dot.getAbsolutePath()+" could not be deleted!");
          }
          return img_stream;
       } catch (Exception ioe) { return null; }
    }
-   
+
    /**
     * Writes the graph's image in a file.
     * @param img   A byte array containing the image of the graph.
@@ -258,7 +258,7 @@ public class GraphViz
          // Close it if we need to
          if( in != null ) in.close();
 
-         if (img.delete() == false) 
+         if (img.delete() == false)
             System.err.println("Warning: "+img.getAbsolutePath()+" could not be deleted!");
       }
       catch (java.io.IOException ioe) {
@@ -277,7 +277,7 @@ public class GraphViz
    private String get_dot_stream(File dot) throws IOException, InterruptedException
    {
       File img;
- 
+
      img = File.createTempFile("graph_", ".dot", new File(TEMP_DIR));
 
      Runtime rt = Runtime.getRuntime();
@@ -287,7 +287,7 @@ public class GraphViz
       return img.getAbsolutePath();
    }
 
-    
+
    /**
     * Writes the source of the graph in a file, and returns the written file
     * as a File object.
