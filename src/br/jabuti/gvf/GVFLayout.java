@@ -35,6 +35,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.*;
 
+import br.jabuti.gvf.layout.GraphLayout;
+import br.jabuti.gvf.layout.graphviz.DotParser;
+import br.jabuti.gvf.layout.graphviz.GraphvizLayout;
+
 
 class GVFLayout {
 
@@ -51,12 +55,8 @@ class GVFLayout {
         maxX = 0;
         maxY = 0;
         
-        try {
-			performLayout();
-		} catch (Exception e1) {
-			System.out.println(e1.getMessage());
-			e1.printStackTrace();
-		}
+ 		performLayout();
+
         for (Enumeration e = vNodes.elements(); e.hasMoreElements();) {
             GVFDisplayable n = (GVFDisplayable) e.nextElement();
 			
@@ -72,8 +72,8 @@ class GVFLayout {
         }
     }
 
-    public void performLayout() throws FileNotFoundException, ParseException {
-    	GraphViz gviz = new GraphViz();
+    public void performLayout()  {
+    	GraphLayout gviz = new GraphvizLayout();
     	gviz.addln(gviz.start_graph());
     	for (int i = 0; i < vNodes.size(); i++)
     	{
@@ -88,16 +88,7 @@ class GVFLayout {
     				link.getDestinationNode().getSource());
     	}    	
     	gviz.addln(gviz.end_graph());
-
-    	String result = gviz.getDotGraph(gviz.getDotSource());
-
-    	//System.out.println("RESULT\n*********\n" + result + "\n*********\n");
-    	
-    	File f = new File(result);
-    	DotParser dt = new DotParser(vNodes, vLinks, new FileInputStream(f));
-    	dt.parse();
-
-    	f.delete();
+    	gviz.layout(vNodes, vLinks);
     }
 
     public Vector getNodes() {

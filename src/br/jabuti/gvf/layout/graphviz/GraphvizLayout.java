@@ -41,11 +41,14 @@
  *                                                                            *
  ******************************************************************************
  */
-package br.jabuti.gvf;
+package br.jabuti.gvf.layout.graphviz;
 
 import java.io.*;
+import java.util.Vector;
 
 import javax.swing.JOptionPane;
+
+import br.jabuti.gvf.layout.GraphLayout;
 
 /**
  * <dl>
@@ -75,7 +78,7 @@ import javax.swing.JOptionPane;
  * @version v0.1, 2003/12/04 (Decembre)
  * @author  Laszlo Szathmary (<a href="szathml@delfin.unideb.hu">szathml@delfin.unideb.hu</a>)
  */
-public class GraphViz
+public class GraphvizLayout implements GraphLayout
 {
    /**
     * The dir where temporary files will be created.
@@ -99,7 +102,7 @@ public class GraphViz
     * a graph.
  * @throws FileNotFoundException
     */
-   public GraphViz() throws FileNotFoundException {
+   public GraphvizLayout()  {
 	   if ( DOT == null )
 	   {
 		   String s = System.getProperty("os.name").toUpperCase();
@@ -130,7 +133,7 @@ public class GraphViz
 		   if ( DOT == null )
 		   {
 			   DOT = "";
-			   throw new FileNotFoundException("Cannot find GraphViz.");
+			   throw new RuntimeException(new FileNotFoundException("Cannot find GraphViz."));
 		   }
 	   }
    }
@@ -143,23 +146,23 @@ public class GraphViz
       return graph.toString();
    }
 
-   /**
-    * Adds a string to the graph's source (without newline).
-    */
+   /* (non-Javadoc)
+ * @see br.jabuti.gvf.layout.graphviz.GraphLayout#add(java.lang.String)
+ */
    public void add(String line) {
       graph.append(line);
    }
 
-   /**
-    * Adds a string to the graph's source (with newline).
-    */
+   /* (non-Javadoc)
+ * @see br.jabuti.gvf.layout.graphviz.GraphLayout#addln(java.lang.String)
+ */
    public void addln(String line) {
       graph.append(line+"\n");
    }
 
-   /**
-    * Adds a newline to the graph's source.
-    */
+   /* (non-Javadoc)
+ * @see br.jabuti.gvf.layout.graphviz.GraphLayout#addln()
+ */
    public void addln() {
       graph.append('\n');
    }
@@ -187,7 +190,7 @@ public class GraphViz
       } catch (java.io.IOException ioe) { return null; }
    }
 
-   String getDotGraph(String dot_source)
+   public String getDotGraph(String dot_source)
    {
       File dot;
       String img_stream = null;
@@ -310,19 +313,35 @@ public class GraphViz
       return temp;
    }
 
-   /**
-    * Returns a string that is used to start a graph.
-    * @return A string to open a graph.
-    */
+   /* (non-Javadoc)
+ * @see br.jabuti.gvf.layout.graphviz.GraphLayout#start_graph()
+ */
    public String start_graph() {
       return "digraph G {";
    }
 
-   /**
-    * Returns a string that is used to end a graph.
-    * @return A string to close a graph.
-    */
+   /* (non-Javadoc)
+ * @see br.jabuti.gvf.layout.graphviz.GraphLayout#end_graph()
+ */
    public String end_graph() {
       return "}";
    }
+
+@Override
+public void layout(Vector vNodes, Vector vLinks)
+{
+	String result = getDotGraph(getDotSource());
+	
+	File f = new File(result);
+	try {
+    	DotParser dt = new DotParser(vNodes, vLinks, new FileInputStream(f));
+		dt.parse();
+	} catch (Exception e) {
+		System.out.println(e.getMessage());
+		e.printStackTrace();
+	} finally {
+		f.delete();
+	}
+	
+}
 }

@@ -10,10 +10,13 @@ options {
 }
 
 PARSER_BEGIN(DotParser)
-package br.jabuti.gvf;
+package br.jabuti.gvf.layout.graphviz;
 
 import java.util.*;
 import java.io.*;
+
+import br.jabuti.gvf.GVFNode;
+import br.jabuti.gvf.GVFLink;
 
 
 public class DotParser 
