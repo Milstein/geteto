@@ -74,20 +74,18 @@ class GVFLayout {
 
     public void performLayout()  {
     	GraphLayout gviz = new GraphvizLayout();
-    	gviz.addln(gviz.start_graph());
-    	for (int i = 0; i < vNodes.size(); i++)
-    	{
+    	gviz.start_graph();
+    	for (int i = 0; i < vNodes.size(); i++) {
     		GVFNode node = (GVFNode) vNodes.get(i);
-
-    		gviz.addln(node.getSource() + " [width=\"0.50\", height=\"0.50\"];");
+    		gviz.addNode(node);
     	}
-    	for (int i = 0; i < vLinks.size(); i++)
-    	{
+    	
+    	for (int i = 0; i < vLinks.size(); i++) {
     		GVFLink link = (GVFLink) vLinks.get(i);
-    		gviz.addln(link.getSourceNode().getSource() + " -> " + 
-    				link.getDestinationNode().getSource());
+    		gviz.addEdge(link.getSourceNode(), link.getDestinationNode());
     	}    	
-    	gviz.addln(gviz.end_graph());
+    	
+    	gviz.end_graph();
     	gviz.layout(vNodes, vLinks);
     }
 
