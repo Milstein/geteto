@@ -44,6 +44,7 @@ package br.jabuti.gvf.layout.graphviz;
 
 import java.io.*;
 import java.util.Vector;
+import java.util.regex.Matcher;
 
 import javax.swing.JOptionPane;
 
@@ -227,8 +228,7 @@ public class GraphvizLayout implements GraphLayout
 			System.out.println(e.getMessage());
 			e.printStackTrace();
 		} finally {
-			f.delete();
+			// f.delete();
 		}
-
 	}
 }

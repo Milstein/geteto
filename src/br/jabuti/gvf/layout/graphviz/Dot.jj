@@ -5,7 +5,7 @@ options {
 	DEBUG_TOKEN_MANAGER = false;
 	ERROR_REPORTING = false;
 	IGNORE_CASE = false;
-	SANITY_CHECK = false;
+	SANITY_CHECK = true;
 	STATIC = false;
 	SUPPORT_CLASS_VISIBILITY_PUBLIC = false;
 }
@@ -14,6 +14,7 @@ PARSER_BEGIN(DotParser)
 package br.jabuti.gvf.layout.graphviz;
 
 import java.util.*;
+import java.util.regex.Matcher;
 import java.io.*;
 
 import br.jabuti.gvf.GVFNode;
@@ -34,45 +35,58 @@ public class DotParser
     public DotParser(Vector v, Vector v2, InputStream is)
     {
         this(is);
+        if (v == null || v2 == null) {
+        	throw new IllegalArgumentException("No nodes or links have been supplied as argument");
+        }
+        
         vnode = v;
         vlink = v2;
     }
     
     private GVFNode findLabel(String x)
     {
-       	if ( vnode == null )
-    		return null;
-    
-    	GVFNode ret = null;
-    	for (int i = 0; i < vnode.size(); i++)
-    	{
-    		ret = (GVFNode) vnode.get(i);
-    		if ( x.equals(ret.getSource()) )
+     	if (vnode == null) {
+     		return null;
+		}
+       	
+       	Iterator i = vnode.iterator();
+       	while (i.hasNext()) {
+	    	GVFNode ret = (GVFNode) i.next();;
+    		if (x.equals(ret.getSource())) {
     			return ret;
+    		}
     	}
-    	return ret;
+    	
+    	return null;
     }
     
     private GVFLink findLink(String orig, String dest)
     {
-       	if ( vlink == null )
+    	if (vlink == null) {
     		return null;
-    
-    	GVFLink ret = null;
-    	for (int i = 0; i < vlink.size(); i++)
-    	{
-    		ret = (GVFLink) vlink.get(i);
-    		if ( orig.equals(ret.getSourceNode().getSource()) 
-    		   && dest.equals(ret.getDestinationNode().getSource()))
-    			return ret;
     	}
-    	return ret;
+    
+    	Iterator i = vlink.iterator();
+    	while (i.hasNext()) {    		GVFLink ret = (GVFLink) i.next();
+    		if (orig.equals(ret.getSourceNode().getSource()) && dest.equals(ret.getDestinationNode().getSource())) {    			return ret;
+    		}
+    	}
+    	
+    	return null;
+    }
+    
+    private void setPositionPreCheck()
+    {
+    	if (graphHeight == 0 || graphWidth == 0) {
+    		throw new IllegalArgumentException("The graph height and width must be set before adding nodes or links");
+    	}
     }
     
     private void setPosition(String label, Position pos)
     {
     	GVFNode node = findLabel(label);
     	if (node != null) {
+	    	setPositionPreCheck();
     		node.moveTo((int) pos.getX(), (int) (graphHeight - pos.getY()));
     	}
     }
@@ -84,6 +98,7 @@ public class DotParser
 		}
 		Iterator<Position> i = pos.iterator();
 		while (i.hasNext()) {
+	    	setPositionPreCheck();
 			Position p = i.next();
     		link.addPoint((int) p.getX(), (int) (graphHeight - p.getY()));
     	}
@@ -165,7 +180,7 @@ TOKEN :
 	|
 	<IDENTIFIER: <LETTER> (<LETTER> | <DIGIT>)*>
 	|
-	<STRING: <QUOTE> (<LETTER> | <DIGIT> | "\\" | "." | "," | " ")+ <QUOTE>>
+	<STRING: <QUOTE> (<LETTER> | <DIGIT> | "\\" | "." | "," | " " | "\n" | "\r" | "-")+ <QUOTE>>
 }
 
 void parse() :
@@ -255,7 +270,13 @@ List<Position> linkPosition():
 {
 	<POS> <EQUALS> [LOOKAHEAD(2) t = <STRING>
 	{
-		StringTokenizer st = new StringTokenizer(t.image.replaceAll("\"", "").substring(2), " ");
+		String lineBreak = Matcher.quoteReplacement("\n");
+		String carriageReturn = Matcher.quoteReplacement("\r");
+		String endLineSlash = Matcher.quoteReplacement("\\");
+		String quote = Matcher.quoteReplacement("\"");
+		
+		String token = t.image.replaceAll(lineBreak, "").replaceAll(carriageReturn, "").replaceAll(endLineSlash, "").replaceAll(quote, "").substring(2);
+		StringTokenizer st = new StringTokenizer(token, " ");
 		while (st.hasMoreTokens()) {
 			String s = st.nextToken();
 			String[] sps = s.split(",");
