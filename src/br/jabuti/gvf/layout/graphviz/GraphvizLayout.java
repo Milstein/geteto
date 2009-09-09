@@ -227,7 +227,7 @@ public class GraphvizLayout implements GraphLayout
 			System.out.println(e.getMessage());
 			e.printStackTrace();
 		} finally {
-			// f.delete();
+			f.delete();
 		}
 	}
 }
