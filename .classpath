@@ -7,5 +7,13 @@
 	<classpathentry kind="lib" path="lib/mucode.jar"/>
 	<classpathentry kind="lib" path="lib/prefuse.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/collections-generic-4.01.jar"/>
+	<classpathentry kind="lib" path="lib/colt-1.2.0.jar"/>
+	<classpathentry kind="lib" path="lib/jung-algorithms-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/jung-api-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/jung-graph-impl-2.0.jar" sourcepath="/home/magsilva/t/jung/jung-graph-impl-2.0-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jung-io-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/jung-jai-2.0.jar"/>
+	<classpathentry kind="lib" path="lib/jung-visualization-2.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

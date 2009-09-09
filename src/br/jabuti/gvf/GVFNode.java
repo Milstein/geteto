@@ -265,5 +265,10 @@ public class GVFNode implements GVFDisplayable {
             shape = new Rectangle(X, Y, this.width, height);
         }
     }
+    
+    public String toString()
+    {
+    	return "Method: " + cm.getMethodName() + ", id: " + id + "(x=" + X + ", y=" + Y + ")";
+    }
 }
 

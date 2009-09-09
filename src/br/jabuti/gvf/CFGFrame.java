@@ -126,13 +126,11 @@ public class CFGFrame extends JFrame implements ItemListener {
                 
         getContentPane().add(topPanel, BorderLayout.NORTH);
 
-        GVFLayout ly = new GVFLayout(vetNodes, vetLinks);        
-		
-        cfgPanel = new GVFDrawPanel(ly.getMaxX() + 100, ly.getMaxY() + 200, vetNodes, vetLinks);
+		GVFLayout ly = new GVFLayout(vetNodes, vetLinks);        
+		cfgPanel = new GVFDrawPanel(ly.getMaxX() + 100, ly.getMaxY() + 200, vetNodes, vetLinks);
         cfgPanel.setVisible(true);
 
         sp = new JScrollPane(cfgPanel);
-
         sp.add(cfgPanel);
         sp.setViewportView(cfgPanel);
         getContentPane().add(sp, BorderLayout.CENTER);

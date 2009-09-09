@@ -139,33 +139,8 @@ public class GraphvizLayout implements GraphLayout
 		graph.append(src.getSource() + " -> " + dest.getSource() + "\n");
 	}
 
-	/**
-	 * Returns the graph as an image in binary format.
-	 * 
-	 * @param dot_source
-	 *            Source of the graph to be drawn.
-	 * @return A byte array containing the image of the graph.
-	 */
-	public byte[] getGraph(String dot_source)
-	{
-		File dot;
-		byte[] img_stream = null;
-
-		try {
-			dot = writeDotSourceToFile(dot_source);
-			if (dot != null) {
-				img_stream = get_img_stream(dot);
-				if (dot.delete() == false)
-					System.err.println("Warning: " + dot.getAbsolutePath() + " could not be deleted!");
-				return img_stream;
-			}
-			return null;
-		} catch (java.io.IOException ioe) {
-			return null;
-		}
-	}
-
-	public String getDotGraph(String dot_source)
+	
+	private String getDotLayout(String dot_source)
 	{
 		File dot;
 		String img_stream = null;
@@ -173,7 +148,7 @@ public class GraphvizLayout implements GraphLayout
 		try {
 			dot = writeDotSourceToFile(dot_source);
 			if (dot != null) {
-				img_stream = get_dot_stream(dot);
+				img_stream = runDotLayout(dot);
 				if (dot.delete() == false)
 					System.err.println("Warning: " + dot.getAbsolutePath() + " could not be deleted!");
 			}
@@ -183,96 +158,15 @@ public class GraphvizLayout implements GraphLayout
 		}
 	}
 
-	/**
-	 * Writes the graph's image in a file.
-	 * 
-	 * @param img
-	 *            A byte array containing the image of the graph.
-	 * @param file
-	 *            Name of the file to where we want to write.
-	 * @return Success: 1, Failure: -1
-	 */
-	public int writeGraphToFile(byte[] img, String file)
+	private String runDotLayout(File dot) throws IOException, InterruptedException
 	{
-		File to = new File(file);
-		return writeGraphToFile(img, to);
-	}
-
-	/**
-	 * Writes the graph's image in a file.
-	 * 
-	 * @param img
-	 *            A byte array containing the image of the graph.
-	 * @param to
-	 *            A File object to where we want to write.
-	 * @return Success: 1, Failure: -1
-	 */
-	public int writeGraphToFile(byte[] img, File to)
-	{
-		try {
-			FileOutputStream fos = new FileOutputStream(to);
-			fos.write(img);
-			fos.close();
-		} catch (java.io.IOException ioe) {
-			return -1;
-		}
-		return 1;
-	}
-
-	/**
-	 * It will call the external dot program, and return the image in binary
-	 * format.
-	 * 
-	 * @param dot
-	 *            Source of the graph (in dot language).
-	 * @return The image of the graph in .gif format.
-	 */
-	private byte[] get_img_stream(File dot)
-	{
-		File img;
-		byte[] img_stream = null;
-
-		try {
-			img = File.createTempFile("graph_", ".gif", new File(this.TEMP_DIR));
-			String temp = img.getAbsolutePath();
-
-			Runtime rt = Runtime.getRuntime();
-			String cmd = DOT + " -Tgif " + dot.getAbsolutePath() + " -o" + img.getAbsolutePath();
-			Process p = rt.exec(cmd);
-			p.waitFor();
-
-			FileInputStream in = new FileInputStream(img.getAbsolutePath());
-			img_stream = new byte[in.available()];
-			in.read(img_stream);
-			// Close it if we need to
-			if (in != null)
-				in.close();
-
-			if (img.delete() == false)
-				System.err.println("Warning: " + img.getAbsolutePath() + " could not be deleted!");
-		} catch (java.io.IOException ioe) {
-			System.err.println("Error:    in I/O processing of tempfile in dir " + this.TEMP_DIR + "\n");
-			System.err.println("       or in calling external command");
-			ioe.printStackTrace();
-		} catch (java.lang.InterruptedException ie) {
-			System.err.println("Error: the execution of the external program was interrupted");
-			ie.printStackTrace();
-		}
-
-		return img_stream;
-	}
-
-	private String get_dot_stream(File dot) throws IOException, InterruptedException
-	{
-		File img;
-
-		img = File.createTempFile("graph_", ".dot", new File(TEMP_DIR));
+		File output = File.createTempFile("graph_", ".dot", new File(TEMP_DIR));
 
 		Runtime rt = Runtime.getRuntime();
-		String cmd = DOT + " -Tdot " + dot.getAbsolutePath() + " -o" + img.getAbsolutePath();
+		String cmd = DOT + " -Tdot " + dot.getAbsolutePath() + " -o" + output.getAbsolutePath();
 		Process p = rt.exec(cmd);
 		p.waitFor();
-		return img.getAbsolutePath();
+		return output.getAbsolutePath();
 	}
 
 	/**
@@ -322,7 +216,8 @@ public class GraphvizLayout implements GraphLayout
 	@Override
 	public void layout(Vector vNodes, Vector vLinks)
 	{
-		String result = getDotGraph(getDotSource());
+		
+		String result = getDotLayout(getDotSource());
 
 		File f = new File(result);
 		try {

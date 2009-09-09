@@ -14,11 +14,9 @@
 
     You should have received a copy of the GNU Lesser General Public License
     along with Jabuti.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
+ */
 
 package br.jabuti.gvf;
-
 
 /**
  * This class interacts with ILOG's JView graph visualization API
@@ -28,80 +26,83 @@ package br.jabuti.gvf;
  * @version 1.0
  */
 
-
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Vector;
 
 import br.jabuti.gvf.layout.GraphLayout;
-import br.jabuti.gvf.layout.graphviz.DotParser;
 import br.jabuti.gvf.layout.graphviz.GraphvizLayout;
+import br.jabuti.gvf.layout.jung.JungLayout;
 
+class GVFLayout
+{
 
-class GVFLayout {
+	// Plan to make class more general
+	// and allow it to change the layout algorithm on the fly.
+	Vector vNodes;
+	Vector vLinks;
 
-    // Plan to make class more general 
-    // and allow it to change the layout algorithm on the fly.
-    Vector vNodes;
-    Vector vLinks;
+	int maxX, maxY;
 
-    int maxX, maxY;
-	
-    public GVFLayout(Vector vN, Vector vL) {
-        vNodes = vN;
-        vLinks = vL;
-        maxX = 0;
-        maxY = 0;
-        
- 		performLayout();
+	public GVFLayout(Vector vN, Vector vL)
+	{
+		vNodes = vN;
+		vLinks = vL;
+		maxX = 0;
+		maxY = 0;
 
-        for (Enumeration e = vNodes.elements(); e.hasMoreElements();) {
-            GVFDisplayable n = (GVFDisplayable) e.nextElement();
-			
-            if (((GVFNode) n).getX() > maxX) {
-                maxX = ((GVFNode) n).getX();
-            }
-			
-            if (((GVFNode) n).getY() > maxY) {
-                maxY = ((GVFNode) n).getY();
-            }
-			
-          //  n.translate(36, 36);
-        }
-    }
+		performLayout();
 
-    public void performLayout()  {
-    	GraphLayout gviz = new GraphvizLayout();
-    	gviz.start_graph();
-    	for (int i = 0; i < vNodes.size(); i++) {
-    		GVFNode node = (GVFNode) vNodes.get(i);
-    		gviz.addNode(node);
-    	}
-    	
-    	for (int i = 0; i < vLinks.size(); i++) {
-    		GVFLink link = (GVFLink) vLinks.get(i);
-    		gviz.addEdge(link.getSourceNode(), link.getDestinationNode());
-    	}    	
-    	
-    	gviz.end_graph();
-    	gviz.layout(vNodes, vLinks);
-    }
+		for (Enumeration e = vNodes.elements(); e.hasMoreElements();) {
+			GVFDisplayable n = (GVFDisplayable) e.nextElement();
 
-    public Vector getNodes() {
-        return vNodes;
-    }
+			if (((GVFNode) n).getX() > maxX) {
+				maxX = ((GVFNode) n).getX();
+			}
 
-    public Vector getLinks() {
-        return vLinks;
-    }
+			if (((GVFNode) n).getY() > maxY) {
+				maxY = ((GVFNode) n).getY();
+			}
 
-    public int getMaxX() { 
-        return maxX;
-    }
+			// n.translate(36, 36);
+		}
+	}
 
-    public int getMaxY() { 
-        return maxY;
-    }
+	public void performLayout()
+	{
+		GraphLayout gviz = new GraphvizLayout();
+		// GraphLayout gviz = new JungLayout();
+		gviz.start_graph();
+		for (int i = 0; i < vNodes.size(); i++) {
+			GVFNode node = (GVFNode) vNodes.get(i);
+			gviz.addNode(node);
+		}
+
+		for (int i = 0; i < vLinks.size(); i++) {
+			GVFLink link = (GVFLink) vLinks.get(i);
+			gviz.addEdge(link.getSourceNode(), link.getDestinationNode());
+		}
+
+		gviz.end_graph();
+		gviz.layout(vNodes, vLinks);
+	}
+
+	public Vector getNodes()
+	{
+		return vNodes;
+	}
+
+	public Vector getLinks()
+	{
+		return vLinks;
+	}
+
+	public int getMaxX()
+	{
+		return maxX;
+	}
+
+	public int getMaxY()
+	{
+		return maxY;
+	}
 }

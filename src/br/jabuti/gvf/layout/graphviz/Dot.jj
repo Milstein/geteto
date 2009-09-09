@@ -1,12 +1,13 @@
 options {
 	CACHE_TOKENS = true;
+	DEBUG_LOOKAHEAD = false;
 	DEBUG_PARSER = false;
 	DEBUG_TOKEN_MANAGER = false;
 	ERROR_REPORTING = false;
-	IGNORE_CASE = true;
-	JAVA_UNICODE_ESCAPE = false;
-	SANITY_CHECK = true;
+	IGNORE_CASE = false;
+	SANITY_CHECK = false;
 	STATIC = false;
+	SUPPORT_CLASS_VISIBILITY_PUBLIC = false;
 }
 
 PARSER_BEGIN(DotParser)
@@ -17,12 +18,18 @@ import java.io.*;
 
 import br.jabuti.gvf.GVFNode;
 import br.jabuti.gvf.GVFLink;
-
+import br.jabuti.gvf.BoundingBox;
+import br.jabuti.gvf.Position;
 
 public class DotParser 
 {
-private Vector vnode, vlink;
-private int graphHeight = 0;
+	private Vector vnode;
+	
+	private Vector vlink;
+	
+	private double graphHeight = 0;
+	
+	private double graphWidth = 0;
 
     public DotParser(Vector v, Vector v2, InputStream is)
     {
@@ -62,249 +69,251 @@ private int graphHeight = 0;
     	return ret;
     }
     
-    private void setPosition(String label, String pos)
+    private void setPosition(String label, Position pos)
     {
-    	int k = pos.indexOf(",");
-    	String xs = pos.substring(1,k);
-    	String ys = pos.substring(k+1,pos.length()-1);
-    	int x = Integer.parseInt(xs);
-    	int y = Integer.parseInt(ys);
     	GVFNode node = findLabel(label);
-    	if ( node != null )
-    	{
-    		node.moveTo(x,graphHeight - y);
+    	if (node != null) {
+    		node.moveTo((int) pos.getX(), (int) (graphHeight - pos.getY()));
     	}
     }
 
-    private void setLinkPosition(String l1, String l2, String pos)
+    private void setLinkPosition(String l1, String l2, List<Position> pos)
     {
     	GVFLink link = findLink(l1, l2);
-    	if ( link == null )
-    		return;
-    	pos = new String(pos);
-    	int k = pos.indexOf(",");
-    	while ( k >= 0 )
-    	{
-    		pos = pos.substring(k+1, pos.length());
-	    	k = pos.indexOf(",");
-	    	String xs = pos.substring(0,k);
-	    	pos = pos.substring(k+1, pos.length());
-	    	k = pos.indexOf(" ");
-	    	if ( k < 0 ) k = pos.length()-1;
-	    	String ys = pos.substring(0,k);
-    		pos = pos.substring(k, pos.length());
-	    	int x = Integer.parseInt(xs);
-	    	int y = Integer.parseInt(ys);
-	    	k = pos.indexOf(",");
-            if ( k >= 0 ) k = 0;
-	    	link.addPoint(x, graphHeight-y);
+    	if (link == null) {    	  	return;
+		}
+		Iterator<Position> i = pos.iterator();
+		while (i.hasNext()) {
+			Position p = i.next();
+    		link.addPoint((int) p.getX(), (int) (graphHeight - p.getY()));
     	}
-
     }
 
-	private void setBB(String pos)
+	private void setBoundingBox(BoundingBox bb)
 	{
-		int k = pos.lastIndexOf(",");
-    	String ys = pos.substring(k+1,pos.length()-1);
-		graphHeight = Integer.parseInt(ys);
-	}
-	
-	/* remove fim de linha de um string */
-	private String removeFDL(String x)
-	{
-		StringBuffer sb = new StringBuffer(x);
-		int k = sb.indexOf("\\",0);
-		while ( k >= 0 && k < sb.length() - 1)
-		{
-			if ( sb.charAt(k + 1) == '\n' || 
-			     sb.charAt(k + 1) == '\r' )
-			{
-				sb.deleteCharAt(k);
-				sb.deleteCharAt(k);
-				if ( k < sb.length() && sb.charAt(k) == '\n' )
-					sb.deleteCharAt(k);
-			}
-			k = sb.indexOf("\\",k+1);
-		}
-		return sb.toString();
-	}
-	
-	static public void main(String[] args) throws Exception
-	{
-		new DotParser(null, null, new FileInputStream(args[0])).parse();
+		graphHeight = (int) bb.getHeight();
+		graphWidth = (int) bb.getWidth();
 	}
 }
 
 PARSER_END(DotParser)
 
 
-
-
 SKIP :
 {
-   " "
-   | "\t"
-   | "\n"
-   | "\r"
-   | "\f"
+   " " |
+   "\t" |
+   "\n" |
+   "\r" |
+   "\f"
 }
 
 
 TOKEN :
 {
-	<GRAPH: "graph">
-	| <NODE: "node">
-	| <TO: "->">
-	| <DIGRAPH: "digraph">
-	| <POS: "pos">
-	| <BBOX: "bb">
+	<GRAPH: "graph"> | 
+	<NODE: "node"> | 
+	<TO: "->"> | 
+	<DIGRAPH: "digraph"> | 
+	<POS: "pos"> | 
+	<BBOX: "bb">
 }
 
 
 
 TOKEN :
 {
-   <LPAREN: "(">
-   | <RPAREN: ")">
-   | <LBRACE: "{">
-   | <RBRACE: "}">
-   | <LBRACKET: "[">
-   | <RBRACKET: "]">
-   | <SEMICOLON: ";">
-   | <COMMA: ",">
-   | <DOT: ".">
-   | <EQUALS: "=">
+   <LPAREN: "("> |
+   <RPAREN: ")"> |
+   <LBRACE: "{"> |
+   <RBRACE: "}"> |
+   <LBRACKET: "["> |
+   <RBRACKET: "]"> |
+   <SEMICOLON: ";"> |
+   <COMMA: ","> |
+   <DOT: "."> |
+   <EQUALS: "="> |
+   <QUOTE : "\"">
 }
 
 TOKEN :
 {
-    <GT: ">">
-   | <LT: "<">
-   | <HOOK: "?">
-   | <COLON: ":">
-   | <EQ: "==">
-   | <LE: "<=">
-   | <GE: ">=">
-   | <NE: "!=">
-   | <PLUS: "+">
-   | <MINUS: "-">
-   | <STAR: "*">
-   | <SLASH: "/">
-   | <REM: "%">
-   | <POWER: "**">
+   <GT: ">"> | 
+   <LT: "<"> |
+   <HOOK: "?"> |
+   <COLON: ":"> |
+   <EQ: "=="> |
+   <LE: "<="> |
+   <GE: ">="> |
+   <NE: "!="> |
+   <PLUS: "+"> |
+   <MINUS: "-"> |
+   <STAR: "*"> |
+   <SLASH: "/"> |
+   <REM: "%"> |
+   <POWER: "**">
 }
 
 
 TOKEN :
 {
-   <FIXED_POINT_LITERAL: (["0"-"9"])+ "." (["0"-"9"])+ >
-   |
-   <INTEGER_LITERAL: (["0"-"9"])+>
-   |
-   <STRING_LITERAL: "\"" (~["\"", "\\", "\n", "\r"] | "\\" (["n", "t", "b", "r", "f", "\\", "'", "\""] | ["0"-"7"] (["0"-"7"])? | ["0"-"3"] ["0"-"7"] ["0"-"7"] | ( ["\n","\r"] | "\r\n") ))* "\"">
-}
-
-TOKEN :
-{
-   <IDENTIFIER: <LETTER> (<LETTER> | <DIGIT>)*>
-   | <#LETTER: ["A"-"Z", "_", "a"-"z"]>
-   | <#DIGIT: ["0"-"9"]>
-   | <PARAM: "#" (<DIGIT>)+ >
+	<#LETTER: ["A"-"Z", "_", "a"-"z"]>
+	|
+	<#DIGIT: ["0"-"9"]>
+	|
+	<NODEIDENT: (<DIGIT>)+>
+	|
+	<IDENTIFIER: <LETTER> (<LETTER> | <DIGIT>)*>
+	|
+	<STRING: <QUOTE> (<LETTER> | <DIGIT> | "\\" | "." | "," | " ")+ <QUOTE>>
 }
 
 void parse() :
 {
 }
 {
-	<DIGRAPH> <IDENTIFIER> <LBRACE> 
-	   (
-		graphDef() <SEMICOLON> |
-		<NODE> atributeList() <SEMICOLON> |
-		LOOKAHEAD(label() <TO> ) linkDef() <SEMICOLON>|
-		nodeDef() <SEMICOLON>
-	   )*
+	<DIGRAPH> <IDENTIFIER> <LBRACE>	(
+		(
+			graphDef() |
+			defaultNode() |
+			LOOKAHEAD(<NODEIDENT> <TO> ) linkDef() |
+			nodeDef()
+		) <SEMICOLON>
+	)* 
 	<RBRACE>
+}
+
+void defaultNode():
+{}
+{
+	<NODE> atributeList()
 }
 
 void atributeList():
 {
 }
 {
-	<LBRACKET> [ atribute() (<COMMA> atribute())* ] <RBRACKET> 
+	<LBRACKET> atribute() (<COMMA> atribute())* <RBRACKET> 
 }
 
 void atribute():
 {
 }
 {
-	<IDENTIFIER> <EQUALS> ( <IDENTIFIER> | <STRING_LITERAL>)
+	<IDENTIFIER> <EQUALS> <STRING>
 }
 
 void graphDef():
 {
-String x = null;
+	BoundingBox bb = null;
 }
 {
-   <GRAPH> [ <LBRACKET> 
-   		(atribute() |  x = boundingBox() )
-   		( <COMMA> (atribute() | x = boundingBox()) )*
-   <RBRACKET> { setBB(x); }
-   ]
+	<GRAPH> <LBRACKET>
+   		(
+   			[
+   				bb = boundingBox()
+   				{
+   					setBoundingBox(bb);
+   				}
+   			]
+   		|
+   			atribute()
+   		)
+   		(
+   			<COMMA> (
+   				[
+   					bb = boundingBox()
+   					{
+   						setBoundingBox(bb);
+   					}
+   				]
+   				|
+   					atribute()
+   				)
+   		)*
+	<RBRACKET>
 }
 
 
 void nodeDef():
 {
-String x = null;
-String l = null;
+	Position p = null;
+	String l = null;
+	Token t = null;
 }
 {
-   l = label() [ <LBRACKET> 
-   		(atribute() |  x = position() )
-   		( <COMMA> (atribute() | x = position()) )*
-   <RBRACKET> { setPosition(l,x); }
-   ]
+   [t = <NODEIDENT> {l = t.image;}] <LBRACKET> (atribute() | [p = nodePosition() {setPosition(l, p); }]) (<COMMA> (atribute() | [p = nodePosition(){setPosition(l, p); }]))* <RBRACKET>
 }
 
-String position():
+
+
+List<Position> linkPosition():
+{
+	Token t = null;
+	List<Position> positions = new ArrayList<Position>();
+}
+{
+	<POS> <EQUALS> [LOOKAHEAD(2) t = <STRING>
+	{
+		StringTokenizer st = new StringTokenizer(t.image.replaceAll("\"", "").substring(2), " ");
+		while (st.hasMoreTokens()) {
+			String s = st.nextToken();
+			String[] sps = s.split(",");
+			Position p = new Position(Double.valueOf(sps[0]), Double.valueOf(sps[1]));
+			positions.add(p);
+		}
+	}
+	]
+	{
+		return positions;
+	}
+}
+
+
+Position nodePosition():
 {
 	Token t = null;
 }
 {
-	<POS> <EQUALS> t = <STRING_LITERAL> { return removeFDL(t.image); }
+	<POS> <EQUALS> t = <STRING>
+	{
+		String[] sps = t.image.replaceAll("\"", "").split(",");
+		Position p = new Position(Double.valueOf(sps[0]), Double.valueOf(sps[1]));
+	  	return p;
+	}
 }
 
-String boundingBox():
+
+BoundingBox boundingBox():
 {
 	Token t = null;
 }
 {
-	<BBOX> <EQUALS> t = <STRING_LITERAL> { return removeFDL(t.image); }
+	<BBOX> <EQUALS> t = <STRING>
+	{
+		BoundingBox box = null;
+		String[] values = t.image.replaceAll("\"", "").split(",");
+		double x = Double.valueOf(values[0]);
+		double y = Double.valueOf(values[1]);
+		double width = Double.valueOf(values[2]);
+		double height = Double.valueOf(values[3]);
+
+		return new BoundingBox(x, y, width, height);
+	}
 }
 
 void linkDef():
 {
-String t1 = null, t2 = null;
-String x = null;
+	String s1 = null;
+	String s2 = null;
+	Token t1 = null;
+	Token t2 = null;
+	List<Position> p = null;
 }
 {
-   t1 = label() <TO> t2 = label() [ <LBRACKET> 
-   		(atribute() | x = position() )
-   		( <COMMA> (atribute() | x = position() ) )*
-   <RBRACKET> { setLinkPosition(t1, t2, x); }
-   ]
+  	[t1 = <NODEIDENT> {s1 = t1.image;}] <TO> [t2 = <NODEIDENT> {s2 = t2.image;}]
+	<LBRACKET>
+		(atribute() | [ p = linkPosition() { setLinkPosition(s1, s2, p); }])
+		(<COMMA> (atribute() | [p = linkPosition(){ setLinkPosition(s1, s2, p); }]))*
+	<RBRACKET>
 }
-
-String label():
-{
-String l = null;
-Token t = null;
-}
-{
-    ( t = <STRING_LITERAL> {l = t.image.substring(1,t.image.length()-1);} |
-	( t = <IDENTIFIER> | t = <INTEGER_LITERAL>)  { l = new String(t.image); }
-	(<DOT> ( t = <IDENTIFIER> | t = <INTEGER_LITERAL> ) {l += "." + t.image;} )*
-    )
-	{ return removeFDL(l); }
-}
-
