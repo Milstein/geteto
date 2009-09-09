@@ -204,7 +204,12 @@ public class GVFNode implements GVFDisplayable {
         drawLabel(g);
     }
     
-    public void drawLabel(Graphics g) {
+    public String getId()
+	{
+		return id;
+	}
+
+	public void drawLabel(Graphics g) {
         Graphics2D g2 = (Graphics2D) g; // Initialized elsewhere
         Font f = new Font("Times New Roman", Font.BOLD, 14);
 		

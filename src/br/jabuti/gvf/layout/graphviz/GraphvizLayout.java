@@ -44,7 +44,6 @@ package br.jabuti.gvf.layout.graphviz;
 
 import java.io.*;
 import java.util.Vector;
-import java.util.regex.Matcher;
 
 import javax.swing.JOptionPane;
 
