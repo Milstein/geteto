@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<report id="oraculo">
+    <junit>
+        <sucess_rate>100</sucess_rate>
+        <tests>6</tests>
+        <failures>0</failures>
+        <errors>0</errors>
+    </junit>
+    <clover>
+        <total_coverage>84.8</total_coverage>
+        <coverage_conditionals>90.9</coverage_conditionals>
+        <coverage_statements>80.9</coverage_statements>
+        <coverage_methods>90</coverage_methods>
+    </clover>
+    <jabuti>
+        <total_coverage total_ei="79.5" total_ed="0"/>
+        <coverage_all_nodes ei="100.0" ed="0.0"/>
+        <coverage_all_edges ei="94.0" ed="0.0"/>
+        <coverage_all_uses ei="91.0" ed="0.0"/>
+        <coverage_allpot_uses ei="91.0" ed="0.0"/>
+    </jabuti>
+</report>

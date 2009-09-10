@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<report id="PinstTa">
+    <junit>
+        <sucess_rate>94.7</sucess_rate>
+        <tests>19</tests>
+        <failures>1</failures>
+        <errors>0</errors>
+    </junit>
+    <clover>
+        <total_coverage>100</total_coverage>
+        <coverage_conditionals>100</coverage_conditionals>
+        <coverage_statements>100</coverage_statements>
+        <coverage_methods>100</coverage_methods>
+    </clover>
+    <jabuti>
+        <total_coverage total_ei="94" total_ed="0"/>
+        <coverage_all_nodes ei="84.0" ed="0.0"/>
+        <coverage_all_edges ei="78.0" ed="0.0"/>
+        <coverage_all_uses ei="80.0" ed="0.0"/>
+        <coverage_allpot_uses ei="76.0" ed="0.0"/>
+    </jabuti>
+</report>

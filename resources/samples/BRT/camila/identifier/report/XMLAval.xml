@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml-stylesheet type="text/xsl" href="C:\eclipse\workspace\progtestAtual\WebContent\upload\SCEPOO\identifier\Ana Paula\report\aval.xsl"?>
+<report>
+    <junit id="aluno">
+        <sucess_rate>94.7</sucess_rate>
+        <tests>19.0</tests>
+        <failures>1.0</failures>
+        <errors>0.0</errors>
+    </junit>
+    <junit id="oraculo">
+        <sucess_rate>100.0</sucess_rate>
+        <tests>6.0</tests>
+        <failures>0.0</failures>
+        <errors>0.0</errors>
+    </junit>
+    <junit id="PinstTa">
+        <sucess_rate>94.7</sucess_rate>
+        <tests>19.0</tests>
+        <failures>1.0</failures>
+        <errors>0.0</errors>
+    </junit>
+    <junit id="PaTinst">
+        <sucess_rate>100.0</sucess_rate>
+        <tests>6.0</tests>
+        <failures>0.0</failures>
+        <errors>0.0</errors>
+    </junit>
+    <coverage id="aluno">
+        <jabuti>
+            <All_Nodes ed="0.0" ei="87.0"/>
+            <All_Edges ed="0.0" ei="77.0"/>
+            <All_Uses ed="0.0" ei="95.0"/>
+            <All_PotUses ed="0.0" ei="97.0"/>
+        </jabuti>
+    </coverage>
+    <coverage id="oraculo">
+        <jabuti>
+            <All_Nodes ed="0.0" ei="100.0"/>
+            <All_Edges ed="0.0" ei="94.0"/>
+            <All_Uses ed="0.0" ei="91.0"/>
+            <All_PotUses ed="0.0" ei="91.0"/>
+        </jabuti>
+    </coverage>
+    <coverage id="PinstTa">
+        <jabuti>
+            <All_Nodes ed="0.0" ei="84.0"/>
+            <All_Edges ed="0.0" ei="83.0"/>
+            <All_Uses ed="0.0" ei="87.9"/>
+            <All_PotUses ed="0.0" ei="83.5"/>
+        </jabuti>
+    </coverage>
+    <coverage id="PaTinst">
+        <jabuti>
+            <All_Nodes ed="0.0" ei="87.0"/>
+            <All_Edges ed="0.0" ei="83.0"/>
+            <All_Uses ed="0.0" ei="100.0"/>
+            <All_PotUses ed="0.0" ei="100.0"/>
+        </jabuti>
+    </coverage>
+    <nota>
+        <nota_coverage id="">
+            <valor>87.7</valor>
+        </nota_coverage>
+        <nota_coverage id="">
+            <valor>93.9</valor>
+        </nota_coverage>
+        <nota_coverage id="">
+            <valor>80.9</valor>
+        </nota_coverage>
+        <nota_geral>24.3</nota_geral>
+    </nota>
+</report>
