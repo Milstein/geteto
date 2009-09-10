@@ -17,7 +17,7 @@
 */
 
 
-package br.jabuti.cmdtool;
+package br.jabuti.ui.cli;
 
 
 import org.aspectj.apache.bcel.generic.*;
@@ -34,17 +34,17 @@ import br.jabuti.project.*;
 /**
  Given a project file, a class number (<I>cId</I>),
  method number (<I>mId</I>) and a block number (<I>bId</I>), this 
- application program reports the set of defined variable numbers 
+ application program reports the set of used variable numbers 
  in the corresponding block.
 
  <P>
  For example, by running
  
-	$ java -cp ".;lib\BCEL.jar;lib\jviewsall.jar" cmdtool.ListDefinedVariables -P fact.jbt 0 1 0
+	$ java -cp ".;lib\BCEL.jar;lib\jviewsall.jar" cmdtool.ListUsedVariables -P fact.jbt 0 1 0
 
  the output is the set:
   
-	{(0,0),(1,1)}
+	{(1,1)}
  
  <P>
  Where each tuple (a,b) corresponds to:
@@ -65,12 +65,12 @@ import br.jabuti.project.*;
  @author: Auri Marcelo Rizzo Vincenzi
 
  */
-public class ListDefinedVariables {
+public class ListUsedVariables {
     public static void usage() {
         System.out.println(ToolConstants.toolName + " v. " + ToolConstants.toolVersion);
-        System.out.println("\nListDefinedVariables usage:");
+        System.out.println("\nListUsedVariables usage:");
         System.out.println("-------------------\n");
-        System.out.println("java br.jabuti.cmdtool.ListDefinedVariables [-d <DIR>] -p <PROJECT_NAME>  <class_id> <method_id> <block_id>\n");
+        System.out.println("java cmdtool.ListUsedVariables [-d <DIR>] -p <PROJECT_NAME> <class_id> <method_id> <block_id>\n");
         System.out.println("      [-d <DIR>]              Optional parameter. Specify the directory where the project");
         System.out.println("                              is located. If not specified, the current directory is assumed.");
         System.out.println("      -p <PROJECT_NAME>       Specify the name of the project to be used. The");
@@ -97,7 +97,8 @@ public class ListDefinedVariables {
                 if (("-d".equals(args[i])) && (i < args.length - 1)) {
                     i++;
                     workDir = args[i];
-                } // -p: project name
+                } 
+                // -p: project name
                 else if (("-p".equals(args[i])) && (i < args.length - 1)) {
                     i++;
                     projectName = args[i];
@@ -189,14 +190,14 @@ public class ListDefinedVariables {
                         theNode = gn;
                     }
 					
-                    Hashtable definitions = ((CFGNode) gn).getDefinitions();
+                    Hashtable uses = ((CFGNode) gn).getUses();					            		
 
-                    if (definitions.size() > 0) {
-                        Enumeration it = definitions.keys();
+                    if (uses.size() > 0) {
+                        Enumeration it = uses.keys();
 
                         while (it.hasMoreElements()) {
                             String s = (String) it.nextElement();
-
+					   		
                             if (((!s.startsWith("L@"))
                                             && (!systemVar.containsKey(s)))
                                     || (s.startsWith("L@")
@@ -210,16 +211,16 @@ public class ListDefinedVariables {
                 }   		
 
                 if (theNode != null) {
-                    Hashtable definitions = ((CFGNode) theNode).getDefinitions();
+                    Hashtable uses = ((CFGNode) theNode).getUses();
 					
-                    if (definitions.size() > 0) {
-                        System.out.print("\n{");
+                    if (uses.size() > 0) {
+                        System.out.print("\n{");						
 
-                        Enumeration it = definitions.keys();
+                        Enumeration it = uses.keys();
 
                         while (it.hasMoreElements()) {
                             String s = (String) it.nextElement();
-                            int byteOffset = ((Integer) definitions.get(s)).intValue();
+                            int byteOffset = ((Integer) uses.get(s)).intValue();
                             int localVarIndex = -1;
                             int tabVarIndex = -1;
 							
@@ -251,14 +252,15 @@ public class ListDefinedVariables {
                             }
 				        	
                             System.out.print("(" + tabVarIndex + "," + localVarIndex + ")");
-
+					   		
                             if (it.hasMoreElements()) {
                                 System.out.print(",");
                             }
+					   							      
                         }
                         System.out.print("}\n");
                     } else {
-                        System.out.println("\n\nNo variable definition in this block!!!");
+                        System.out.println("\n\nNo variable use in this block!!!");
                     }
                 } else {
                     System.out.println("Block ID Invalid!!!");

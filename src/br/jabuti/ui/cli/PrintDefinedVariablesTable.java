@@ -17,7 +17,7 @@
 */
 
 
-package br.jabuti.cmdtool;
+package br.jabuti.ui.cli;
 
 
 import org.aspectj.apache.bcel.generic.*;

@@ -17,7 +17,7 @@
 */
 
 
-package br.jabuti.cmdtool;
+package br.jabuti.ui.cli;
 
 import br.jabuti.lookup.*;
 
