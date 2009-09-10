@@ -1,0 +1,5 @@
+sun.net.spi.nameservice.dns.DNSNameService
+sun.net.spi.nameservice.dns.DNSNameService$1
+sun.net.spi.nameservice.dns.DNSNameService$2
+sun.net.spi.nameservice.dns.DNSNameServiceDescriptor
+sun.net.spi.nameservice.dns.DNSNameService$ThreadContext

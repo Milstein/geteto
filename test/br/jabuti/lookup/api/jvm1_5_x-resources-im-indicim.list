@@ -1,0 +1,6 @@
+com.sun.inputmethods.internal.indicim.DevanagariInputMethodDescriptor
+com.sun.inputmethods.internal.indicim.DevanagariTables
+com.sun.inputmethods.internal.indicim.IndicInputMethod
+com.sun.inputmethods.internal.indicim.IndicInputMethodImpl
+com.sun.inputmethods.internal.indicim.IndicInputMethodImpl$ACIText
+com.sun.inputmethods.internal.indicim.resources.DisplayNames.properties

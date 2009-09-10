@@ -1,0 +1,53 @@
+//  Decompiled by jdec
+//  DECOMPILER HOME PAGE: jdec.sourceforge.net
+//  Main HOSTING SITE: sourceforge.net
+//  Copyright (C)2006,2007,2008 Swaroop Belur.
+//  jdec comes with ABSOLUTELY NO WARRANTY;
+//  This is free software, and you are welcome to redistribute
+//  it under certain conditions;
+//  See the File 'COPYING' For more details.
+
+package mucode;
+ 
+/**** List of All Imported Classes ***/
+
+import java.lang.String;
+import mucode.ClassSpace;
+import mucode.MuClassLoader;
+import mucode.TestMuServer;
+
+// End of Import
+
+public  class  TestMuClassLoader extends  MuClassLoader
+
+{
+
+
+//  CLASS: mucode.TestMuClassLoader:
+ protected     TestMuClassLoader(  TestMuServer aServer) 
+ {
+    super(aServer);
+    return;
+
+ }
+
+//  CLASS: mucode.TestMuClassLoader:
+ void setClassSpace(  ClassSpace cs) 
+ {
+
+    this.classSpace =cs;
+    return;
+
+ }
+
+//  CLASS: mucode.TestMuClassLoader:
+ void setDynLinkSource(  String s) 
+ {
+
+    this.dynLinkSource =s;
+    return;
+
+ }
+
+
+}

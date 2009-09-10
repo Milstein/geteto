@@ -1,0 +1,517 @@
+//  Decompiled by jdec
+//  DECOMPILER HOME PAGE: jdec.sourceforge.net
+//  Main HOSTING SITE: sourceforge.net
+//  Copyright (C)2006,2007,2008 Swaroop Belur.
+//  jdec comes with ABSOLUTELY NO WARRANTY;
+//  This is free software, and you are welcome to redistribute
+//  it under certain conditions;
+//  See the File 'COPYING' For more details.
+
+package mucode;
+ 
+/**** List of All Imported Classes ***/
+
+import br.jabuti.lookup.Program;
+import br.jabuti.mobility.HostProbeInsert;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.Serializable;
+import java.lang.Class;
+import java.lang.ClassNotFoundException;
+import java.lang.Exception;
+import java.lang.Integer;
+import java.lang.NoClassDefFoundError;
+import java.lang.Object;
+import java.lang.String;
+import java.lang.StringBuffer;
+import java.lang.System;
+import java.lang.Throwable;
+import java.lang.reflect.Method;
+import java.net.Socket;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.zip.GZIPInputStream;
+import mucode.ClassSpace;
+import mucode.DuplicateClassException;
+import mucode.Group;
+import mucode.MuObjectInputStream;
+import mucode.MuServer;
+import mucode.TestMuClassLoader;
+import mucode.TestMuServer;
+import org.apache.bcel.classfile.JavaClass;
+import org.apache.bcel.util.ClassPath;
+import mucode.TestMuConstants;
+
+// End of Import
+
+public  final  class  TestGroup extends  Group  implements  TestMuConstants
+
+{
+
+ /***
+ **Class Fields
+ ***/
+ String[] sharedClasses ;
+ Class class$0 ;
+ Class class$1 ;
+
+
+//  CLASS: mucode.TestGroup:
+ TestGroup(  TestMuServer aServer) 
+ {
+    super(aServer);
+    String []  JdecGeneratedVar10= new String[]  
+    {
+"br.jabuti.mobility.abstractions.MuAgent","br.jabuti.mobility.HostProberServer","br.jabuti.mobility.mobile.HostProber","br.jabuti.mobility.mobile.HostProbedNode","br.jabuti.mobility.mobile.HostProberHook","br.jabuti.mobility.mobile.HostProberTimer","br.jabuti.mobility.mobile.agent.HostProberAgent","br.jabuti.probe.DefaultProber","br.jabuti.probe.DefaultProberHook","br.jabuti.probe.ProbedNode"
+     };
+    this.sharedClasses =JdecGeneratedVar10;
+    return;
+
+ }
+
+//  CLASS: mucode.TestGroup:
+ TestGroup(  String root,  String handler,  TestMuServer aServer) 
+ {
+    super(root,handler,aServer);
+    String []  JdecGeneratedVar12= new String[]  
+    {
+"br.jabuti.mobility.abstractions.MuAgent","br.jabuti.mobility.HostProberServer","br.jabuti.mobility.mobile.HostProber","br.jabuti.mobility.mobile.HostProbedNode","br.jabuti.mobility.mobile.HostProberHook","br.jabuti.mobility.mobile.HostProberTimer","br.jabuti.mobility.mobile.agent.HostProberAgent","br.jabuti.probe.DefaultProber","br.jabuti.probe.DefaultProberHook","br.jabuti.probe.ProbedNode"
+     };
+    this.sharedClasses =JdecGeneratedVar12;
+    return;
+
+ }
+
+//  CLASS: mucode.TestGroup:
+ TestGroup(  Socket clientSocket,  boolean compressionON,  TestMuServer aServer) 	 
+ throws DuplicateClassException  ,ClassNotFoundException  ,IOException 
+ {
+    super(aServer);
+    Class str= null;
+    Class xcl= null;
+    ClassSpace ncs= null;
+    ClassSpace ocs= null;
+    Enumeration keys= null;
+    GZIPInputStream gzos= null;
+    HashSet agentClasses= null;
+    HashSet toInstrumenter= null;
+    Hashtable ht= null;
+    Hashtable originalClasses= null;
+    HostProbeInsert dpi= null;
+    Iterator it0= null;
+    Iterator iy= null;
+    JavaClass jv= null;
+    Map mp= null;
+    Method init= null;
+    MuObjectInputStream in= null;
+    Program prog= null;
+    String b= null;
+    String clName= null;
+    String hostName= null;
+    String keyName= null;
+    String projName= null;
+    String[] agClassVet= null;
+    String[] keyList= null;
+    TestMuClassLoader l= null;
+    
+    
+    
+    
+    
+    
+    boolean instrument= 0;
+    int i= 0;
+    int j= 0;
+
+    String []  JdecGeneratedVar10= new String[]  
+    {
+"br.jabuti.mobility.abstractions.MuAgent","br.jabuti.mobility.HostProberServer","br.jabuti.mobility.mobile.HostProber","br.jabuti.mobility.mobile.HostProbedNode","br.jabuti.mobility.mobile.HostProberHook","br.jabuti.mobility.mobile.HostProberTimer","br.jabuti.mobility.mobile.agent.HostProberAgent","br.jabuti.probe.DefaultProber","br.jabuti.probe.DefaultProberHook","br.jabuti.probe.ProbedNode"
+     };
+    this.sharedClasses =JdecGeneratedVar10;
+    l=(TestMuClassLoader)this.getServer().createClassLoader();
+    (TestMuServer)this.getServer().setIncomingLoader(l);
+    if(compressionON!=false)
+    {
+      GZIPInputStream JdecGenerated98 = new GZIPInputStream(clientSocket.getInputStream());
+      gzos=JdecGenerated98;
+      MuObjectInputStream JdecGenerated111 = new MuObjectInputStream(gzos,l);
+      in=JdecGenerated111;
+      
+   
+    }
+    else
+    {
+      MuObjectInputStream JdecGenerated127 = new MuObjectInputStream(clientSocket.getInputStream(),l);
+      in=JdecGenerated127;
+   
+    }
+    StringBuffer JdecGenerated146 = new StringBuffer("Input stream created, compression: ");
+    this.getServer().D(JdecGenerated146.append(compressionON).toString());
+    this.setOperation(in.read());
+    this.setRoot(in.readUTF());
+    this.setHandler(in.readUTF());
+    StringBuffer JdecGenerated196 = new StringBuffer("Group info: root class: ");
+    this.getServer().D(JdecGenerated196.append(this.getRootName()).append(", handler class: ").append(this.getHandlerName()).toString());
+    this.classes =(Hashtable)in.readObject();
+    originalClasses=(Hashtable)in.readObject();
+    StringBuffer JdecGenerated249 = new StringBuffer("Group info: #classes: ");
+    this.getServer().D(JdecGenerated249.append(this.classes.size()).toString());
+    hostName=this.getServer().properties.getProperty("testserver");
+    projName=this.getServer().properties.getProperty("project");
+    instrument=(hostName!=null &&  projName!=null);
+    if(instrument!=false)
+    {
+      StringBuffer JdecGenerated328 = new StringBuffer("Server is set for instrumentation: ");
+      this.getServer().D(JdecGenerated328.append(hostName).append(" - ").append(projName).toString());
+      HashSet JdecGenerated358 = new HashSet();
+      toInstrumenter=JdecGenerated358;
+      iy=this.classes.keySet().iterator();
+        while(true)
+          
+    {
+          
+          if(!iy.hasNext())
+          {
+            break  ;
+      
+          }
+
+          b=(String)iy.next();
+          if((TestMuServer)this.getServer().isInstrumented(b)!=false)
+          {
+            toInstrumenter.add(b);
+      
+          }
+
+     
+        }
+        Program JdecGenerated429 = new Program(this.classes);
+        prog=JdecGenerated429;
+        agClassVet=prog.getSubClassClosure("mucode.abstractions.MuAgent");
+        HashSet JdecGenerated451 = new HashSet();
+        agentClasses=JdecGenerated451;
+        j=0;
+          while(true)
+             
+     {
+            
+            if(++j >= agClassVet.length)
+            {
+              break  ;
+       
+            }
+
+            agentClasses.add(agClassVet[j]);
+
+      
+          }
+          HostProbeInsert JdecGenerated488 = new HostProbeInsert(prog,toInstrumenter,agentClasses);
+          dpi=JdecGenerated488;
+          mp=null;
+          try
+          {
+            mp =dpi.instrument(1);
+            it0=mp.keySet().iterator();
+            Hashtable JdecGenerated528 = new Hashtable();
+            ht=JdecGenerated528;
+              while(true)
+                   
+       {
+                
+                if(!it0.hasNext())
+                {
+                  break  ;
+         
+                }
+
+                clName=(String)it0.next();
+                jv=(JavaClass)mp.get(clName);
+                ht.put(clName,jv.getBytes());
+
+        
+              }
+              this.classes =ht;
+       
+            }
+            catch(Throwable  eu)
+            {
+              System.err.println(eu);
+              eu.printStackTrace();
+      
+          }
+   
+            }
+          keys=this.classes.keys();
+            while(true)
+                
+      {
+              
+              if(!keys.hasMoreElements())
+              {
+                break  ;
+        
+              }
+
+              keyName=(String)keys.nextElement();
+              l.getClassSpace().putClassByteCode(keyName,(byte [])this.classes.get(keyName));
+
+       
+            }
+            if(instrument!=false)
+            {
+              loadRequiredInstrument(l);
+       
+            }
+            keys =this.classes.keys();
+              while(true)
+                   
+       {
+                
+                if(!keys.hasMoreElements())
+                {
+                  break  ;
+         
+                }
+
+                keyName=(String)keys.nextElement();
+                l.loadClass(keyName);
+
+        
+              }
+              if(instrument!=false &&  (!(TestMuServer)this.getServer().isForwardOn())
+       
+              {
+                ClassSpace JdecGenerated740 = new ClassSpace();
+                ocs=JdecGenerated740;
+                ncs=l.getClassSpace();
+                l.setClassSpace(ocs);
+                keyList=ncs.list();
+                i=0;
+                  while(true)
+                         
+         {
+                    
+                    if(++i >= keyList.length)
+                    {
+                      break  ;
+           
+                    }
+
+                    keyName=keyList[i];
+                    if(this.classes.containsKey(keyName)!=false)
+                    {
+                      ocs.putClass(keyName,ncs.getClass(keyName));
+                      ocs.putClassByteCode(keyName,(byte [])originalClasses.get(keyName));
+                      
+           
+                    }
+                    else
+                    {
+                      ocs.copyClassFrom(keyName,ncs);
+           
+                    }
+
+          
+                  }
+         
+                }
+                if(instrument!=false)
+                {
+                  xcl=l.loadClass("br.jabuti.mobility.mobile.HostProber");
+                  str=l.loadClass("java.lang.String");
+                  try
+                  {
+                    Class []  JdecGeneratedVar879= new Class[]          
+                    {
+                      str,                      str,                      if(Integer.class== null)
+                      {
+                        try
+                        {
+             
+                        }
+                        catch(ClassNotFoundException  Var_255)
+                        {
+Class.forName("java.lang.Integer")new NoClassDefFoundError(.getMessage())),
+                          throw new NoClassDefFoundError(;
+         
+                        }
+                        if(MuServer.class== null)
+                        {
+                          try
+                          {
+              
+                          }
+                          catch(ClassNotFoundException  Var_255)
+                          {
+Class.forName("mucode.MuServer")new NoClassDefFoundError(.getMessage()))};
+                          throw new NoClassDefFoundError(;
+         
+                        }
+                        init=new NoClassDefFoundError(.getMethod(3,new NoClassDefFoundError();
+                        Object []  JdecGeneratedVar973= new Object[]            
+                        {
+                          hostName,                          projName,new Integer(2000),                          this.getServer()
+                         };
+                        null.invoke(JdecGeneratedVar973,JdecGeneratedVar973);
+                        StringBuffer JdecGenerated1014 = new StringBuffer();
+                        this.getServer().D(JdecGenerated1014.append(xcl).append(" initialized with: ").append(hostName).append(" - ").append(projName).toString());
+            
+                      }
+                      catch(Exception  e)
+                      {
+                        e.printStackTrace();
+           
+                    }
+        
+                      }
+                    this.getServer().D("All classes in the group have been loaded successfully.");
+                    StringBuffer JdecGenerated1077 = new StringBuffer("Contents of the private class space: ");
+                    this.getServer().D(JdecGenerated1077.append(l.getClassSpace().toString()).toString());
+                    if(this.getServer().isUbiquitous(this.getRootName())!=false)
+                    {
+                      this.rootClassObj =Class.forName(this.getRootName());
+                      
+           
+                    }
+                    else
+                    {
+                      this.rootClassObj =l.getClassSpace().getClass(this.getRootName());
+           
+                    }
+                    if(this.getServer().isUbiquitous(this.getHandlerName())!=false)
+                    {
+                      this.handlerClassObj =Class.forName(this.getHandlerName());
+                      
+           
+                    }
+                    else
+                    {
+                      this.handlerClassObj =l.getClassSpace().getClass(this.getHandlerName());
+           
+                    }
+                    this.objects =(Hashtable)in.readObject();
+                    this.opPars =(Serializable [])in.readObject();
+                    StringBuffer JdecGenerated1220 = new StringBuffer("Group info: #objects: ");
+                    this.getServer().D(JdecGenerated1220.append(this.objects.size()).toString());
+                    keys =this.objects.keys();
+                      while(true)
+                               
+           {
+                        
+                        if(!keys.hasMoreElements())
+                        {
+                          break  ;
+             
+                        }
+
+                        keyName=(String)keys.nextElement();
+                        StringBuffer JdecGenerated1274 = new StringBuffer("Key: ");
+                        this.getServer().D(JdecGenerated1274.append(keyName).toString());
+
+            
+                      }
+                      this.setDynamicLinkSource(in.readUTF());
+                      String JdecGenerated1318 = new String();
+                      if(this.getDynamicLinkSource().equals(JdecGenerated1318)!=false)
+                      {
+                        this.setDynamicLinkSource(null);
+                        
+            
+                      }
+                      else
+                      {
+                        l.setDynLinkSource(this.getDynamicLinkSource());
+            
+                      }
+                      this.setSynchronousTransfer(in.readBoolean());
+                      this.sender =in.readUTF();
+                      StringBuffer JdecGenerated1370 = new StringBuffer("Group info: dynamic link: ");
+                      if(this.getDynamicLinkSource()== null)
+                      {
+                        
+            
+                      }
+                      else
+                      {
+            
+                      }
+                      JdecGenerated1370.D("disabled".append(this.getDynamicLinkSource()).append(", synch: ").append(this.isSynchronousTransfer()).append(", sender: ").append(this.sender).toString());
+                      this.getServer().D("Group successfully retrieved from the stream.");
+                      in.close();
+                      return;
+
+ }
+
+//  CLASS: mucode.TestGroup:
+ private    void loadRequiredInstrument(  TestMuClassLoader l) 
+ {
+    Class cl= null;
+    ClassPath cp= null;
+    ClassSpace cs= null;
+    String classname= null;
+    String filename= null;
+    byte[] b= null;
+    int i= 0;
+    cs=l.getClassSpace();
+    ClassPath JdecGenerated7 = new ClassPath(System.getProperty("java.class.path"));
+    cp=JdecGenerated7;
+    i=0;
+      while(true)
+       
+   {
+        
+        if(++i >= this.sharedClasses.length)
+        {
+          break  ;
+     
+        }
+
+        classname=this.sharedClasses[i];
+        try
+        {
+          filename=classname.replace(46,File.separatorChar);
+          b=cp.getBytes(filename,".class");
+          cs.putClassByteCode(classname,b);
+     
+        }
+        catch(Exception  Var_6)
+        {
+     
+        }
+
+    
+      }
+      i=0;
+        while(true)
+          
+    {
+          
+          if(++i >= this.sharedClasses.length)
+          {
+            break  ;
+      
+          }
+
+          classname=this.sharedClasses[i];
+          try
+          {
+            cl=l.loadClass(classname);
+      
+          }
+          catch(Exception  Var_6)
+          {
+      
+          }
+
+     
+        }
+        return;
+
+ }
+
+
+}

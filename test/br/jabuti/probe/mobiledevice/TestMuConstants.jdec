@@ -1,0 +1,34 @@
+//  Decompiled by jdec
+//  DECOMPILER HOME PAGE: jdec.sourceforge.net
+//  Main HOSTING SITE: sourceforge.net
+//  Copyright (C)2006,2007,2008 Swaroop Belur.
+//  jdec comes with ABSOLUTELY NO WARRANTY;
+//  This is free software, and you are welcome to redistribute
+//  it under certain conditions;
+//  See the File 'COPYING' For more details.
+
+package mucode;
+ 
+/**** List of All Imported Classes ***/
+
+import java.lang.Object;
+import mucode.MuConstants;
+
+// End of Import
+
+public  abstract  interface  TestMuConstants   extends  MuConstants
+
+{
+
+ /***
+ **Class Fields
+ ***/
+ public  static  final  String FORWARDkey ="forward";
+ public  static  final  String INSTRCLASSESkey ="instrclasses";
+ public  static  final  String INSTRPACKAGESkey ="instrpackages";
+ public  static  final  String PROJECTkey ="project";
+ public  static  final  String TESTSERVERkey ="testserver";
+
+
+
+}

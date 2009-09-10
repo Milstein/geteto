@@ -1,0 +1,483 @@
+//  Decompiled by jdec
+//  DECOMPILER HOME PAGE: jdec.sourceforge.net
+//  Main HOSTING SITE: sourceforge.net
+//  Copyright (C)2006,2007,2008 Swaroop Belur.
+//  jdec comes with ABSOLUTELY NO WARRANTY;
+//  This is free software, and you are welcome to redistribute
+//  it under certain conditions;
+//  See the File 'COPYING' For more details.
+
+package mucode;
+ 
+/**** List of All Imported Classes ***/
+
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.lang.Boolean;
+import java.lang.ClassNotFoundException;
+import java.lang.IllegalAccessException;
+import java.lang.InstantiationException;
+import java.lang.String;
+import java.lang.StringBuffer;
+import java.lang.System;
+import java.lang.Thread;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import mucode.DuplicateClassException;
+import mucode.GroupHandler;
+import mucode.Header;
+import mucode.MuClassLoader;
+import mucode.MuCodeException;
+import mucode.MuServer;
+import mucode.TestGroup;
+import mucode.TestMuClassLoader;
+import mucode.TestMuConstants;
+
+// End of Import
+
+public  class  TestMuServer extends  MuServer  implements  TestMuConstants
+
+{
+
+ /***
+ **Class Fields
+ ***/
+ private  boolean forwardON ;
+ private  HashSet instrumentPrefixes ;
+ private  HashSet instrumentPackages ;
+ private  HashSet instrumentClasses ;
+
+
+//  CLASS: mucode.TestMuServer:
+ public     TestMuServer( ) 
+ {
+    super();
+    this.forwardON =false;
+    HashSet JdecGenerated12 = new HashSet();
+    this.instrumentPrefixes =JdecGenerated12;
+    HashSet JdecGenerated23 = new HashSet();
+    this.instrumentPackages =JdecGenerated23;
+    HashSet JdecGenerated34 = new HashSet();
+    this.instrumentClasses =JdecGenerated34;
+    return;
+
+ }
+
+//  CLASS: mucode.TestMuServer:
+ static      //[Static Initializer] 
+ {
+    MuServer.defaultProperties.put("forward",String.valueOf(false));
+    MuServer.defaultProperties.put("instrclasses","");
+    MuServer.defaultProperties.put("instrpackages","");
+
+ }
+
+//  CLASS: mucode.TestMuServer:
+ protected    void loadPropertyVars( ) 
+ {
+    String packagename= null;
+    StringTokenizer st= null;
+    
+    super.loadPropertyVars();
+    this.forwardON =Boolean.valueOf(this.properties.getProperty("forward")).booleanValue();
+    StringTokenizer JdecGenerated25 = new StringTokenizer(this.properties.getProperty("instrclasses")," ");
+    st=JdecGenerated25;
+      while(true)
+       
+   {
+        
+        if(!st.hasMoreTokens())
+        {
+          break  ;
+     
+        }
+
+        this.instrumentClasses.add(st.nextToken());
+
+    
+      }
+      StringTokenizer JdecGenerated66 = new StringTokenizer(this.properties.getProperty("instrpackages")," ");
+      st =JdecGenerated66;
+      packagename=null;
+        while(true)
+          
+    {
+          
+          if(!st.hasMoreTokens())
+          {
+            break  ;
+      
+          }
+
+          packagename =st.nextToken();
+          if(packagename.endsWith(".*")!=false)
+          {
+            this.instrumentPrefixes.add(packagename.substring(0,(packagename.length()- 1)));
+            
+      
+          }
+          else
+          {
+            this.instrumentPackages.add(packagename);
+      
+          }
+
+     
+        }
+        return;
+
+ }
+
+//  CLASS: mucode.TestMuServer:
+ public    boolean isForwardOn( ) 
+ {
+    return this.forwardON;
+
+ }
+
+//  CLASS: mucode.TestMuServer:
+ public  final    void addInstrumentPackage(  String packageName) 
+ {
+
+    StringBuffer JdecGenerated5 = new StringBuffer(String.valueOf(this.properties.getProperty("instrpackages")));
+    this.setProperty("instrpackages",JdecGenerated5.append(" ").append(packageName).toString());
+    insertInstrumentPackage(packageName);
+    return;
+
+ }
+
+//  CLASS: mucode.TestMuServer:
+ private  final    void insertInstrumentPackage(  String packageName) 
+ {
+    if(packageName.endsWith(".*")!=false)
+    {
+      this.instrumentPrefixes.add(packageName.substring(0,(packageName.length()- 2)));
+      return;
+   
+    }
+    else
+    {
+      this.instrumentPackages.add(packageName);
+      return ;   
+    }
+
+ }
+
+//  CLASS: mucode.TestMuServer:
+ public  final    void addInstrumentClass(  String className) 
+ {
+
+    StringBuffer JdecGenerated5 = new StringBuffer(String.valueOf(this.properties.getProperty("instrclasses")));
+    this.setProperty("instrclasses",JdecGenerated5.append(" ").append(className).toString());
+    this.instrumentClasses.add(className);
+    return;
+
+ }
+
+//  CLASS: mucode.TestMuServer:
+ public  final    boolean isInstrumented(  String className) 
+ {
+    Iterator e= null;
+    String root= null;
+    boolean inClasses= 0;
+    boolean inPackagePrefixes= 0;
+    boolean inPackages= 0;
+    inPackagePrefixes=false;
+    inPackages=false;
+    inClasses=false;
+    e=null;
+    root=null;
+    e =this.instrumentPrefixes.iterator();
+      while(true)
+       
+   {
+        
+        root =(String)e.next();
+        inPackagePrefixes=className.startsWith(root);
+        if(inPackagePrefixes!=false || 
+ }
+!e.hasNext())
+      {
+        break  ;
+    
+      }
+      if(inPackagePrefixes==false)
+      {
+        e =this.instrumentPackages.iterator();
+          while(true)
+             
+     {
+            
+            root =(String)e.next();
+            inPackages=(className.startsWith(root)!=false &&  className.indexOf(".",root.length()) == -1);
+            if(inPackages!=false || !e.hasNext() )
+            {
+              break  ;
+       
+            }
+      
+          }
+     
+        }
+        if(!inPackagePrefixes &&  (!inPackages)
+    
+        {
+          e =this.instrumentClasses.iterator();
+            while(true)
+                
+      {
+              
+              root =(String)e.next();
+              inClasses=className.equals(root);
+              if(inClasses!=false)
+             {
+                break;
+              }
+              if(!inClasses)
+              {
+        
+              }
+              if(!e.hasNext())
+              {
+                break  ;
+        
+              }
+       
+            }
+      
+          }
+          if(!inPackagePrefixes && !inPackages  && !inClasses)
+     
+          {
+            return false;
+      
+          }
+          return true;
+
+ }
+
+//  CLASS: mucode.TestMuServer:
+ public    void run( ) 
+ {
+    DataOutputStream os= null;
+    GroupHandler handler= null;
+    Header header= null;
+    ServerSocket servSocket= null;
+    Socket clientSocket= null;
+    TestGroup group= null;
+    Thread t= null;
+    
+    boolean problem= 0;
+    byte[] requestedBC= null;
+    long start= 0L;
+    clientSocket=null;
+    servSocket=null;
+    group=null;
+    problem=false;
+    handler=null;
+    t=null;
+    header=null;
+    start=0;
+    try
+    {
+      ServerSocket JdecGenerated23 = new ServerSocket(this.getPort());
+      servSocket =JdecGenerated23;
+   
+    }
+    catch(IOException  e)
+    {
+      StringBuffer JdecGenerated41 = new StringBuffer("Cannot listen on port ");
+      this.Err(JdecGenerated41.append(this.getPort()).append(". Halting.").toString());
+      System.exit(0);
+      StringBuffer JdecGenerated73 = new StringBuffer("MuServer activated on port ");
+      this.M(JdecGenerated73.append(this.getPort()).toString());
+      while(true)
+      {
+        try
+        {
+          clientSocket =servSocket.accept();
+          this.D("Connection accepted. Reconstructing the header...");
+          start=System.currentTimeMillis();
+          Header JdecGenerated111 = new Header(clientSocket);
+          header =JdecGenerated111;
+     
+        }
+        catch(IOException  e)
+        {
+          StringBuffer JdecGenerated127 = new StringBuffer("Accept failed on port ");
+          this.Err(JdecGenerated127.append(this.getPort()).toString(),e);
+          switch(header.dataType)
+          {
+      
+            case 2:
+            {
+              StringBuffer JdecGenerated179 = new StringBuffer("The connection contains a request for dynamic linking of class: ");
+              this.D(JdecGenerated179.append(header.className).toString());
+              os=null;
+              try
+              {
+        
+                try
+                {
+                  DataOutputStream JdecGenerated205 = new DataOutputStream(clientSocket.getOutputStream());
+                  os =JdecGenerated205;
+                  StringBuffer JdecGenerated219 = new StringBuffer("Contents of shared class space: ");
+                  this.D(JdecGenerated219.append(this.getSharedClassSpace().toString()).toString());
+                  requestedBC=this.getSharedClassSpace().getClassByteCode(header.className);
+                  if(requestedBC== null)
+                  {
+                    StringBuffer JdecGenerated264 = new StringBuffer("Bytecode for ");
+                    this.D(JdecGenerated264.append(header.className).append(" doesn\'t exist").toString());
+                    os.write(-1);
+                    
+          
+                  }
+                  else
+                  {
+                    os.writeInt(requestedBC.length);
+                    os.write(requestedBC);
+                    StringBuffer JdecGenerated319 = new StringBuffer("Bytecode for ");
+                    this.D(JdecGenerated319.append(header.className).append(" (").append(requestedBC.length).append(" bytes) sent.").toString());
+          
+                  }
+                  catch(IOException  e)
+                  {
+                    this.Err("I/O errors during remote dynamic linking.",e);
+          
+                  }
+         
+                }
+                finally
+                {
+         
+                  try
+                  {
+                    os.flush();
+                    os.close();
+          
+                  }
+                  catch(IOException  e)
+                  {
+          
+                  }
+         
+                }
+        
+              }
+              break;
+       
+            }
+            case 1: 
+            {
+              try
+              {
+                StringBuffer JdecGenerated421 = new StringBuffer("The connection contains a group. Reconstructing ... ");
+                this.D(JdecGenerated421.append(header.className).toString());
+                TestGroup JdecGenerated445 = new TestGroup(clientSocket,header.compressedStream,this);
+                group =JdecGenerated445;
+                if(!group.isSynchronousTransfer())
+                {
+                  clientSocket.close();
+         
+                }
+                catch(IOException  e)
+                {
+                  this.Err("I/O errors during group deserialization.",e);
+                  problem=true;
+                  catch(ClassNotFoundException  e)
+                  {
+                    this.Err("Problems during class loading.",e);
+                    problem=true;
+                    catch(DuplicateClassException  e)
+                    {
+                      this.Err("The group is not allowed to overwrite a class in the class space.",e);
+                      problem=true;
+           
+                    }
+                    if(!problem)
+                    {
+                      try
+                      {
+                        handler =(GroupHandler)group.getHandlerClass().newInstance();
+                        StringBuffer JdecGenerated540 = new StringBuffer("Handler created.");
+                        this.D(JdecGenerated540.append(handler.getClass()).toString());
+            
+                      }
+                      catch(IllegalAccessException  e)
+                      {
+                        this.Err("The handler class must public!.",e);
+                        catch(InstantiationException  e)
+                        {
+                          this.Err("The handler class cannot be an interface or an abstract class.",e);
+                          try
+                          {
+                            this.D("Unpacking the group.");
+                            t =handler.unpack(group);
+                            this.D("Group unpacked.");
+              
+                          }
+                          catch(MuCodeException  e)
+                          {
+                            StringBuffer JdecGenerated622 = new StringBuffer("Problems during the unpack() of a group: ");
+                            this.Err(JdecGenerated622.append(e).toString(),e);
+                            if(t!=  null)
+                            {
+                              if(!MuServer.loaders.containsKey(t))
+                              {
+                                MuServer.loaders.put(t,this.incomingLoader);
+                
+                              }
+                              t.start();
+                              StringBuffer JdecGenerated680 = new StringBuffer("Time to activate the group: ");
+                              this.D(JdecGenerated680.append((System.currentTimeMillis()-start)).toString());
+                              StringBuffer JdecGenerated706 = new StringBuffer("Group thread (");
+                              this.D(JdecGenerated706.append(t.getName()).append("spawned.").toString());
+               
+                            }
+              
+                          }
+                          else
+                          {
+              
+                          }
+                          break;
+             
+                        }
+                        default:
+                        {
+                          StringBuffer JdecGenerated740 = new StringBuffer("Illegal data in group header:");
+                          this.Err(JdecGenerated740.append(header.dataType).toString());
+                          this.incomingLoader =null;
+                          this.cleanup();
+                          Thread.yield();
+             
+                        }
+
+ }
+
+//  CLASS: mucode.TestMuServer:
+ protected    MuClassLoader createClassLoader( ) 
+ {
+
+    TestMuClassLoader JdecGenerated3 = new TestMuClassLoader(this);
+    this.incomingLoader =JdecGenerated3;
+    return this.incomingLoader;
+
+ }
+
+//  CLASS: mucode.TestMuServer:
+ void setIncomingLoader(  MuClassLoader l) 
+ {
+
+    this.incomingLoader =l;
+    return;
+
+ }
+
+
+}
