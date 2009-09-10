@@ -1,0 +1,24 @@
+<HTML>
+<TITLE>Comandos Básicos JaBUTi</TITLE>
+<BODY>
+<H3>Para executar a Jabuti</H3>
+<code>
+java -cp Jabuti-bin.zip br.jabuti.gui.JabutiGUI
+</code>
+
+<H3>Para executar um caso de teste</H3>
+<code>
+java -cp Jabuti-bin.zip br.jabuti.probe.ProberLoader -p <nome projeto> <classe a executar> [parâmetros para execução]
+</code>
+
+<H3>Para instrumentar e armazenar instrumentado</H3>
+<code>
+java -cp Jabuti-bin.zip br.jabuti.probe.ProberInstrum -o <arquivo .jar> -p <nome projeto> <classe a executar>
+</code>
+
+<H3>Uma vez instrumentado, para executar um caso de teste</H3>
+<code>
+java -cp <arquivo .jar> <classe a executar> [parâmetros para execução]
+</code>
+</BODY>
+</HTML>

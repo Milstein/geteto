@@ -1,0 +1,316 @@
+26/4/2002
+	GFCNode: Retirada as chamadas que tentavam pegar o nome da variavel
+	  		 local que estava sendo utilizada numa definicao ou uso
+	  		 
+    VMStackElement: Removidas as variaveies de instancia kind e source
+    
+    ASMInstrumenter
+    Instrumenter: Incluida diretiva .field <fieldname>
+
+29/4/2002
+	RRDominator: classe que implementa o executor para RoundRobinAlgorithm para
+                     calcular o conjunto de dominadores de um no
+
+	RRLiveDefs: classe que implementa o executor para RoundRobinAlgorithm para
+                    calcular o conjunto de definicoes que estao vivas num certo
+		    no.
+30/4/2002
+	Criada a class criteria.AllNodes
+	
+	graph.GraphNode.getLabel() retorna (getNumber() + "") se o label do no
+	for null;
+
+30/4/2002 (Auri)
+	Inserida as classes instrumenter.LoadExec e instrumenter.MyASMInstrumenter
+	
+	instrumenter.LoadExec:	define quais classes devem ser instrumentas e 
+				carrega essas classes usando um loader especial que
+				realiza a instrumentacao "on the fly". As classes do
+				sistema ainda não são instrumentadas.
+				Pode ser utilizado com arquivos .jar ou .zip.
+				Sempre é necessário especificar a classe principal 
+				a ser executada.
+
+	instrumenter.MyASMInstrumenter: especifica um esquema de instrumentação que
+					insere um comentário no início e no fim de 
+					cada método de dada classe.
+
+
+	Adicionado o método getTheClass() em program.RClassCode para viabilizar 
+	o acesso ao objeto JavaClass referente a uma classe que não seja do sistema.
+	
+		// Get method
+		public JavaClass getTheClass() {
+			return theClass;
+		}
+
+1/5/2002 (labor day!!!)
+	Separados os arquivos LoadExec.java e InstrumentLoader.java
+
+24/05/2002
+	Agora uma instrucao INVOKEXXXX tbem eh usada para terminar um bloco na
+	classe GFC e GFCNode. Alem disso, um GFCNode que termina com uma instrucao
+	desse tipo eh colocado num no do tipo GFCCallNode que extende o GFCNode.
+	Nesse no tem informacoes sobre qual eh ou quais sao os metodos chamados
+	(considerando a possibilidade de polimorfismo).
+	
+31/5/2002
+	Iniciei a construcao de uma interface grafica, diretorio GUI. 
+	Alterei a classe ClassClosure. Agora quando uma classe é encontrada
+	é preciso verificar se o pacote que ela pertence coincide com o pacote
+	no nome da classe. Isso evita que aconteca a seguinte situacao:
+	- tenho no classpath o diretorio .
+	- tenho GUI\Jaca.class e o pacote de Jaca eh GUI
+	- tenho em . uma copia de Jaca.class
+	- Tento criar Program(Jaca) ele vai achar o arquivo errado e nao
+	  perceber o erro, ou seja que o arquivo tem pacote GUI mas nao
+	  esta no diretorio GUI.
+	  
+3/7/02
+	Foi introduzido o pacote probe, que insere as pontas de provas
+	num programa.
+	
+14/8/02
+	Mudado o nome do pacote program para pacote lookup.
+	Incluida class criteria.AllUses
+	
+7/10/2002 
+	neste ponto estah funcionando o esquema de instrumentacao e execucao
+	interna do programa em teste. Foram implementadas as classes 
+	InternalProber, InternalProbeInsert e InternalTraceReader.
+	A restricao eh que o programa em teste nao deve chamr System.exit ou outra
+	funcao semelhante...
+	
+21/10/2002
+	Renomeei o diretorio GVF para gvf e inseri package gvf em cada um dos 
+	arquivos .java desse diretorio...
+	
+	Corrigi o Makefile para ele poder compilar cada pacote individualmente e/ou
+	todos os pacotes de uma só vez. Além disse, também possível gerar os docs e
+	limpar os .class
+	
+		make graph 	--> compila os .class do graph
+		make 		--> compila toda a aplicação
+		make doc	--> gera a documentação usando o javadoc
+		make clean	--> limpa os arquivos .class de cada pacote
+	
+	Criei um diretório lib que contém os pacotes: 
+		BCEL,
+		Connector/J ( mysql-connector-java-2.0.14-bin.jar ) e 
+		JViews( jviewsall.jar )
+
+	No diretorio sql está a definição da base de dados em ErWin e o respectivo
+	script .sql responsável pela criação da base via mysql. Estou convertendo 
+	esse script em classes java para o acesso às tabelas do banco...
+	
+	Inseri o pacote novo que estou trabalhando: database. 
+		Nesse pacote estou inserindo as classes que irão manipular as tabelas
+		do banco de dados mysql.
+		
+			
+	Criei uma classe util.ToolsConstants.java que contém algumas constantes que 
+	podem ser usadas pela ferramenta (nome, deretorio em que se localiza, etc.)
+	
+	Criei uma classe util.GraphViz.java que permite invocar a ferramenta graphviz
+	para a geração de gif a partir de arquivos .dot (foi usada na ferramenta da Tati
+	para gerar os GFC)
+	
+	Inseri o método abaixo em graph.RRReqLocal.java para implementar todas as interfaces requeridas por
+	RoundRobinExecutor
+	
+		// Just to satisfy all the implementations 
+		// required by RoundRobinExecutor
+		public void init(GraphNode x, Vector primary, Vector secondary){
+			this.init( x );
+		}
+			
+	Corrigi alguns links errados na documentação da ferramenta...
+	
+	
+25/11/02 Delamaro
+	Foram criadas as classes ReduceGraph e ReduceGraphNode que eh usado para criar
+	um grafo que eh a reducao de outro grafo. Cada ReduceGraphNode contem um conjunto
+	de nos de outro grafo. Existem na classe ReduceGraph rotinas para fazer
+	a reducao de outros grafos.
+	
+	Foram criadas tbem DominatorTree extends ReduceGraph e DominatorTreeNode
+	extends ReduceNode. Essas classes sao usadas para criar as Dominators tree
+	como mostrado no artigo do Lalau. Na classe DominatorTree existe um metodo main
+	que aplica a tecnica de calcular os superblocos para uma classe. No diretorio
+	samples existe uma classe superblock.class que reproduz o grafo de exemplo
+	usado no artigo do Lalau (porem com os numeros de nos diferentes). Basta
+	chamar
+	
+	java -classpath .;lib\bcel.jar graph.DominatorTree samples\superblock.class
+	
+	O resultado é o mesmo do artigo!!!
+	Os algoritmos utilizados são da cabeca do autor. Devem nao ser os mais 
+	eficientes mas sao simples...
+	
+
+02/12/2002 Auri
+	Acertei as cores no GVF para a visualização do CFG...
+
+	Criei uma classe AbstractCriterion que implementa a interface Criterion
+	e os métodos comuns a todos os critérios. Cada critério agora estende 
+  	essa classe AbstractCriterion implementandando somente os métodos 
+	necessários.
+	
+	
+26/12/2002
+	Acertei os problemas para a visualização do GFC usando super-bloco.
+	Tanto o bytecode quanto o source Java estão exibindo as cores 
+	corretamente.
+	
+	Alterada a janela do ProjectManager. Agora, ao abrir um novo Class File,
+	é obrigatória a criação de um projeto. Ao salvar o projeto nessa janela,
+	o arquivo de trace antigo é reinicializado (apagado). O mesmo acontece 
+	quando a opção Save As é utilizada: caso o arquivo de trace já exista ele
+	é excluído.
+	
+
+27/12/2002
+	Iniciei a implementação da pintura para o critério all-edges.
+	O peso de uma dada aresta é o números de arestas cobertas caso
+	essa aresta específica seja coberta. O Super-Bloco é usado aqui
+	para identificar, a partir de uma dada aresta, qual o conjunto
+	de todos os nós cobertos caso essa aresta seja coberta.
+	
+	Em função desse conjunto de nós, é estimada a cobertura dos 
+	outros requisitos.
+	
+	Ao exibir os requisitos do critério all-edges, somente os nós 
+	de decisão são exibidos. A cor relacionada a esse nó é
+	calculada com base no peso dos seus filhos. A cor é a do
+	filho de maior peso. Ao clicar sobre um determinado nó de
+	decisão ou definição, seja no painel que mostra o bytecode, 
+	o source code ou no GFC, somente os nós filhos desse nó 
+	são exibidos com os respectivos pesos.
+	
+	Para estabelecer essa correspondência entre os paineis que
+	mostram o código e o GFC, foram implementados os listeners
+	necessarios.
+	
+	No GFV também foram adicionados dois botões. O primeiro para
+	ativar a exibição de informação dos nós quando o mouse é
+	colocado sobre determinado nó. O segundo, só se torna ativo
+	quando um determinado nó de decisão/definição é selecionado.
+	Ao clicar nesse botão, os nós de decisão/definição voltam a
+	ser exibidos.
+	
+28/12/2002
+
+	Implementação da exibição do decision com cores terminada.
+	
+	Uma série de pequenos erros no controle da interface foram
+	corrigodos. 
+	
+	Iniciada a implementação do all-uses (que vai dar mais trabalho)
+	
+31/12/2002
+	Implementação do all-uses concluída...
+	
+	Como pode haver colisão, ou seja, uma mesma linha de bytecode
+	pode conter mais de uma definição de variável (o mesmo vale para
+	uma linha de código fonte e um nó do GFC), ao clicar sobre sobre uma
+	definição (com o botão ESQUERDO do mouse) na interface texto (bytecode ou
+	source code), um menu popup é aberto mostrando as definições das
+	variáveis naquele ponto específico.
+	
+	No caso do GFC, um clique com o botão DIREITO sobre um nó de definição 
+	tem o mesmo efeito e um clique com o ESQUERDO causa a exibição automática
+	dos usos da variável de maior peso naquele nó.
+	
+	Atualmente, não é possível disparar diretamente a variável de maior
+	peso exibida no mode textual. Isso porque para construir o menu
+	popup é necessário que o caret esteja posicionado na linha corrente
+	a da definição e, um clique com o botão direito do mouse não muda a 
+	posição do caret. Por isso estou mostrando o menu quando um ponto de
+	definição recebe um clique ESQUERDO. Vou verificar como fazer para 
+	mapear um ponto na tela ( obtido através do MouseEvent) para um 
+	offset específico dentro do texto. Como estamos usando um JTextPane
+	que permite o uso de cores e estilos para mostrar os documentos, dá um 
+	pouco mais de trabalho para mapear posições do mouse em offset dentro
+	do texto, mas acho que é possível resolver.
+	
+	O peso de uma dada definição é o peso dos usos associados a ela.
+	Para calcular o peso de cada requisito verificar-se qual o número de
+	requisitos que seriam cobertos se dado requisito específico for coberto.
+	O número de requitos cobertos é valor do peso.
+	
+	Alguns erros foram identificados e corrigidos durante a implementação
+	dessas interfaces... ( Não sei quantos novos foram introduzidos :-))) )
+	
+	Os possíveis de serem identificados, adicionei um comentário "// ERRO:"
+	explicando o erro, como habilitá-lo e qual o caso de teste que o 
+	revela. Futuramente podemos utilizar essa informação para realizar
+	experimentos...
+	
+	Precisa revisar o conjunto de classes do project (que eu implementei)
+	buscando variáveis não utilizadas ou mesmo tentando gerenciar melhor a
+	memória sendo utilizada.
+	
+	Troquei o nome das classes GFCxxx.java para CFGxxx.java e atualizei 
+	todos os fontes correspondentes.
+	
+01/01/2003
+	Corrigido o problema do menu popup nas janelas de texto...
+	Agora clicando com o botão DIREITO sobre uma definição, um menu
+	popup é aberto contendo as variáveis definidas naquele ponto.
+	
+	Se o botão ESQUERDO é clicado sobre o mesmo ponto, a definição de
+	maior peso é a selecionada.
+	
+03/01/2003
+	Corrigido mais alguns erros:
+		1) Estava dando um null pointer exception quando um method
+			não tinha requisitos do critério all-uses. Isso era porque 
+			estava me esquecendo de testar se, para o referido methodo,
+			havia ou não informação de requisitos disponível.
+			
+		2) Fechar a janela do CFG quando um projeto é fechado.
+21/5/2003
+	Na classe CFGNode, o calculo de usos da variavel nao descarta os usos
+	locais pois alguns deles serao associados com as arestas.
+	No calculo dos criterios, associacoes entre def-usos no mesmo no nao
+	sao porem considerados.
+8/6/2004
+	Nas classes que implementam a interface Criteria:
+	- foi alterado o metodo addPath. Agora, quando um label é usado
+	mais do que uma vez para adicionar um path, o path existente
+	nao eh removido para que o novo seja inserido. Em vez disso,
+	os requisitos cobertos vao sendo acumulados. Assim, pode-se
+	interpretar o label como sendo um caso de teste completo e
+	nao um unico path. Os demais metodos continuam como antes, porem
+	a informacao que eles manipulam ou devolvem referem-se a um caso
+	de teste, onde antes referiam-se a um unico path
+	- foi adicionado também o metodo addPathByReq(Object req, String label);
+	Este metodo permite que um requisito seja inserido na lista de 
+	requisitos cobertos por um label (caso de teste). Nenhuma checagem
+	é feita quanto ao requisito ser não executável ou estar desabilitado.
+	- removePath e getCoveredRequirements foram implementados na classe
+	AbstractCriterion, sendo retirado das subclasses.
+	- ficou faltando alterar o metodo changePath. Nao consegui descobrir
+	qual eh o seu objetivo.
+	
+08/08/2004
+	Nas classes que implementam a interface Criteria:
+	- O método addPath foi corrigido nas classes AllEdges, All-Uses e 
+	All-Pot-Uses. Os requisitos estavam sendo adicionados
+	em co ao invés de co2 (Veja mensagem de ERRO para mais detalhes).
+	
+	- Os métodos addPath e addPathByReq somente computam quais requisitos
+	foram cobertos, após identificar quais casos de teste estão ativos ou 
+	inativos é que os métodos TestSet.activateTestCase(String label) ou
+	TestSet.desactivateTestCase(String label) são invocados para atualizar
+	a cobertura de cada critério de teste.
+	
+	Nas classes do project:
+	- A classe TestCase não armazena mais objetos do tipo HostProbedNode.
+	Ao invés disso, uma vez computados os requisitos cobertos por um caso de
+	teste esses objetos são descartados e o arquivo de trace (.trc) é 
+	reinicializado.
+	
+	- A classe ClassFile não armazena mais objetos do tipo JavaClass (BCEL).
+	Ao invés disso utiliza os objetos armazenados de forma persistente pela
+	classe RClassCode.

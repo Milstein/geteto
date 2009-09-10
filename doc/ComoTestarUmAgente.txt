@@ -1,0 +1,173 @@
+
+Eis aqui a descrição de como testar um agente móvel usando 
+a ferramenta JaBUTi.
+
+0) Tenha instalada a ferramenta JaBUTi. Compile a sua 
+aplicação (agente(s) e servidor(es)) utilizando a biblioteca
+MuCode que está localizada no arquivo lib/mucode.jar dentro 
+do diretorio da JaBUTi. Esta versão do mucode pode ser utilizada
+com JDK 1.3 ou 1.4, indistintamente.
+
+1) Crie um projeto de teste para o seu agente, normalmente
+como voce faria para qualquer programa. Preste atenção para
+deixar sempre MARCADA a opção "Hide CFG Call Nodes" que 
+aparece na criação do projeto
+
+2) De dentro da própria JaBUTi voce deve instalar o servidor
+de teste que vai receber os dados da execução do agente nos
+servidores por onde ele passar instrumentado. Para fazer isso
+você deve inicialmente criar um pequeno arquivo texto que dá
+a configuração desse servidor. Nesse arquivo texto você deve
+colocar o nome e arquivo de projeto de todos os agentes que 
+devem ser tratados por este servidor de teste. 
+
+Suponha por exemplo que no passo anterio você criou o projeto
+Tripper.jbt. Então você pode criar um arquivo com:
+
+TriperAgent
+Tripper.jbt
+
+A primeira linha dá o nome com que o agente vai ser identificado
+para o servidor de teste e a segunda linha o nome do arquivo
+que contém as informações sobre o projeto. Esse nome de arquivo
+pode ser absoluto ou relativo.
+
+Depois de criado este arquivo, vá até "Properties / Test Server"
+e clique no Botão "Browser" para carregar o arquivo de configuração.
+Isso feito selecione "Tools / Start Test Server"
+
+3) Executar o agente e colher os dados da sua execução. Neste
+ponto existem duas maneiras diferentes de fazê-lo. A primeira
+é com a instrumentação feita no cliente e a segunda com a instru-
+mentação feita no servidor da aplicação.
+
+3.1) Executar o agente intrumentando-o no cliente, ou seja no
+host onde o agente é iniciado. Para tanto,
+todos os servidores que você precisa para rodar sua aplicação
+devem ser instalados normamente. Então você deve executar o seu
+agente utilizando o programa "mobility.HostProberLoader". A forma
+de chamá=lo é:
+
+java -cp "<JABUTI>;<JABUTI>\lib\bcel.jar;<JABUTI>\junit.jar;
+          <JABUTI>\lib\mucode.jar;<JABUTI>\jabuti\lib\crimson.jar" 
+          mobility.HostProberLoader -P <Arq. de Projeto> -name <Nome do agente> 
+          -h <Endereço do Servidor de Teste>  -CP <Classpath da aplicação> 
+          <Classe do agente> <Argumentos do agente>
+
+onde 
+
+<JABUTI> é o diretório onde a ferramenta está instalada no cliente
+
+<Arq de Projeto> é o nome do arquivo de projeto criado no passo 2
+
+<Nome do agente> é o nome pelo qual o agente é identificado no servidor
+de teste. É aquele nome que você definiu no arquivo de configuração
+do servidor de teste.
+
+<Endereço do Servidor de Teste> é o endereço na forma add:port de onde 
+você instalou o servidor de teste no passo 2. Se você está executando 
+o agente no mesmo lugar que instalou o servidor pode ser um endereço
+como "localhost:1988". 
+
+<Classpath da aplicação> é o caminho que deve ser utilizado para encontrar
+as classes que são necessárias para a execução do agente. 
+
+<Argumentos do agente> são os parâmetros de linha de comando que voce
+utilizaria numa chamada convencional do agente.
+
+Por exemplo:
+
+java -cp "..;..\lib\bcel.jar;..\lib\junit.jar;..\lib\mucode.jar;             \\
+          ..\lib\crimson.jar;..\lib\jaxp-api.jar" mobility.HostProberLoader  \\
+           -P Tripper.jbt -name TripperAgent -h localhost:1988 -CP .. TripLauncher \\
+           localhost:2000 localhost:2001 localhost:1968
+
+Então o agente começa a executar normamente e além disso os dados
+de trace são enviados ao servidor de teste. Caso o projeto do seu
+agente esteja aberto na ferramenta, tais dados são imediatamente
+processados. Nesse caso o botão "Update" torna-se vermelho, indicando
+que novos casos de teste chegaram à ferramenta. A cada vez que o 
+agente migra para um novo host, um caso de teste é enviado ao
+servidor de teste.
+
+Com isso pode-se ter uma avaliação geral da cobertura atingida pela
+execução do agente e pode-se também avaliar a cobertura atimgida
+pela execução em um único ou um subconjunto de servidores. Para isso,
+você deve-se desabilitar os casos de teste nos quais não esteja
+interessado.
+
+3.2) Executar o agente instrumantando-o no servidor. Neste caso
+o agente é executado normalmente (sem o auxílio do programa 
+"mobility.HostProberLoader") e vai ser instrumentado somente
+quando chegar em algum MuServer configurado para realizar a
+instrumentação. 
+
+Essa configuração é feita passando-se 3 parâmetros:
+
+- Endereço do servidor de teste
+- Nome do agente (mesmo nome que identifica o agente no servidor de teste)
+- Classes a serem instrumentadas.
+
+Se você estiver utilizando um servidor MuServer "padrão", então 
+este pode ser instalado e parametrizado utilizando-se o programa
+mucode.util.TestLauncher (em vez de utilizar o mucode.util.Launcher)
+que aceita parâmetros na linha de comando para setar cada um 
+destes argumentos. Por exemplo:
+
+java -cp "..\jabuti;..\jabuti\lib\mucode.jar;..\jabuti\lib\bcel.jar;
+          ..\jabuti\lib\junit.jar;..\jabuti\lib\crimson.jar" 
+           mucode.util.TestLauncher -port 2000 -testserver localhost:1988 
+           -project TripperAgent -instrclasses Tripper 
+           
+Esse comando instala o MuServer e diz que a classe Tripper deve ser
+instrumentada e enviada para o servidor de teste localizado em 
+localhost:1988, identificando o agente como sendo "TripperAgent".
+
+Caso você tenha desenvolvido seu próprio servidor MuServer costumizado
+para a sua aplicação, estendendo a class mucode.MuServer, então
+você provavelmente precisará alterar seu código fazendo o seu 
+MuServer ser uma sub-class de TestMuServer e nao diretamente da
+classe MuServer.
+
+Por exemplo:
+
+public class MyMuServer extends TestServer
+{
+	....
+}
+
+
+Além disso você precisa setar os argumentos mencionados
+acima. Por exemplo:
+
+	MyMuServer s = new MyMuServer();
+	...
+	s.setProperty(s.TESTSERVERkey, "localhost:1988"); // seta servidor de teste
+	s.setProperty(s.PROJECTkey, "TripperAgent"); // seta nome do agente
+	s.addInstrumentClass("Tripper");  // adiciona classe a instrumentar
+	
+Pode-se determinar também um pacote todo a instrumentar com 
+
+	s.addInstrumentPackage(<nomde do pacote>);  // adiciona pacote a instrumentar
+
+Instalando um servidor desta maneira faz com que o agente seja 
+instrumentado ao chegar no servidor e ao migrar para o próximo servidor
+(ou terminar sua execução) sejam enviados os dados de trace para
+o servidor de teste e a ferramenta. 
+
+Pode-se controlar através de um outro parêmetro para o servidor, 
+se o agente continua a sua viagem instrumentado ou não, ou seja,
+se nos próximos hosts os dados de trace continuaram a ser coletados
+e enviados para  servidor de teste ou não. Isso é feito no programa
+mucode.util.TestLauncher através da opção -forward (on | off) ou 
+através do comando 
+
+	s.setProperty(s.FORWARDkey, "true");
+	
+Não existe problema em instalar mais do que um MuServer instrumentador
+no caminho por onde o agente passa. Se o agente chega a um servidor
+sem estar instrumentado, ele é instrumentado, de acordo com a
+configuração do servidor. Se ele chega já instrumentado, então nada
+é feito com as classes que já estão instrumentadas. 
+
+

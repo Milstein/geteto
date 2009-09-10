@@ -1,0 +1,86 @@
+Para a execução dos scripts esta sendo assumido a seguinte configuração:
+------------------------------------------------------------------------
+
+1 - Diretório de trabalho (onde se encontra a aplicação em teste)
+	/home/auri/example
+
+	O exemplo consiste de três classes:
+        VendingMachine.java
+        Dispenser.java
+        TestDriver.java ==> driver de teste que permite a execução das
+                            demais classes. Classe base do exemplo.
+
+2 - Diretório de instalação da ferramenta:
+	/home/auri/camila/Jabuti-bin.zip
+
+	Esse zip contém todos os arquivos .class da JaBUTi.
+
+Passos de execução da JaBUTi via linha de comando:
+--------------------------------------------------
+
+1 - Criar o projeto
+
+1.1 - Projeto considerando todas as classes a partir da classe base
+   java -cp "../Jabuti-bin.zip:." br.jabuti.cmdtool.CreateProject -b vending.TestDriver -p vending.jbt
+
+1.2 - Projeto considerando somente as classes vending.Vending e vending.Dispenser         
+   java -cp "../Jabuti-bin.zip:." br.jabuti.cmdtool.CreateProject -b vending.TestDriver -p vending.jbt -i classes.txt
+
+   Observe que a opção -i permite que seja fornecido o nome de um arquivo texto contendo o nome das
+   classes a serem instrumentadas. Cada linha do arquivo define o nome de uma classe a ser 
+   instrumentada. No exemplo, o arquivo classes.txt contém duas linhas:
+         vending.Vending
+         vending.Dispenser
+
+    Desse modo, somente essas duas classes serão instrumentadas.   
+
+2 - Importar casos de teste
+    A importação de casos de testes pode ser feita de dois modos diferentes: 
+       2.1 - Casos de testes do JUnit; e
+       2.2 - Casos de testes do ProberLoader (ClassLoader da JaBUTi). 
+
+2.1 - Casos de testes do JUnit
+
+2.1.1 - Listar casos de teste (correspondência número<->nomes)
+   java -cp .:../Jabuti-bin.zip br.jabuti.cmdtool.JUnitTestCase -list -p vending.jbt -tc vending.DispenserTestCase
+
+2.1.2 - Importar intervalo de casos de teste
+   java -cp .:../Jabuti-bin.zip br.jabuti.cmdtool.JUnitTestCase -import -p vending.jbt -tc vending.DispenserTestCase -f 0 -t 1
+
+2.1.3 - Importar casos de teste variados
+   java -cp .:../Jabuti-bin.zip br.jabuti.cmdtool.JUnitTestCase -import -p vending.jbt -tc vending.DispenserTestCase -x "0 2 3"
+
+
+2.2 - Casos de testes do ProberLoader (ClassLoader da JaBUTi)
+	Primeiro é necessário executar o programa em teste, utilizando o ProberLoader, para coletar
+	as informações de execução.
+	
+	java -cp .:../Jabuti-bin.zip br.jabuti.probe.ProberLoader -p vending.jbt vending.TestDriver
+
+2.2.1 - Importar todos os casos de teste presentes no arquivo .trc
+	java -cp .:../Jabuti-bin.zip br.jabuti.cmdtool.ImportTestCase -p vending.jbt
+
+2.2.2 - Importar somente os casos de testes efetivos
+	java -cp .:../Jabuti-bin.zip br.jabuti.cmdtool.ImportTestCase -cut -p vending.jbt
+
+
+3 - Gerar relatorios
+Se a opção -o não for usada, sempre será gerado o relatório no arquivo jabuti_report.xml.
+
+3.1 - Relatório do projeto
+   java -cp .:../Jabuti-bin.zip br.jabuti.cmdtool.JabutiReport -p vending.jbt -pr -o projeto.xml
+
+3.2 - Relatório de classes (inclui o relatório do projeto)
+   java -cp .:../Jabuti-bin.zip br.jabuti.cmdtool.JabutiReport -p vending.jbt -cl -o classes.xml
+
+3.3 - Relatório de métodos (inclui o relatório do projeto e de classes)
+   java -cp .:../Jabuti-bin.zip br.jabuti.cmdtool.JabutiReport -p vending.jbt -me -o metodos.xml
+
+3.4 - Reletório de conjunto de teste (idem ao de projeto em termos de cobertura)
+   java -cp .:../Jabuti-bin.zip br.jabuti.cmdtool.JabutiReport -p vending.jbt -ts -o test-set.xml
+
+3.5 - Relatório de casos de teste (inclui de de conjunto de teste)
+   java -cp .:../Jabuti-bin.zip br.jabuti.cmdtool.JabutiReport -p vending.jbt -tc -o test-case.xml
+
+3.6 - Relatório completo
+   java -cp .:../Jabuti-bin.zip br.jabuti.cmdtool.JabutiReport -p vending.jbt -all -o completo.xml

@@ -1,0 +1,27 @@
+How to generate a trace file
+----------------------------
+
+To Generate a trace file from a given project myproj.jba,
+Just run the following command:
+
+java -cp ".;lib\BCEL.jar;lib\crimson.jar;lib\dom.jar" probe.ProberLoader -P myproj.jba <main_class>
+
+
+***************************************************************************************
+There is also the option to generate the trace file for mobility code. In this case,
+first it is necessary to start up the trace server:
+
+java -classpath ".;lib\mucode.jar" mobility.HostProberServer -debug -projectfile server.txt
+
+The project file "server.txt" contains the name of the project and the 
+name of the project file, like this:
+server.txt
+----------------
+fact
+        fact.jbt
+----------------
+
+Once the server has been start up, the HostProberLoader can be run to collect trace 
+information...
+
+java -classpath ".;lib\mucode.jar;lib\BCEL.jar" mobility.HostProberLoader -P fact.jbt -name fact -h localhost:1988 samples.Factorial
