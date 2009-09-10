@@ -1,0 +1,10 @@
+<JABUTI>
+    <PROJECT name="D:\camila\exercicio\camila\teste\identifier\teste.jbt" type="research" mobility="N" CFGOption="0">
+        <BASE_CLASS name="Identifier"/>
+        <CLASSPATH path=".;lib\bcel.jar;lib\jviewsall.jar;D:\camila\exercicio\camila\teste\identifier"/>
+        <AVOIDED_PACKAGES>
+        </AVOIDED_PACKAGES>
+        <TEST_SET last_id="0">
+        </TEST_SET>
+    </PROJECT>
+</JABUTI>

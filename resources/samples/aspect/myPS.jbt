@@ -1,0 +1,737 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<JABUTI>
+    <PROJECT name="E:\auri\Meus documentos\Tools\jabuti\samples\aspect\myPS.jbt" type="research" mobility="N" CFGOption="0">
+        <BASE_CLASS name="PointShadow.PointShadowProtocol">
+        </BASE_CLASS>
+        <CLASSPATH path="./samples/aspect/.">
+        </CLASSPATH>
+        <AVOIDED_PACKAGES>
+        </AVOIDED_PACKAGES>
+        <INST_CLASS name="PointShadow.Point" size="2022" checksum="45-3">
+            <EXTEND name="java.lang.Object" level="1">
+            </EXTEND>
+            <SOURCE name="Point.java">
+            </SOURCE>
+            <METHOD id="6" name="main([Ljava/lang/String;)V">
+                <All-Pri-Nodes id="0" totreq="12" act="12" inf="0">
+                    <NODE id="0" label="61" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="1" label="57" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="2" label="26" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="3" label="19" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="4" label="105" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="5" label="73" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="6" label="13" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="7" label="96" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="8" label="100" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="9" label="66" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="10" label="0" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="11" label="34" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                </All-Pri-Nodes>
+                <All-Sec-Nodes id="1" totreq="6" act="6" inf="0">
+                    <NODE id="0" label="93" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="1" label="49" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="2" label="44" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="3" label="88" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="4" label="54" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="5" label="83" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                </All-Sec-Nodes>
+                <All-Pri-Edges id="2" totreq="15" act="15" inf="0">
+                    <EDGE id="0" from="88" to="93" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="1" from="44" to="49" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="2" from="34" to="57" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="3" from="13" to="19" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="4" from="57" to="61" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="5" from="26" to="34" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="6" from="83" to="88" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="7" from="73" to="96" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="8" from="100" to="105" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="9" from="66" to="73" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="10" from="0" to="13" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="11" from="96" to="100" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="12" from="49" to="54" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="13" from="19" to="26" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="14" from="61" to="66" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                </All-Pri-Edges>
+                <All-Sec-Edges id="3" totreq="2" act="2" inf="0">
+                    <EDGE id="0" from="34" to="44" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="1" from="73" to="83" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                </All-Sec-Edges>
+                <All-Pri-Uses id="4" totreq="14" act="14" inf="0">
+                    <P_USE id="0" var="L@6" def="26" from="34" to="57" active="Y" covered="N" infeasible="N">
+                    </P_USE>
+                    <C_USE id="1" var="L@10" def="83" use="93" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <P_USE id="2" var="L@5" def="26" from="34" to="57" active="Y" covered="N" infeasible="N">
+                    </P_USE>
+                    <C_USE id="3" var="L@4" def="13" use="19" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <C_USE id="4" var="L@1" def="26" use="66" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <C_USE id="5" var="L@6" def="0" use="49" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <C_USE id="6" var="L@6" def="26" use="61" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <P_USE id="7" var="L@9" def="66" from="73" to="96" active="Y" covered="N" infeasible="N">
+                    </P_USE>
+                    <P_USE id="8" var="L@8" def="66" from="73" to="96" active="Y" covered="N" infeasible="N">
+                    </P_USE>
+                    <C_USE id="9" var="L@3" def="0" use="19" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <C_USE id="10" var="L@2" def="0" use="19" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <C_USE id="11" var="L@9" def="66" use="100" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <C_USE id="12" var="L@9" def="0" use="88" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <C_USE id="13" var="L@7" def="44" use="54" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                </All-Pri-Uses>
+                <All-Sec-Uses id="5" totreq="6" act="6" inf="0">
+                    <C_USE id="0" var="L@6" def="26" use="49" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <P_USE id="1" var="L@9" def="66" from="73" to="83" active="Y" covered="N" infeasible="N">
+                    </P_USE>
+                    <P_USE id="2" var="L@8" def="66" from="73" to="83" active="Y" covered="N" infeasible="N">
+                    </P_USE>
+                    <C_USE id="3" var="L@9" def="66" use="88" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <P_USE id="4" var="L@6" def="26" from="34" to="44" active="Y" covered="N" infeasible="N">
+                    </P_USE>
+                    <P_USE id="5" var="L@5" def="26" from="34" to="44" active="Y" covered="N" infeasible="N">
+                    </P_USE>
+                </All-Sec-Uses>
+            </METHOD>
+            <METHOD id="4" name="setY(I)V">
+                <All-Pri-Nodes id="0" totreq="1" act="1" inf="0">
+                    <NODE id="0" label="0" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                </All-Pri-Nodes>
+                <All-Sec-Nodes id="1" totreq="0" act="0" inf="0">
+                </All-Sec-Nodes>
+                <All-Pri-Edges id="2" totreq="0" act="0" inf="0">
+                </All-Pri-Edges>
+                <All-Sec-Edges id="3" totreq="0" act="0" inf="0">
+                </All-Sec-Edges>
+                <All-Pri-Uses id="4" totreq="0" act="0" inf="0">
+                </All-Pri-Uses>
+                <All-Sec-Uses id="5" totreq="0" act="0" inf="0">
+                </All-Sec-Uses>
+            </METHOD>
+            <METHOD id="2" name="getY()I">
+                <All-Pri-Nodes id="0" totreq="1" act="1" inf="0">
+                    <NODE id="0" label="0" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                </All-Pri-Nodes>
+                <All-Sec-Nodes id="1" totreq="0" act="0" inf="0">
+                </All-Sec-Nodes>
+                <All-Pri-Edges id="2" totreq="0" act="0" inf="0">
+                </All-Pri-Edges>
+                <All-Sec-Edges id="3" totreq="0" act="0" inf="0">
+                </All-Sec-Edges>
+                <All-Pri-Uses id="4" totreq="0" act="0" inf="0">
+                </All-Pri-Uses>
+                <All-Sec-Uses id="5" totreq="0" act="0" inf="0">
+                </All-Sec-Uses>
+            </METHOD>
+            <METHOD id="5" name="printPosition()V">
+                <All-Pri-Nodes id="0" totreq="8" act="8" inf="0">
+                    <NODE id="0" label="39" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="1" label="36" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="2" label="24" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="3" label="12" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="4" label="0" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="5" label="19" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="6" label="31" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="7" label="42" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                </All-Pri-Nodes>
+                <All-Sec-Nodes id="1" totreq="0" act="0" inf="0">
+                </All-Sec-Nodes>
+                <All-Pri-Edges id="2" totreq="7" act="7" inf="0">
+                    <EDGE id="0" from="19" to="24" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="1" from="12" to="19" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="2" from="31" to="36" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="3" from="24" to="31" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="4" from="36" to="39" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="5" from="39" to="42" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="6" from="0" to="12" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                </All-Pri-Edges>
+                <All-Sec-Edges id="3" totreq="0" act="0" inf="0">
+                </All-Sec-Edges>
+                <All-Pri-Uses id="4" totreq="4" act="4" inf="0">
+                    <C_USE id="0" var="L@0" def="0" use="24" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <C_USE id="1" var="L@0" def="0" use="12" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <C_USE id="2" var="L@0.y" def="0" use="24" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <C_USE id="3" var="L@0.x" def="0" use="12" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                </All-Pri-Uses>
+                <All-Sec-Uses id="5" totreq="0" act="0" inf="0">
+                </All-Sec-Uses>
+            </METHOD>
+            <METHOD id="0" name="&lt;init&gt;(II)V">
+                <All-Pri-Nodes id="0" totreq="3" act="3" inf="0">
+                    <NODE id="0" label="4" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="1" label="0" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="2" label="8" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                </All-Pri-Nodes>
+                <All-Sec-Nodes id="1" totreq="0" act="0" inf="0">
+                </All-Sec-Nodes>
+                <All-Pri-Edges id="2" totreq="2" act="2" inf="0">
+                    <EDGE id="0" from="4" to="8" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="1" from="0" to="4" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                </All-Pri-Edges>
+                <All-Sec-Edges id="3" totreq="0" act="0" inf="0">
+                </All-Sec-Edges>
+                <All-Pri-Uses id="4" totreq="4" act="4" inf="0">
+                    <C_USE id="0" var="L@1" def="0" use="8" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <C_USE id="1" var="L@0" def="0" use="8" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <C_USE id="2" var="L@0" def="0" use="4" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <C_USE id="3" var="L@2" def="0" use="8" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                </All-Pri-Uses>
+                <All-Sec-Uses id="5" totreq="0" act="0" inf="0">
+                </All-Sec-Uses>
+            </METHOD>
+            <METHOD id="3" name="setX(I)V">
+                <All-Pri-Nodes id="0" totreq="1" act="1" inf="0">
+                    <NODE id="0" label="0" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                </All-Pri-Nodes>
+                <All-Sec-Nodes id="1" totreq="0" act="0" inf="0">
+                </All-Sec-Nodes>
+                <All-Pri-Edges id="2" totreq="0" act="0" inf="0">
+                </All-Pri-Edges>
+                <All-Sec-Edges id="3" totreq="0" act="0" inf="0">
+                </All-Sec-Edges>
+                <All-Pri-Uses id="4" totreq="0" act="0" inf="0">
+                </All-Pri-Uses>
+                <All-Sec-Uses id="5" totreq="0" act="0" inf="0">
+                </All-Sec-Uses>
+            </METHOD>
+            <METHOD id="1" name="getX()I">
+                <All-Pri-Nodes id="0" totreq="1" act="1" inf="0">
+                    <NODE id="0" label="0" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                </All-Pri-Nodes>
+                <All-Sec-Nodes id="1" totreq="0" act="0" inf="0">
+                </All-Sec-Nodes>
+                <All-Pri-Edges id="2" totreq="0" act="0" inf="0">
+                </All-Pri-Edges>
+                <All-Sec-Edges id="3" totreq="0" act="0" inf="0">
+                </All-Sec-Edges>
+                <All-Pri-Uses id="4" totreq="0" act="0" inf="0">
+                </All-Pri-Uses>
+                <All-Sec-Uses id="5" totreq="0" act="0" inf="0">
+                </All-Sec-Uses>
+            </METHOD>
+        </INST_CLASS>
+        <INST_CLASS name="PointShadow.PointShadowProtocol" size="3989" checksum="45-3">
+            <EXTEND name="java.lang.Object" level="1">
+            </EXTEND>
+            <SOURCE name="PointShadowProtocol.java">
+            </SOURCE>
+            <METHOD id="0" name="&lt;clinit&gt;()V">
+                <All-Pri-Nodes id="0" totreq="2" act="2" inf="0">
+                    <NODE id="0" label="3" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="1" label="0" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                </All-Pri-Nodes>
+                <All-Sec-Nodes id="1" totreq="0" act="0" inf="0">
+                </All-Sec-Nodes>
+                <All-Pri-Edges id="2" totreq="1" act="1" inf="0">
+                    <EDGE id="0" from="0" to="3" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                </All-Pri-Edges>
+                <All-Sec-Edges id="3" totreq="0" act="0" inf="0">
+                </All-Sec-Edges>
+                <All-Pri-Uses id="4" totreq="0" act="0" inf="0">
+                </All-Pri-Uses>
+                <All-Sec-Uses id="5" totreq="0" act="0" inf="0">
+                </All-Sec-Uses>
+            </METHOD>
+            <METHOD id="2" name="getShadowCount()I">
+                <All-Pri-Nodes id="0" totreq="2" act="2" inf="0">
+                    <NODE id="0" label="3" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="1" label="0" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                </All-Pri-Nodes>
+                <All-Sec-Nodes id="1" totreq="0" act="0" inf="0">
+                </All-Sec-Nodes>
+                <All-Pri-Edges id="2" totreq="1" act="1" inf="0">
+                    <EDGE id="0" from="0" to="3" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                </All-Pri-Edges>
+                <All-Sec-Edges id="3" totreq="0" act="0" inf="0">
+                </All-Sec-Edges>
+                <All-Pri-Uses id="4" totreq="0" act="0" inf="0">
+                </All-Pri-Uses>
+                <All-Sec-Uses id="5" totreq="0" act="0" inf="0">
+                </All-Sec-Uses>
+            </METHOD>
+            <METHOD id="5" name="ajc$interFieldSetDispatch$PointShadow_PointShadowProtocol$PointShadow_Point$shadow(LPointShadow/Point;LPointShadow/Shadow;)V">
+                <All-Pri-Nodes id="0" totreq="1" act="1" inf="0">
+                    <NODE id="0" label="0" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                </All-Pri-Nodes>
+                <All-Sec-Nodes id="1" totreq="0" act="0" inf="0">
+                </All-Sec-Nodes>
+                <All-Pri-Edges id="2" totreq="0" act="0" inf="0">
+                </All-Pri-Edges>
+                <All-Sec-Edges id="3" totreq="0" act="0" inf="0">
+                </All-Sec-Edges>
+                <All-Pri-Uses id="4" totreq="0" act="0" inf="0">
+                </All-Pri-Uses>
+                <All-Sec-Uses id="5" totreq="0" act="0" inf="0">
+                </All-Sec-Uses>
+            </METHOD>
+            <METHOD id="13" name="ajc$postClinit()V">
+                <All-Pri-Nodes id="0" totreq="2" act="2" inf="0">
+                    <NODE id="0" label="0" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="1" label="7" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                </All-Pri-Nodes>
+                <All-Sec-Nodes id="1" totreq="0" act="0" inf="0">
+                </All-Sec-Nodes>
+                <All-Pri-Edges id="2" totreq="1" act="1" inf="0">
+                    <EDGE id="0" from="0" to="7" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                </All-Pri-Edges>
+                <All-Sec-Edges id="3" totreq="0" act="0" inf="0">
+                </All-Sec-Edges>
+                <All-Pri-Uses id="4" totreq="0" act="0" inf="0">
+                </All-Pri-Uses>
+                <All-Sec-Uses id="5" totreq="0" act="0" inf="0">
+                </All-Sec-Uses>
+            </METHOD>
+            <METHOD id="3" name="ajc$interFieldInit$PointShadow_PointShadowProtocol$PointShadow_Point$shadow(LPointShadow/Point;)V">
+                <All-Pri-Nodes id="0" totreq="1" act="1" inf="0">
+                    <NODE id="0" label="0" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                </All-Pri-Nodes>
+                <All-Sec-Nodes id="1" totreq="0" act="0" inf="0">
+                </All-Sec-Nodes>
+                <All-Pri-Edges id="2" totreq="0" act="0" inf="0">
+                </All-Pri-Edges>
+                <All-Sec-Edges id="3" totreq="0" act="0" inf="0">
+                </All-Sec-Edges>
+                <All-Pri-Uses id="4" totreq="0" act="0" inf="0">
+                </All-Pri-Uses>
+                <All-Sec-Uses id="5" totreq="0" act="0" inf="0">
+                </All-Sec-Uses>
+            </METHOD>
+            <METHOD id="6" name="associate(LPointShadow/Point;LPointShadow/Shadow;)V">
+                <All-Pri-Nodes id="0" totreq="2" act="2" inf="0">
+                    <NODE id="0" label="5" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="1" label="0" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                </All-Pri-Nodes>
+                <All-Sec-Nodes id="1" totreq="0" act="0" inf="0">
+                </All-Sec-Nodes>
+                <All-Pri-Edges id="2" totreq="1" act="1" inf="0">
+                    <EDGE id="0" from="0" to="5" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                </All-Pri-Edges>
+                <All-Sec-Edges id="3" totreq="0" act="0" inf="0">
+                </All-Sec-Edges>
+                <All-Pri-Uses id="4" totreq="0" act="0" inf="0">
+                </All-Pri-Uses>
+                <All-Sec-Uses id="5" totreq="0" act="0" inf="0">
+                </All-Sec-Uses>
+            </METHOD>
+            <METHOD id="1" name="&lt;init&gt;()V">
+                <All-Pri-Nodes id="0" totreq="2" act="2" inf="0">
+                    <NODE id="0" label="4" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="1" label="0" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                </All-Pri-Nodes>
+                <All-Sec-Nodes id="1" totreq="0" act="0" inf="0">
+                </All-Sec-Nodes>
+                <All-Pri-Edges id="2" totreq="1" act="1" inf="0">
+                    <EDGE id="0" from="0" to="4" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                </All-Pri-Edges>
+                <All-Sec-Edges id="3" totreq="0" act="0" inf="0">
+                </All-Sec-Edges>
+                <All-Pri-Uses id="4" totreq="1" act="1" inf="0">
+                    <C_USE id="0" var="L@0" def="0" use="4" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                </All-Pri-Uses>
+                <All-Sec-Uses id="5" totreq="0" act="0" inf="0">
+                </All-Sec-Uses>
+            </METHOD>
+            <METHOD id="11" name="aspectOf()LPointShadow/PointShadowProtocol;">
+                <All-Pri-Nodes id="0" totreq="4" act="4" inf="0">
+                    <NODE id="0" label="15" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="1" label="0" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="2" label="8" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="3" label="7" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                </All-Pri-Nodes>
+                <All-Sec-Nodes id="1" totreq="0" act="0" inf="0">
+                </All-Sec-Nodes>
+                <All-Pri-Edges id="2" totreq="3" act="3" inf="0">
+                    <EDGE id="0" from="0" to="8" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="1" from="0" to="7" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="2" from="8" to="15" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                </All-Pri-Edges>
+                <All-Sec-Edges id="3" totreq="0" act="0" inf="0">
+                </All-Sec-Edges>
+                <All-Pri-Uses id="4" totreq="2" act="2" inf="0">
+                    <P_USE id="0" var="S@PointShadow.PointShadowProtocol.ajc$perSingletonInstance" def="0" from="0" to="8" active="Y" covered="N" infeasible="N">
+                    </P_USE>
+                    <P_USE id="1" var="S@PointShadow.PointShadowProtocol.ajc$perSingletonInstance" def="0" from="0" to="7" active="Y" covered="N" infeasible="N">
+                    </P_USE>
+                </All-Pri-Uses>
+                <All-Sec-Uses id="5" totreq="0" act="0" inf="0">
+                </All-Sec-Uses>
+            </METHOD>
+            <METHOD id="7" name="getShadow(LPointShadow/Point;)LPointShadow/Shadow;">
+                <All-Pri-Nodes id="0" totreq="2" act="2" inf="0">
+                    <NODE id="0" label="4" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="1" label="0" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                </All-Pri-Nodes>
+                <All-Sec-Nodes id="1" totreq="0" act="0" inf="0">
+                </All-Sec-Nodes>
+                <All-Pri-Edges id="2" totreq="1" act="1" inf="0">
+                    <EDGE id="0" from="0" to="4" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                </All-Pri-Edges>
+                <All-Sec-Edges id="3" totreq="0" act="0" inf="0">
+                </All-Sec-Edges>
+                <All-Pri-Uses id="4" totreq="0" act="0" inf="0">
+                </All-Pri-Uses>
+                <All-Sec-Uses id="5" totreq="0" act="0" inf="0">
+                </All-Sec-Uses>
+            </METHOD>
+            <METHOD id="12" name="hasAspect()Z">
+                <All-Pri-Nodes id="0" totreq="3" act="3" inf="0">
+                    <NODE id="0" label="6" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="1" label="0" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="2" label="8" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                </All-Pri-Nodes>
+                <All-Sec-Nodes id="1" totreq="0" act="0" inf="0">
+                </All-Sec-Nodes>
+                <All-Pri-Edges id="2" totreq="2" act="2" inf="0">
+                    <EDGE id="0" from="0" to="8" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="1" from="0" to="6" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                </All-Pri-Edges>
+                <All-Sec-Edges id="3" totreq="0" act="0" inf="0">
+                </All-Sec-Edges>
+                <All-Pri-Uses id="4" totreq="2" act="2" inf="0">
+                    <P_USE id="0" var="S@PointShadow.PointShadowProtocol.ajc$perSingletonInstance" def="0" from="0" to="8" active="Y" covered="N" infeasible="N">
+                    </P_USE>
+                    <P_USE id="1" var="S@PointShadow.PointShadowProtocol.ajc$perSingletonInstance" def="0" from="0" to="6" active="Y" covered="N" infeasible="N">
+                    </P_USE>
+                </All-Pri-Uses>
+                <All-Sec-Uses id="5" totreq="0" act="0" inf="0">
+                </All-Sec-Uses>
+            </METHOD>
+            <METHOD id="4" name="ajc$interFieldGetDispatch$PointShadow_PointShadowProtocol$PointShadow_Point$shadow(LPointShadow/Point;)LPointShadow/Shadow;">
+                <All-Pri-Nodes id="0" totreq="1" act="1" inf="0">
+                    <NODE id="0" label="0" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                </All-Pri-Nodes>
+                <All-Sec-Nodes id="1" totreq="0" act="0" inf="0">
+                </All-Sec-Nodes>
+                <All-Pri-Edges id="2" totreq="0" act="0" inf="0">
+                </All-Pri-Edges>
+                <All-Sec-Edges id="3" totreq="0" act="0" inf="0">
+                </All-Sec-Edges>
+                <All-Pri-Uses id="4" totreq="0" act="0" inf="0">
+                </All-Pri-Uses>
+                <All-Sec-Uses id="5" totreq="0" act="0" inf="0">
+                </All-Sec-Uses>
+            </METHOD>
+            <METHOD id="10" name="ajc$after$PointShadow_PointShadowProtocol$36a(LPointShadow/Point;)V">
+                <All-Pri-Nodes id="0" totreq="5" act="5" inf="0">
+                    <NODE id="0" label="4" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="1" label="24" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="2" label="10" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="3" label="0" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="4" label="20" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                </All-Pri-Nodes>
+                <All-Sec-Nodes id="1" totreq="0" act="0" inf="0">
+                </All-Sec-Nodes>
+                <All-Pri-Edges id="2" totreq="4" act="4" inf="0">
+                    <EDGE id="0" from="20" to="24" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="1" from="10" to="20" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="2" from="4" to="10" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="3" from="0" to="4" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                </All-Pri-Edges>
+                <All-Sec-Edges id="3" totreq="0" act="0" inf="0">
+                </All-Sec-Edges>
+                <All-Pri-Uses id="4" totreq="3" act="3" inf="0">
+                    <C_USE id="0" var="L@2" def="4" use="20" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <C_USE id="1" var="L@1" def="0" use="4" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <C_USE id="2" var="L@1" def="0" use="10" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                </All-Pri-Uses>
+                <All-Sec-Uses id="5" totreq="0" act="0" inf="0">
+                </All-Sec-Uses>
+            </METHOD>
+            <METHOD id="9" name="ajc$after$PointShadow_PointShadowProtocol$2d6(LPointShadow/Point;)V">
+                <All-Pri-Nodes id="0" totreq="5" act="5" inf="0">
+                    <NODE id="0" label="4" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="1" label="24" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="2" label="10" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="3" label="0" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="4" label="20" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                </All-Pri-Nodes>
+                <All-Sec-Nodes id="1" totreq="0" act="0" inf="0">
+                </All-Sec-Nodes>
+                <All-Pri-Edges id="2" totreq="4" act="4" inf="0">
+                    <EDGE id="0" from="20" to="24" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="1" from="10" to="20" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="2" from="4" to="10" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="3" from="0" to="4" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                </All-Pri-Edges>
+                <All-Sec-Edges id="3" totreq="0" act="0" inf="0">
+                </All-Sec-Edges>
+                <All-Pri-Uses id="4" totreq="3" act="3" inf="0">
+                    <C_USE id="0" var="L@2" def="4" use="20" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <C_USE id="1" var="L@1" def="0" use="4" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <C_USE id="2" var="L@1" def="0" use="10" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                </All-Pri-Uses>
+                <All-Sec-Uses id="5" totreq="0" act="0" inf="0">
+                </All-Sec-Uses>
+            </METHOD>
+            <METHOD id="8" name="ajc$afterReturning$PointShadow_PointShadowProtocol$1f9(IILPointShadow/Point;)V">
+                <All-Pri-Nodes id="0" totreq="3" act="3" inf="0">
+                    <NODE id="0" label="0" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="1" label="9" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="2" label="17" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                </All-Pri-Nodes>
+                <All-Sec-Nodes id="1" totreq="0" act="0" inf="0">
+                </All-Sec-Nodes>
+                <All-Pri-Edges id="2" totreq="2" act="2" inf="0">
+                    <EDGE id="0" from="0" to="9" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="1" from="9" to="17" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                </All-Pri-Edges>
+                <All-Sec-Edges id="3" totreq="0" act="0" inf="0">
+                </All-Sec-Edges>
+                <All-Pri-Uses id="4" totreq="5" act="5" inf="0">
+                    <C_USE id="0" var="L@1" def="0" use="17" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <C_USE id="1" var="L@0" def="0" use="17" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <C_USE id="2" var="L@3" def="0" use="9" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <C_USE id="3" var="L@4" def="9" use="17" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <C_USE id="4" var="L@2" def="0" use="17" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                </All-Pri-Uses>
+                <All-Sec-Uses id="5" totreq="0" act="0" inf="0">
+                </All-Sec-Uses>
+            </METHOD>
+        </INST_CLASS>
+        <INST_CLASS name="PointShadow.Shadow" size="880" checksum="45-3">
+            <EXTEND name="java.lang.Object" level="1">
+            </EXTEND>
+            <SOURCE name="Shadow.java">
+            </SOURCE>
+            <METHOD id="1" name="printPosition()V">
+                <All-Pri-Nodes id="0" totreq="8" act="8" inf="0">
+                    <NODE id="0" label="39" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="1" label="36" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="2" label="24" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="3" label="12" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="4" label="0" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="5" label="19" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="6" label="31" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="7" label="42" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                </All-Pri-Nodes>
+                <All-Sec-Nodes id="1" totreq="0" act="0" inf="0">
+                </All-Sec-Nodes>
+                <All-Pri-Edges id="2" totreq="7" act="7" inf="0">
+                    <EDGE id="0" from="19" to="24" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="1" from="12" to="19" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="2" from="31" to="36" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="3" from="24" to="31" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="4" from="36" to="39" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="5" from="39" to="42" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                    <EDGE id="6" from="0" to="12" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                </All-Pri-Edges>
+                <All-Sec-Edges id="3" totreq="0" act="0" inf="0">
+                </All-Sec-Edges>
+                <All-Pri-Uses id="4" totreq="4" act="4" inf="0">
+                    <C_USE id="0" var="L@0" def="0" use="24" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <C_USE id="1" var="L@0" def="0" use="12" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <C_USE id="2" var="L@0.y" def="0" use="24" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <C_USE id="3" var="L@0.x" def="0" use="12" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                </All-Pri-Uses>
+                <All-Sec-Uses id="5" totreq="0" act="0" inf="0">
+                </All-Sec-Uses>
+            </METHOD>
+            <METHOD id="0" name="&lt;init&gt;(II)V">
+                <All-Pri-Nodes id="0" totreq="2" act="2" inf="0">
+                    <NODE id="0" label="4" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                    <NODE id="1" label="0" active="Y" covered="N" infeasible="N">
+                    </NODE>
+                </All-Pri-Nodes>
+                <All-Sec-Nodes id="1" totreq="0" act="0" inf="0">
+                </All-Sec-Nodes>
+                <All-Pri-Edges id="2" totreq="1" act="1" inf="0">
+                    <EDGE id="0" from="0" to="4" active="Y" covered="N" infeasible="N">
+                    </EDGE>
+                </All-Pri-Edges>
+                <All-Sec-Edges id="3" totreq="0" act="0" inf="0">
+                </All-Sec-Edges>
+                <All-Pri-Uses id="4" totreq="3" act="3" inf="0">
+                    <C_USE id="0" var="L@2" def="0" use="4" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <C_USE id="1" var="L@1" def="0" use="4" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                    <C_USE id="2" var="L@0" def="0" use="4" active="Y" covered="N" infeasible="N">
+                    </C_USE>
+                </All-Pri-Uses>
+                <All-Sec-Uses id="5" totreq="0" act="0" inf="0">
+                </All-Sec-Uses>
+            </METHOD>
+        </INST_CLASS>
+        <TEST_SET last_id="1">
+            <TEST_CASE label="0001" active="N" success="U" fail="U">
+                <PATH_SET>
+                    <PATH path="class mobility.HostTraceReader@localhost@Thread[AWT-EventQueue-0,6,main]@PointShadow.Point2606212@PointShadow.Point@3@0@-1@">
+                    </PATH>
+                    <PATH path="class mobility.HostTraceReader@localhost@Thread[AWT-EventQueue-0,6,main]@PointShadow.PointShadowProtocol5691336@PointShadow.PointShadowProtocol@1@0@4@-1@">
+                    </PATH>
+                    <PATH path="class mobility.HostTraceReader@localhost@Thread[AWT-EventQueue-0,6,main]@PointShadow.Point2606212@PointShadow.Point@0@0@4@8@-1@">
+                    </PATH>
+                    <PATH path="class mobility.HostTraceReader@localhost@Thread[AWT-EventQueue-0,6,main]@STATIC@PointShadow.PointShadowProtocol@3@0@-1@">
+                    </PATH>
+                    <PATH path="class mobility.HostTraceReader@localhost@Thread[AWT-EventQueue-0,6,main]@STATIC@PointShadow.PointShadowProtocol@13@0@7@-1@">
+                    </PATH>
+                    <PATH path="class mobility.HostTraceReader@localhost@Thread[AWT-EventQueue-0,6,main]@PointShadow.Point2606212@PointShadow.Point@4@0@-1@">
+                    </PATH>
+                </PATH_SET>
+            </TEST_CASE>
+        </TEST_SET>
+    </PROJECT>
+</JABUTI>

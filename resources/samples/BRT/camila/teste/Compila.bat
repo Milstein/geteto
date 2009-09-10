@@ -1,0 +1,1 @@
+C:\j2sdk1.4.2_04\bin\javac -g -d . -classpath "D:\camila\JaBUTi\lib\junit.jar;.;D:\camila\JaBUTi" *.java

@@ -1,0 +1,1 @@
+javac -g -d . -classpath ".:/mnt/aurimrv/jabuti:/mnt/aurimrv/jabuti/lib/junit.jar" *.java

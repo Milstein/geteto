@@ -1,0 +1,14 @@
+This benchmark comes from:  
+
+http://www.ccs.neu.edu/home/lorenz/papers/aosd2003lod/
+
+The paper proposes a checker for Java programs that checks the Law
+of Demeter.  They propose a class form checker and an object form
+checker, and give the aspectJ code for each of them.
+
+In the benchmark in this directory is their code for the object form
+checker, with a small modification.   The modification just stores all
+the errors in a hash table and prints them out at the exit of main.  The
+original code printed out the same error each time it was encountered, leading
+to potentially large output files.   
+
