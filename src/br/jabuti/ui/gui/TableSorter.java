@@ -17,7 +17,7 @@
 */
 
 
-package br.jabuti.gui;
+package br.jabuti.ui.gui;
 /**
  * A sorter for TableModels. The sorter has a model (conforming to TableModel) 
  * and itself implements TableModel. TableSorter does not store or copy 

@@ -31,7 +31,7 @@ import java.util.StringTokenizer;
 
 import javax.swing.JButton;
 
-import br.jabuti.gui.*;
+import br.jabuti.ui.gui.*;
 
 import java.awt.Font;
 import java.io.*;

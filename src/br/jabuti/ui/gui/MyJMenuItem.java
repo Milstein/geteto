@@ -17,7 +17,7 @@
 */
 
 
-package br.jabuti.gui;
+package br.jabuti.ui.gui;
 
 
 import javax.swing.JMenuItem;

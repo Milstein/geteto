@@ -17,7 +17,7 @@
 */
 
 
-package br.jabuti.gui;
+package br.jabuti.ui.gui;
 
 /**
  * In a chain of data manipulators some behaviour is common. TableMap

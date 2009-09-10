@@ -33,7 +33,7 @@ import java.awt.event.*;
 import java.awt.geom.*;
 import javax.swing.*;
 
-import br.jabuti.gui.*;
+import br.jabuti.ui.gui.*;
 import br.jabuti.util.*;
 
 import java.util.*;

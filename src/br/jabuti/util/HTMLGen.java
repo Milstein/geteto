@@ -24,10 +24,9 @@ import java.text.DecimalFormat;
 import javax.swing.*;
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
-import org.w3c.dom.Document;
 
-import br.jabuti.gui.*;
 import br.jabuti.project.*;
+import br.jabuti.ui.gui.*;
 
 import br.jabuti.criteria.*;
 import br.jabuti.metrics.Metrics;
