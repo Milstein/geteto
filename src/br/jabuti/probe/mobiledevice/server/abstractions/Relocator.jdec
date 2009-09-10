@@ -1,0 +1,152 @@
+//  Decompiled by jdec
+//  DECOMPILER HOME PAGE: jdec.sourceforge.net
+//  Main HOSTING SITE: sourceforge.net
+//  Copyright (C)2006,2007,2008 Swaroop Belur.
+//  jdec comes with ABSOLUTELY NO WARRANTY;
+//  This is free software, and you are welcome to redistribute
+//  it under certain conditions;
+//  See the File 'COPYING' For more details.
+
+package mucode.abstractions;
+ 
+/**** List of All Imported Classes ***/
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.lang.Class;
+import java.lang.ClassNotFoundException;
+import java.lang.IllegalArgumentException;
+import java.lang.Integer;
+import java.lang.Object;
+import java.lang.Runnable;
+import java.lang.String;
+import mucode.Group;
+import mucode.MuServer;
+import mucode.util.ClassInspector;
+import mucode.util.ClosureConstants;
+
+// End of Import
+
+public  class  Relocator extends  Object  implements  ClosureConstants
+
+{
+
+ /***
+ **Class Fields
+ ***/
+ final  static  String HANDLER ="mucode.abstractions.RelocationHandler";
+ final  static  int COPY_THREAD =10;
+ final  static  int SPAWN_THREAD =20;
+ final  static  int FETCH_CLASSES =30;
+ final  static  int SHIP_CLASSES =40;
+ final  static  String PARAMETERS ="_PARS_";
+ final  static  String THREADLABEL ="_THREAD_";
+ private  MuServer server ;
+
+
+//  CLASS: mucode.abstractions.Relocator:
+ public     Relocator(  MuServer server) 
+ {
+    super();
+    this.server =null;
+    this.server =server;
+    return;
+
+ }
+
+//  CLASS: mucode.abstractions.Relocator:
+ public    MuServer getServer( ) 
+ {
+    return this.server;
+
+ }
+
+//  CLASS: mucode.abstractions.Relocator:
+ public    void setServer(  MuServer server) 
+ {
+
+    this.server =server;
+    return;
+
+ }
+
+//  CLASS: mucode.abstractions.Relocator:
+ public  final    void copyThread(  String destination,  Runnable t,  int classClosure,  String dynLink,  boolean synch) 	 
+ throws IOException  ,ClassNotFoundException 
+ {
+    Class c= null;
+    Group group= null;
+    c=t.getClass();
+    group=this.server.createGroup(c.getName(),"mucode.abstractions.RelocationHandler");
+    group.setOperation(10);
+    group.addObject("_THREAD_",t);
+    group.addClasses(ClassInspector.getClassClosure(c,this.server,classClosure));
+    group.setDynamicLinkSource(dynLink);
+    group.setSynchronousTransfer(synch);
+    group.ship(destination);
+    return;
+
+ }
+
+//  CLASS: mucode.abstractions.Relocator:
+ public  final    void spawnThread(  String destination,  String root,  String [] classNames,  Serializable [] parameters,  String dynLink,  boolean synch) 	 
+ throws IOException  ,ClassNotFoundException 
+ {
+    Group group= null;
+    group=this.server.createGroup(root,"mucode.abstractions.RelocationHandler");
+    group.setOperation(20);
+    if(parameters!=  null)
+    {
+      group.addObject("_PARS_",parameters);
+   
+    }
+    group.addClasses(classNames);
+    group.setDynamicLinkSource(dynLink);
+    group.setSynchronousTransfer(synch);
+    group.ship(destination);
+    return;
+
+ }
+
+//  CLASS: mucode.abstractions.Relocator:
+ public  final    void fetchClasses(  String source,  String [] classNames,  int classClosure,  boolean synch) 	 
+ throws IOException  ,ClassNotFoundException 
+ {
+    Group group= null;
+    if(classClosure==0)
+    {
+      IllegalArgumentException JdecGenerated6 = new IllegalArgumentException("NONE is not a legal class closure option for fetchClass()");
+      throw JdecGenerated6;
+   
+    }
+    group=this.server.createGroup(null,"mucode.abstractions.RelocationHandler");
+    group.setOperation(30);
+    Serializable []  JdecGeneratedVar40= new Serializable[]  
+    {
+new Integer(classClosure),      classNames
+     };
+"_PARS_".addObject(JdecGeneratedVar40,JdecGeneratedVar40);
+    group.setDynamicLinkSource(null);
+    group.setSynchronousTransfer(synch);
+    group.ship(source);
+    return;
+
+ }
+
+//  CLASS: mucode.abstractions.Relocator:
+ public  final    void shipClasses(  String destination,  String [] classNames,  boolean synch) 	 
+ throws IOException  ,ClassNotFoundException 
+ {
+    Group group= null;
+    group=this.server.createGroup(null,"mucode.abstractions.RelocationHandler");
+    group.setOperation(40);
+    group.addClasses(classNames);
+    group.setDynamicLinkSource(null);
+    group.setSynchronousTransfer(synch);
+    group.ship(destination);
+    return;
+
+ }
+
+
+}

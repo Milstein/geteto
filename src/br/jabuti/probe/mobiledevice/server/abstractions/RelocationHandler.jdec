@@ -1,0 +1,283 @@
+//  Decompiled by jdec
+//  DECOMPILER HOME PAGE: jdec.sourceforge.net
+//  Main HOSTING SITE: sourceforge.net
+//  Copyright (C)2006,2007,2008 Swaroop Belur.
+//  jdec comes with ABSOLUTELY NO WARRANTY;
+//  This is free software, and you are welcome to redistribute
+//  it under certain conditions;
+//  See the File 'COPYING' For more details.
+
+package mucode.abstractions;
+ 
+/**** List of All Imported Classes ***/
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.lang.Class;
+import java.lang.ClassNotFoundException;
+import java.lang.IllegalAccessException;
+import java.lang.InstantiationException;
+import java.lang.Integer;
+import java.lang.InternalError;
+import java.lang.NoClassDefFoundError;
+import java.lang.NoSuchMethodException;
+import java.lang.Object;
+import java.lang.Runnable;
+import java.lang.String;
+import java.lang.StringBuffer;
+import java.lang.Thread;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import mucode.ClassSpace;
+import mucode.Group;
+import mucode.MuCodeException;
+import mucode.MuServer;
+import mucode.util.ClassInspector;
+import mucode.GroupHandler;
+import mucode.util.ClosureConstants;
+
+// End of Import
+
+public  class  RelocationHandler extends  Object  implements  GroupHandler , ClosureConstants
+
+{
+
+ /***
+ **Class Fields
+ ***/
+ Class class$0 ;
+
+
+//  CLASS: mucode.abstractions.RelocationHandler:
+ public     RelocationHandler( ) 
+ {
+    super();
+    return;
+
+ }
+
+//  CLASS: mucode.abstractions.RelocationHandler:
+ public  final    Thread unpack(  Group group) 	 
+ throws MuCodeException 
+ {
+    Class rootClass= null;
+    ClassSpace sharedSpace= null;
+    Class[] parTypes= null;
+    Constructor constr= null;
+    Group outGroup= null;
+    IllegalAccessException e= null;
+    MuServer server= null;
+    Runnable r= null;
+    Serializable[] parameters= null;
+    Serializable[] pars= null;
+    String rootName= null;
+    String[] classes= null;
+    Thread t= null;
+    
+    int classClosure= 0;
+    int i= 0;
+    int op= 0;
+    server=group.getServer();
+    t=null;
+    r=null;
+    op=group.getOperation();
+    rootName=group.getRootName();
+    sharedSpace=server.getSharedClassSpace();
+    classes=(String [])null;
+    rootClass=null;
+    try
+    {
+      switch(op)
+      {
+        
+        case 40:
+        {
+          classes =group.getClasses();
+          i=0;
+            while(true)
+                
+      {
+              
+              if(++i >= classes.length)
+              {
+                break  ;
+        
+              }
+
+              group.getClassSpace().moveClassTo(classes[i],sharedSpace);
+
+       
+            }
+            break;
+      
+          }
+          case 30: 
+          {
+            pars=(Serializable [])group.getObject("_PARS_");
+            classClosure=(Integer)pars[0].intValue();
+            classes =(String [])pars[1];
+            outGroup=server.createGroup(null,"mucode.abstractions.RelocationHandler");
+            outGroup.setOperation(40);
+            i=0;
+              while(true)
+                   
+       {
+                
+                if(++i >= classes.length)
+                {
+                  break  ;
+         
+                }
+
+                rootClass =sharedSpace.getClass(classes[i]);
+                if(rootClass!=  null)
+                {
+                  outGroup.addClasses(ClassInspector.getClassClosure(rootClass,server,classClosure));
+         
+                }
+
+        
+              }
+              outGroup.setSynchronousTransfer(group.isSynchronousTransfer());
+              try
+              {
+                outGroup.ship(group.getSource());
+        
+              }
+              catch(IOException  e)
+              {
+                MuCodeException JdecGenerated241 = new MuCodeException(e,new StringBuffer("Communication problems towards ").append(group.getSource()).toString());
+                throw JdecGenerated241;
+        
+              }
+              break;
+       
+            }
+            case 10: 
+            {
+              r =(Runnable)group.getObject("_THREAD_");
+              if((r instanceof Thread)!=false)
+              {
+                t =(Thread)r;
+        
+              }
+              Thread JdecGenerated301 = new Thread(r);
+              t =JdecGenerated301;
+              break;
+       
+            }
+            case 20: 
+            {
+              parameters=(Serializable [])group.getObject("_PARS_");
+              rootClass =group.getRootClass();
+              if(RelocationHandler.class$0== null)
+              {
+                try
+                {
+         
+                }
+                catch(ClassNotFoundException  Var_255)
+                {
+                  NoClassDefFoundError JdecGenerated351 = new NoClassDefFoundError(JdecGenerated351.getMessage());
+                  throw JdecGenerated351;
+        
+              }
+     
+                }
+              if(!JdecGenerated351.isAssignableFrom(rootClass))
+              {
+                MuCodeException JdecGenerated371 = new MuCodeException("Relocator: the class for rSpawnThread does not implement java.lang.Runnable");
+                throw JdecGenerated371;
+        
+              }
+              try
+              {
+                if(parameters== null)
+                {
+                  r =(Runnable)rootClass.newInstance();
+                  
+         
+                }
+                else
+                {
+                  Class []  JdecGeneratedVar402= new Class[parameters.length];
+                  parTypes=JdecGeneratedVar402;
+                  i=0;
+                    while(true)
+                            
+          {
+                      
+                      if(++i >= parameters.length)
+                      {
+                        break  ;
+            
+                      }
+
+                      parTypes[i]=parameters[i].getClass();
+
+           
+                    }
+                    constr=rootClass.getConstructor(parTypes);
+                    r =(Runnable)constr.newInstance(parameters);
+                    e=JdecGenerated371;
+          
+                  }
+         
+                }
+                catch(IllegalAccessException  e)
+                {
+                  MuCodeException JdecGenerated463 = new MuCodeException(e,"Impossible to access the class (probably is not declared as public).");
+                  throw JdecGenerated463;
+         
+                }
+                catch(InstantiationException e)
+                {
+                  MuCodeException JdecGenerated477 = new MuCodeException(e,"Impossible to instantiate the thread.");
+                  throw JdecGenerated477;
+         
+                }
+                catch(NoSuchMethodException e)
+                {
+                  MuCodeException JdecGenerated491 = new MuCodeException(e,"No constructor matching the parameters found.");
+                  throw JdecGenerated491;
+         
+                }
+                catch(InvocationTargetException e)
+                {
+                  MuCodeException JdecGenerated505 = new MuCodeException(e,"Impossible to create the thread\'s class.");
+                  throw JdecGenerated505;
+         
+                }
+                if((r instanceof Thread)!=false)
+                {
+                  t =(Thread)r;
+         
+                }
+                Thread JdecGenerated534 = new Thread(r);
+                t =JdecGenerated534;
+                break;
+        
+              }
+              default:
+              {
+                InternalError JdecGenerated547 = new InternalError("Unknown mucode operation... Halting.");
+                throw JdecGenerated547;
+      
+          }
+          catch(ClassNotFoundException  e)
+          {
+                break;
+        
+              }
+       
+            }
+            MuCodeException JdecGenerated562 = new MuCodeException(e,"Impossible to retrieve some of the classes");
+            throw JdecGenerated562;
+      
+          }
+          return t;
+
+ }
+
+
+}

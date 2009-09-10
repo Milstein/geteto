@@ -1,0 +1,309 @@
+//  Decompiled by jdec
+//  DECOMPILER HOME PAGE: jdec.sourceforge.net
+//  Main HOSTING SITE: sourceforge.net
+//  Copyright (C)2006,2007,2008 Swaroop Belur.
+//  jdec comes with ABSOLUTELY NO WARRANTY;
+//  This is free software, and you are welcome to redistribute
+//  it under certain conditions;
+//  See the File 'COPYING' For more details.
+
+package mucode.util;
+ 
+/**** List of All Imported Classes ***/
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.lang.IllegalArgumentException;
+import java.lang.String;
+import java.lang.StringBuffer;
+import java.lang.System;
+import mucode.TestMuServer;
+import mucode.util.Launcher;
+import mucode.TestMuConstants;
+
+// End of Import
+
+public  class  TestLauncher extends  Launcher  implements  TestMuConstants
+
+{
+
+
+//  CLASS: mucode.util.TestLauncher:
+ public     TestLauncher( ) 
+ {
+
+    TestMuServer JdecGenerated3 = new TestMuServer();
+    super(JdecGenerated3);
+    return;
+
+ }
+
+//  CLASS: mucode.util.TestLauncher:
+ public     TestLauncher(  TestMuServer server) 
+ {
+    super(server);
+    return;
+
+ }
+
+//  CLASS: mucode.util.TestLauncher:
+ public    void parseArgs(  String [] args,  int index) 
+ {
+    String propvalue= null;
+    String[] classnames= null;
+    String[] packagenames= null;
+    
+    int i= 0;
+    int j= 0;
+    if( (args.length!=0 && index<0 || (index > args.length || args==null) )
+  
+    {
+      IllegalArgumentException JdecGenerated21 = new IllegalArgumentException();
+      throw JdecGenerated21;
+   
+    }
+    if(args[0].equals("-propertyfile")!=false)
+    {
+      if(args.length != 2)
+      {
+        printHelp();
+        System.exit(0);
+        
+    
+      }
+      else
+      {
+        try
+        {
+          this.getServer().loadProperties(args[1]);
+     
+        }
+        catch(FileNotFoundException  fe)
+        {
+          StringBuffer JdecGenerated73 = new StringBuffer("Property file ");
+          System.out.println(JdecGenerated73.append(args[1]).append(" not found. Halting...").toString());
+          System.exit(0);
+     
+        }
+        catch(IOException e)
+        {
+          System.out.println("I/O problems. Halting...");
+          e.printStackTrace();
+          System.exit(0);
+          return;
+     
+        }
+    
+      }
+      else
+      {
+        i=index;
+          while(true)
+             
+     {
+            
+                  if(++i >= args.length)
+                  {
+                    break  ;
+          
+                  }
+
+            if(!args[i].equals("-port"))
+            {
+              if(!args[i].equals("-timeout"))
+              {
+                if(!args[i].equals("-testserver"))
+                {
+                  if(args[i].equals("-project")!=false)
+                  {
+          
+                  }
+         
+                }
+        
+              }
+              this.getServer().setProperty(args[i].substring(1),args[++i]);
+       
+            }
+            else
+            {
+       
+            }
+            if(!args[i].equals("-compression"))
+            {
+              if(!args[i].equals("-debug"))
+              {
+                if(!args[i].equals("-messages"))
+                {
+                  if(!args[i].equals("-errors"))
+                  {
+                    if(args[i].equals("-forward")!=false)
+                    {
+           
+                    }
+          
+                  }
+         
+                }
+        
+              }
+              this.getServer().setProperty(args[i].substring(1),this.parseFlag(args[++i]));
+       
+            }
+            else
+            {
+       
+            }
+            if(args[i].equals("-ubiclasses")!=false)
+            {
+              classnames=this.parseMultipleArgs(args,++i);
+              i=(i + classnames.length);
+              propvalue="";
+              j=0;
+                while(true)
+                      
+        {
+                  
+                if(++j >= classnames.length)
+                {
+                  break  ;
+         
+                }
+
+                  this.getServer().addUbiquitousClass(classnames[j]);
+                  StringBuffer JdecGenerated330 = new StringBuffer(String.valueOf(propvalue));
+                  propvalue =JdecGenerated330.append(classnames[j]).append(" ").toString();
+         
+                }
+
+        
+              }
+              this.getServer().setProperty("ubiclasses",propvalue);
+       
+            }
+            if(args[i].equals("-ubipackages")!=false)
+            {
+              packagenames=this.parseMultipleArgs(args,i++);
+              i=(i + packagenames.length);
+              propvalue="";
+              j=0;
+                while(true)
+                      
+        {
+                  
+                  if(++j >= packagenames.length)
+                  {
+                    break  ;
+          
+                  }
+
+                  this.getServer().addUbiquitousPackage(packagenames[j]);
+                  StringBuffer JdecGenerated435 = new StringBuffer(String.valueOf(propvalue));
+                  propvalue =JdecGenerated435.append(packagenames[j]).append(" ").toString();
+
+         
+                }
+                this.getServer().setProperty("ubipackages",propvalue);
+        
+              }
+              else
+              {
+                if(args[i].equals("-instrclasses")!=false)
+                {
+                  classnames=this.parseMultipleArgs(args,++i);
+                  i=(i + classnames.length);
+                  propvalue="";
+                  j=0;
+                    while(true)
+                            
+          {
+                      
+                      if(++j >= classnames.length)
+                      {
+                        break  ;
+            
+                      }
+
+                      (TestMuServer)this.getServer().addInstrumentClass(classnames[j]);
+
+           
+                    }
+          
+                  }
+                  if(args[i].equals("-instrpackages")!=false)
+                  {
+                    packagenames=this.parseMultipleArgs(args,i++);
+                    i=(i + packagenames.length);
+                    propvalue="";
+                    j=0;
+                      while(true)
+                               
+           {
+                        
+                        if(++j >= packagenames.length)
+                        {
+                          break  ;
+             
+                        }
+
+                        (TestMuServer)this.getServer().addInstrumentPackage(packagenames[j]);
+                        StringBuffer JdecGenerated610 = new StringBuffer(String.valueOf(propvalue));
+                        propvalue =JdecGenerated610.append(packagenames[j]).append(" ").toString();
+
+            
+                      }
+                      this.getServer().setProperty("instrpackages",propvalue);
+           
+                    }
+                    else
+                    {
+                      IllegalArgumentException JdecGenerated665 = new IllegalArgumentException(args[i]);
+                      throw JdecGenerated665;
+           
+                    }
+          
+                  }
+
+                  return ;         
+                }
+        
+              }
+
+ }
+
+//  CLASS: mucode.util.TestLauncher:
+ private  static    void printHelp( ) 
+ {
+    System.out.println("Usage: java mucode.util.Launcher ");
+    System.out.println("                            [-port <number>]");
+    System.out.println("                            [-timeout <millisec>]");
+    System.out.println("                            [-compression {on|off}]");
+    System.out.println("                            [-debug {on|off}]");
+    System.out.println("                            [-messages {on|off}]");
+    System.out.println("                            [-errors {on|off}]");
+    System.out.println("                            [-forward {on|off}]");
+    System.out.println("                            [-testserver <server name>]");
+    System.out.println("                            [-project <project name>]");
+    System.out.println("                            [-ubiclasses <classname1 classname2 ...>]");
+    System.out.println("                            [-ubipackages <packagename1 packagename2 ...>]");
+    System.out.println("                            [-instrclasses <classname1 classname2 ...>]");
+    System.out.println("                            [-instrpackages <packagename1 packagename2 ...>]");
+    System.out.println("                            [-propertyfile <filename>]");
+    System.out.println("The -propertyfile option is mutually exclusive with all the other options.");
+    return;
+
+ }
+
+//  CLASS: mucode.util.TestLauncher:
+ public  static    void main(  String [] args) 
+ {
+
+    TestLauncher JdecGenerated2 = new TestLauncher();
+    JdecGenerated2.launch(args,0);
+    return;
+
+ }
+
+
+}

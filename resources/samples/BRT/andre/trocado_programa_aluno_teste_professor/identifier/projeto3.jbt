@@ -1,0 +1,10 @@
+<JABUTI>
+    <PROJECT name="D:\camila\exercicio\andre\trocado programa aluno teste professor\identifier\projeto3.jbt" type="research" mobility="N" CFGOption="1">
+        <BASE_CLASS name="identifier.Identifier"/>
+        <CLASSPATH path="D:\camila\exercicio\andre\trocado programa aluno teste professor\identifier"/>
+        <AVOIDED_PACKAGES>
+        </AVOIDED_PACKAGES>
+        <TEST_SET last_id="0">
+        </TEST_SET>
+    </PROJECT>
+</JABUTI>
