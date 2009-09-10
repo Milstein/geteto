@@ -9,6 +9,9 @@ import java.util.regex.Matcher;
 
 import org.junit.Test;
 
+import br.jabuti.graph.layout.graphviz.DotParser;
+import br.jabuti.graph.layout.graphviz.ParseException;
+
 public class DotParserTest {
 
 	@Test

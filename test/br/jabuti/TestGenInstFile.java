@@ -13,9 +13,9 @@ import org.aspectj.apache.bcel.classfile.JavaClass;
 import org.aspectj.apache.bcel.util.ClassPath;
 
 
-import br.jabuti.graph.CFG;
+import br.jabuti.graph.datastructure.defuse.CFG;
 import br.jabuti.lookup.Program;
-import br.jabuti.probe.desktop.DefaultProbeInsert;
+import br.jabuti.probe.desktop.desktop.DefaultProbeInsert;
 
 public class TestGenInstFile {
 

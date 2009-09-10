@@ -31,8 +31,8 @@ import org.aspectj.apache.bcel.generic.InstructionList;
 import org.aspectj.apache.bcel.generic.LineNumberGen;
 import org.aspectj.apache.bcel.generic.MethodGen;
 
-import br.jabuti.graph.CFG;
-import br.jabuti.graph.CFGNode;
+import br.jabuti.graph.datastructure.defuse.CFG;
+import br.jabuti.graph.datastructure.defuse.CFGNode;
 import br.jabuti.lookup.Program;
 import br.jabuti.lookup.RClass;
 import br.jabuti.lookup.RClassCode;

@@ -22,13 +22,13 @@ package br.jabuti.ui.gui;
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 
-import br.jabuti.graph.*;
-import br.jabuti.gvf.*;
-import br.jabuti.junitexec.Main;
+import br.jabuti.graph.datastructure.defuse.*;
+import br.jabuti.graph.view.gvf.*;
 import br.jabuti.lookup.*;
 import br.jabuti.metrics.Metrics;
 import br.jabuti.mobility.*;
 import br.jabuti.project.*;
+import br.jabuti.runner.junit.Main;
 import br.jabuti.util.*;
 
 import java.awt.*;
@@ -1712,7 +1712,7 @@ public class JabutiGUI extends JFrame {
 			System.out.println("Arg " + i + " " + args[i]);
 		}
 		
-		if (br.jabuti.probe.ProberInstrum.instrumentProject(prj, prj
+		if (br.jabuti.probe.desktop.ProberInstrum.instrumentProject(prj, prj
 				.getBaseClass(), fileName, noMain)) {
 			JOptionPane.showMessageDialog(null, "File " + fileName
 					+ " created successfully.", "Information",
@@ -2864,7 +2864,7 @@ public class JabutiGUI extends JFrame {
 				}
 			}
 		}
-		final Main executor = new br.jabuti.junitexec.Main(JabutiGUI
+		final Main executor = new br.jabuti.runner.junit.Main(JabutiGUI
 				.mainWindow(), true);
 		executor.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent evt) {

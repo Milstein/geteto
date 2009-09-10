@@ -25,7 +25,7 @@ import org.aspectj.apache.bcel.classfile.*;
 import java.util.*;
 
 import br.jabuti.lookup.*;
-import br.jabuti.probe.DefaultProbeInsert;
+import br.jabuti.probe.desktop.DefaultProbeInsert;
 
  
 /** This class is designed to insert probes on each 

@@ -23,7 +23,8 @@ package br.jabuti.verifier;
 import org.aspectj.apache.bcel.generic.*;
 import br.jabuti.util.*;
 import java.util.*;
-import br.jabuti.graph.*;
+
+import br.jabuti.graph.datastructure.defuse.*;
 
 
 /** This class represents a node of a {@link InstructionGraph} that

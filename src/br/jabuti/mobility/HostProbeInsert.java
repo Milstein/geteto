@@ -21,7 +21,8 @@ package br.jabuti.mobility;
 
 
 import br.jabuti.verifier.*;
-import br.jabuti.probe.*;
+import br.jabuti.probe.desktop.*;
+
 import org.aspectj.apache.bcel.classfile.*;
 import org.aspectj.apache.bcel.generic.*;
 import java.util.*;

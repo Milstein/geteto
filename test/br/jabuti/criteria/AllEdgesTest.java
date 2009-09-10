@@ -12,7 +12,7 @@ import org.aspectj.apache.bcel.generic.MethodGen;
 import org.junit.Before;
 import org.junit.Test;
 
-import br.jabuti.graph.CFG;
+import br.jabuti.graph.datastructure.defuse.CFG;
 
 public class AllEdgesTest
 {

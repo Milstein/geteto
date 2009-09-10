@@ -11,7 +11,7 @@ import org.junit.runner.JUnitCore;
 
 import br.icmc.labes.testing.loader.clazz.JarClassLoader;
 import br.jabuti.lookup.Program;
-import br.jabuti.probe.desktop.ProberInstrum;
+import br.jabuti.probe.desktop.desktop.ProberInstrum;
 import br.jabuti.runner.junit.CollectorListener;
 import br.jabuti.runner.junit.InstrumenterListener;
 

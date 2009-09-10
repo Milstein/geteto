@@ -26,7 +26,7 @@ import java.util.*;
 
 import br.jabuti.mobility.mobile.*;
 import br.jabuti.util.*;
-import br.jabuti.probe.*;
+import br.jabuti.probe.desktop.*;
 
 
 /** This class reads a file stored by the {@link HostProber} class.

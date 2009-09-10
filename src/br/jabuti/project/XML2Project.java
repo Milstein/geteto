@@ -35,7 +35,7 @@ import br.jabuti.criteria.Criterion;
 import br.jabuti.criteria.DefUse;
 import br.jabuti.criteria.Edge;
 import br.jabuti.criteria.Node;
-import br.jabuti.graph.CFG;
+import br.jabuti.graph.datastructure.defuse.CFG;
 import br.jabuti.util.ToolConstants;
 
 /**

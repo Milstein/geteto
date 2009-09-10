@@ -42,7 +42,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.ListIterator;
 
-import br.jabuti.probe.ProbedNode;
+import br.jabuti.probe.desktop.ProbedNode;
 import br.jabuti.util.ToolConstants;
 
 public class ProberServer extends Thread {

@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import br.jabuti.lookup.Program;
-import br.jabuti.probe.desktop.ProberInstrum;
+import br.jabuti.probe.desktop.desktop.ProberInstrum;
 import br.jabuti.project.JabutiProject;
 import br.jabuti.project.TestSet;
 

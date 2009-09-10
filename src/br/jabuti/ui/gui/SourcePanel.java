@@ -25,7 +25,7 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.text.*;
 
-import br.jabuti.graph.*;
+import br.jabuti.graph.datastructure.defuse.*;
 import br.jabuti.project.*;
 import br.jabuti.util.*;
 

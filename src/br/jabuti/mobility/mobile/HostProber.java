@@ -23,7 +23,7 @@ package br.jabuti.mobility.mobile;
 import java.util.*;
 import java.net.*;
 
-import br.jabuti.probe.*;
+import br.jabuti.probe.desktop.*;
 
 import mucode.*;
 import br.jabuti.mobility.mobile.agent.*;

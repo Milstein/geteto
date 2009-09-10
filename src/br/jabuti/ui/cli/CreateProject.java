@@ -22,7 +22,7 @@ package br.jabuti.ui.cli;
 import java.io.*;
 import java.util.*;
 
-import br.jabuti.graph.*;
+import br.jabuti.graph.datastructure.defuse.*;
 import br.jabuti.project.*;
 
 import br.jabuti.lookup.*;

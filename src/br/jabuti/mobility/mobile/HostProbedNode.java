@@ -32,7 +32,7 @@ package br.jabuti.mobility.mobile;
  </UL><BR>
  */
 
-import br.jabuti.probe.*;
+import br.jabuti.probe.desktop.*;
 
 public class HostProbedNode extends ProbedNode {
 	

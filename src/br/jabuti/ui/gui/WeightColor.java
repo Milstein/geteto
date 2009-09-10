@@ -24,7 +24,7 @@ import javax.swing.*;
 
 import br.jabuti.criteria.Criterion;
 import br.jabuti.criteria.Node;
-import br.jabuti.graph.*;
+import br.jabuti.graph.datastructure.defuse.*;
 import br.jabuti.project.*;
 import br.jabuti.util.*;
 

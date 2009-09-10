@@ -28,7 +28,7 @@ import java.util.zip.*;
 import java.util.jar.*;
 import java.io.*;
 import br.jabuti.util.*;
-import br.jabuti.graph.*;
+import br.jabuti.graph.datastructure.defuse.*;
 
 
 /** <p> This class represents a program graph where each node is 

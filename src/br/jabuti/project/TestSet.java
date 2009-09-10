@@ -23,7 +23,7 @@ import java.util.*;
 import java.io.*;
 
 import br.jabuti.mobility.*;
-import br.jabuti.probe.*;
+import br.jabuti.probe.desktop.*;
 import br.jabuti.util.*;
 
 import br.jabuti.criteria.*;

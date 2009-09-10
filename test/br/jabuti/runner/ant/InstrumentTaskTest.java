@@ -7,6 +7,7 @@ import org.apache.tools.ant.BuildFileTest;
 import org.apache.tools.ant.Project;
 
 import br.jabuti.TestConfiguration;
+import br.jabuti.ui.ant.InstrumentTask;
 
 public class InstrumentTaskTest extends BuildFileTest
 {

@@ -10,6 +10,11 @@ import org.aspectj.apache.bcel.generic.MethodGen;
 import org.junit.Before;
 
 import br.jabuti.criteria.AbstractCriterion;
+import br.jabuti.graph.datastructure.defuse.CFG;
+import br.jabuti.graph.datastructure.defuse.DominatorTree;
+import br.jabuti.graph.datastructure.defuse.DominatorTreeNode;
+import br.jabuti.graph.datastructure.defuse.RRDominator;
+import br.jabuti.graph.datastructure.defuse.RRLiveDefs;
 
 public class DominatorTreeTest
 {
