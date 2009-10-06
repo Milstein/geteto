@@ -10,7 +10,7 @@ import org.aspectj.apache.bcel.generic.ClassGen;
 import org.aspectj.apache.bcel.generic.ConstantPoolGen;
 import org.aspectj.apache.bcel.generic.MethodGen;
 
-import br.jabuti.graph.datastructure.defuse.CFG;
+import br.jabuti.graph.datastructure.dug.CFG;
 import br.jabuti.lookup.Program;
 import br.jabuti.lookup.RClass;
 import br.jabuti.lookup.RClassCode;

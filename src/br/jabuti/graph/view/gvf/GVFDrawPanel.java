@@ -42,7 +42,7 @@ import java.awt.font.*;
 import org.aspectj.apache.bcel.classfile.*;
 import org.aspectj.apache.bcel.generic.*;
 
-import br.jabuti.graph.datastructure.defuse.*;
+import br.jabuti.graph.datastructure.dug.*;
 
 
 class GVFDrawPanel extends JPanel implements MouseMotionListener {

@@ -19,7 +19,7 @@
 
 package br.jabuti.criteria;
 
-import br.jabuti.graph.datastructure.defuse.*;
+import br.jabuti.graph.datastructure.dug.*;
 
 import java.util.*;
 

@@ -22,7 +22,7 @@ package br.jabuti.ui.gui;
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 
-import br.jabuti.graph.datastructure.defuse.*;
+import br.jabuti.graph.datastructure.dug.*;
 import br.jabuti.graph.view.gvf.*;
 import br.jabuti.lookup.*;
 import br.jabuti.metrics.Metrics;

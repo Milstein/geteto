@@ -17,44 +17,21 @@
 */
 
 
-package br.jabuti.graph.datastructure.defuse;
+package br.jabuti.graph.datastructure.dug;
 
 
 import java.util.*;
 
 
-public class DominatorTreeNode extends ReduceNode {
+public interface RoundRobinExecutor {
 	
-    /**
-	 * Added to jdk1.5.0_04 compiler
-	 */
-	private static final long serialVersionUID = -4963913295760006124L;
-	boolean covered;
-	
-    /** Creates an empty node */
-    public DominatorTreeNode() {
-        super();
-        covered = false;
-    }
-	
-    /** Creates from existing node */
-    public DominatorTreeNode(GraphNode x) {
-        super(x);
-        covered = false;
-    }
-	
-    /** Creates from an existing set of nodes */
-    public DominatorTreeNode(Collection x) {
-        super(x);
-        covered = false;
-    }
+    public Object calcNewSet(GraphNode theNode, 
+            Vector primary, 
+            Vector secondary);
 
-    public void setCovered(boolean b) {
-        covered = b;
-    }
+    public boolean compareEQ(GraphNode theNode, Object theNewSet);
 
-    public boolean getCovered() {
-        return covered;
-    }
+    public void setNewSet(GraphNode theNode, Object theNewSet);	
+	
+    public void init(GraphNode theNode, Vector primary, Vector secondary);
 }
-

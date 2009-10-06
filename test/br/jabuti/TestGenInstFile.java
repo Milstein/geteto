@@ -13,7 +13,7 @@ import org.aspectj.apache.bcel.classfile.JavaClass;
 import org.aspectj.apache.bcel.util.ClassPath;
 
 
-import br.jabuti.graph.datastructure.defuse.CFG;
+import br.jabuti.graph.datastructure.dug.CFG;
 import br.jabuti.lookup.Program;
 import br.jabuti.probe.desktop.desktop.DefaultProbeInsert;
 

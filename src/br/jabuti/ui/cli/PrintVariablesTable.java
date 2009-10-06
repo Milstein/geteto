@@ -27,9 +27,9 @@ import java.util.Hashtable;
 
 import org.aspectj.apache.bcel.generic.LocalVariableGen;
 
-import br.jabuti.graph.datastructure.defuse.CFG;
-import br.jabuti.graph.datastructure.defuse.CFGNode;
-import br.jabuti.graph.datastructure.defuse.GraphNode;
+import br.jabuti.graph.datastructure.dug.CFG;
+import br.jabuti.graph.datastructure.dug.CFGNode;
+import br.jabuti.graph.datastructure.dug.GraphNode;
 import br.jabuti.project.ClassFile;
 import br.jabuti.project.ClassMethod;
 import br.jabuti.project.JabutiProject;

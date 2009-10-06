@@ -21,7 +21,7 @@ package br.jabuti.project;
 
 import java.util.*;
 
-import br.jabuti.graph.datastructure.defuse.*;
+import br.jabuti.graph.datastructure.dug.*;
 import br.jabuti.util.*;
 import org.aspectj.apache.bcel.generic.*;
 import org.aspectj.apache.bcel.classfile.*;

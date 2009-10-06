@@ -37,7 +37,7 @@ import java.awt.geom.*;
 import br.jabuti.project.*;
 import br.jabuti.util.*;
 
-import br.jabuti.graph.datastructure.defuse.*;
+import br.jabuti.graph.datastructure.dug.*;
 
 
 public class GVFExitNode extends GVFNode {

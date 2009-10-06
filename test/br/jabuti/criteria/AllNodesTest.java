@@ -12,7 +12,7 @@ import org.aspectj.apache.bcel.generic.ConstantPoolGen;
 import org.aspectj.apache.bcel.generic.MethodGen;
 import org.junit.Before;
 
-import br.jabuti.graph.datastructure.defuse.CFG;
+import br.jabuti.graph.datastructure.dug.CFG;
 
 public class AllNodesTest
 {

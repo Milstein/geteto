@@ -24,7 +24,7 @@ import org.aspectj.apache.bcel.generic.*;
 import br.jabuti.util.*;
 import java.util.*;
 
-import br.jabuti.graph.datastructure.defuse.*;
+import br.jabuti.graph.datastructure.dug.*;
 
 
 /** This class represents a node of a {@link InstructionGraph} that

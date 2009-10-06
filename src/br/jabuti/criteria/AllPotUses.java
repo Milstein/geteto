@@ -20,7 +20,7 @@
 package br.jabuti.criteria;
 
 
-import br.jabuti.graph.datastructure.defuse.*;
+import br.jabuti.graph.datastructure.dug.*;
 
 import java.util.*;
 
@@ -63,7 +63,7 @@ public class AllPotUses extends AbstractCriterion {
         	// Pra cada noh pega o conjunto de variaveis vivas
         	// e o no onde foi definida
             CFGNode g = (CFGNode) graph.elementAt(i);
-            boolean isSec = secNodes.required.containsKey(g.getLabel());
+            boolean isSec = secNodes.required.containsKey(new Node(g.getLabel()));
             
             HashSet h1 = (HashSet) g.getUserData(RRLiveDefs.defaultLabel);
 

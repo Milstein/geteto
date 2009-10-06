@@ -20,7 +20,7 @@
 package br.jabuti.probe.desktop;
 
 
-import br.jabuti.graph.datastructure.defuse.*;
+import br.jabuti.graph.datastructure.dug.*;
 import br.jabuti.verifier.*;
 import org.aspectj.apache.bcel.classfile.*;
 import org.aspectj.apache.bcel.generic.*;
@@ -98,11 +98,13 @@ public class DefaultProbeInsert {
             if ( (!achou) && inst.contains(userClass[i]) && ! jv.isInterface()) 
             {
             	// chama a rotina que faz a instrumentacao
-		        
-                jv = doDefaultInstrument(jv, userClass[i], typeOfCFG);
-                
+		 try {
+	                jv = doDefaultInstrument(jv, userClass[i], typeOfCFG);
+			hs.put(r.getName(), jv);
+		} catch (Exception e) {
+			hs.put(userClass[i], jv);
+		}
                 inst.remove(userClass[i]);
-        		hs.put(r.getName(), jv);
             } else { // coloca o codigo sem instrumentar
                 hs.put(userClass[i], jv);
             }
@@ -260,10 +262,15 @@ public class DefaultProbeInsert {
                             jahFoi.add(ih);
                             gi.insertBefore(ih, s);
                         }
+			 int stackSize = mg.getMaxStack();
+	                // Tentativa de contornar os erros do BCEL que n<E3>o altera corretamente o tamanho da pilha
+        	        if ( stackSize < 6 ) {
+                	       mg.setMaxStack(stackSize + 6);
                     }
                 }
                 methods[i] = mg.getMethod();
             } catch (ParseException e) { 
+		System.out.println(className);
                 System.err.println("Parser error " + e.getMessage());
             }
         }

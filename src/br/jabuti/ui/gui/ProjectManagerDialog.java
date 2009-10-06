@@ -27,7 +27,7 @@ import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.tree.*;
 
-import br.jabuti.graph.datastructure.defuse.CFG;
+import br.jabuti.graph.datastructure.dug.CFG;
 import br.jabuti.lookup.*;
 import br.jabuti.project.*;
 

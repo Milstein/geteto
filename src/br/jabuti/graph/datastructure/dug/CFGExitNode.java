@@ -17,21 +17,34 @@
 */
 
 
-package br.jabuti.graph.datastructure.defuse;
+package br.jabuti.graph.datastructure.dug;
 
 
-import java.util.*;
 
 
-public interface RoundRobinExecutor {
+public class CFGExitNode extends CFGNode {
+	/**
+	 * Added to jdk1.5.0_04 compiler
+	 */
+	private static final long serialVersionUID = -2475415871430218933L;
 	
-    public Object calcNewSet(GraphNode theNode, 
-            Vector primary, 
-            Vector secondary);
-
-    public boolean compareEQ(GraphNode theNode, Object theNewSet);
-
-    public void setNewSet(GraphNode theNode, Object theNewSet);	
+	/** The class where the called method is */
+    public String classe[],
+            
+            /** The method name */
+            name,
+            
+            /** The parameter types */
+            param[];	
 	
-    public void init(GraphNode theNode, Vector primary, Vector secondary);
-}
+    public CFGExitNode() {
+        super();
+    }
+	
+    public String toString() {
+        String str = "node " + number + " dummy exit node";
+
+        return str;
+    }
+}		
+

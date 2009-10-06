@@ -17,11 +17,17 @@
 */
 
 
-package br.jabuti.probe.desktop;
+package br.jabuti.probe;
 
 
-import java.io.*;
-import java.util.*;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.ListIterator;
 
 
 
@@ -35,16 +41,30 @@ public class DefaultProber  {
     static public final String delimiter = "**********************";
     static public final String READER_CLASS = "class br.jabuti.probe.DefaultTraceReader";
     static protected Hashtable threadsAndProbs = new Hashtable();
+    
+ // usado para modo batch
+    static protected Hashtable<String,PrintStream> classesAndFiles = new Hashtable<String,PrintStream>(); 
     static private PrintStream fp;
     static private boolean stdout = true, habilitado = false;
     static private String tcName = "";
+    static private String batchModePrefix = "";
+    static private boolean isBatch = false;
 	
     static {
         // Gets the name of the file where the execution will be dumped
         fp = null;
         String fileProber = System.getProperty("DEFAULT_PROBER");
-//		System.out.println("Properties: " + fileProber);
-
+        String fileBatch = System.getProperty("BATCH_MODE");
+        
+        if (fileBatch != null)
+        {
+        	batchModePrefix = new String(fileBatch);
+        	isBatch = true;
+        	fp = System.out; // NAO SERA USADO MAS SINALIZA QUE O DUMP DEVE SER GRAVADO
+        	stdout = false;
+        	startTrace();
+        }
+        else
         if (fileProber != null) {
             if (fileProber.length() == 0) {
                 fp = System.out;
@@ -98,33 +118,52 @@ public class DefaultProber  {
 	static synchronized public void stopTrace()
 	{
 		habilitado = false;
-		dump();
+		try {
+			dump();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	
     /** This method stores (for example, sending to a file) the 
-     * registered execution up to that point */
-    static synchronized public void dump() {
+     * registered execution up to that point 
+     * @throws IOException */
+    static synchronized public void dump() throws IOException {
         if (fp == null) {
             return;
         }
         Enumeration en = threadsAndProbs.keys();
         if ( ! en.hasMoreElements() ) // se lista esta vazia...
         	return;
-
         while (en.hasMoreElements()) {
             ProbedNode tr = (ProbedNode) en.nextElement();
-
-            dumpNodes(tr, (ArrayList) threadsAndProbs.get(tr));
+            if (! isBatch) // nao eh modo batch, operacao normal
+            	dumpNodes(fp, tr, (ArrayList) threadsAndProbs.get(tr));
+            else
+            	dumpBatchNodes(tr, (ArrayList) threadsAndProbs.get(tr));
         }
-        // write a delimiter 
-        fp.println(delimiter);
-        fp.flush(); // Inseri um flush para descarregar o buffer.
-		
+        if ( ! isBatch )
+        {
+            // write a delimiter 
+            fp.println(delimiter);
+            fp.flush(); // Inseri um flush para descarregar o buffer.
+        }
+        else 
+        {   // precisa escrever delimitador para cada arquivo criado
+        	for (String s : classesAndFiles.keySet() )
+        	{
+        		PrintStream ps = classesAndFiles.get(s);
+                // write a delimiter 
+                ps.println(delimiter);
+                ps.flush(); // Inseri um flush para descarregar o buffer.
+        	}
+        }
+        
         threadsAndProbs = new Hashtable();
     }
 
-    /** This method registers the execution of a given node */
+	/** This method registers the execution of a given node */
     static synchronized public void probe(Object o, 
     							String clazz, 
     							int metodo, 
@@ -156,7 +195,7 @@ public class DefaultProber  {
         probe(null, clazz, metodo, nest, n);
     }
 	
-    synchronized static void dumpNodes(ProbedNode pbdNode, ArrayList probedNodes) {
+    synchronized static void dumpNodes(PrintStream fp, ProbedNode pbdNode, ArrayList probedNodes) {
         if (stdout) // dump in a text mode.
         {
             fp.println("Number of probe sequences: " + threadsAndProbs.size());
@@ -191,6 +230,22 @@ public class DefaultProber  {
             } catch (Exception e) {}
         }
     }
+
+
+    private static void dumpBatchNodes(ProbedNode tr, ArrayList arrayList) throws IOException {
+    	String className = tr.clazz;
+    	PrintStream fp = (PrintStream) classesAndFiles.get(className);
+    	if (fp == null)
+    	{
+            RandomAccessFile raf = new RandomAccessFile(batchModePrefix+className+".trc", "rw");
+            raf.seek(raf.length());
+            FileOutputStream fos = new FileOutputStream(raf.getFD());
+            fp = new PrintStream(fos);
+            classesAndFiles.put(className, fp);
+    	}
+    	dumpNodes(fp, tr, arrayList);
+	}
+
     
     static private long nestlevel = 0;
     
@@ -204,6 +259,10 @@ public class DefaultProber  {
 
 class DefaultProberHook extends Thread {
     public void run() {
-        DefaultProber.dump();
+        try {
+			DefaultProber.dump();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
 }

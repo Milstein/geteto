@@ -19,10 +19,10 @@ import org.junit.Test;
 
 import br.jabuti.TestConfiguration;
 import br.jabuti.criteria.AbstractCriterion;
-import br.jabuti.graph.datastructure.defuse.CFG;
-import br.jabuti.graph.datastructure.defuse.CFGNode;
-import br.jabuti.graph.datastructure.defuse.RRDominator;
-import br.jabuti.graph.datastructure.defuse.RRLiveDefs;
+import br.jabuti.graph.datastructure.dug.CFG;
+import br.jabuti.graph.datastructure.dug.CFGNode;
+import br.jabuti.graph.datastructure.dug.RRDominator;
+import br.jabuti.graph.datastructure.dug.RRLiveDefs;
 import br.jabuti.util.Debug;
 import br.jabuti.verifier.InvalidInstructionException;
 import br.jabuti.verifier.InvalidStackArgument;

@@ -32,7 +32,7 @@ import java.util.StringTokenizer;
 
 import br.jabuti.criteria.AbstractCriterion;
 import br.jabuti.criteria.Criterion;
-import br.jabuti.graph.datastructure.defuse.CFG;
+import br.jabuti.graph.datastructure.dug.CFG;
 import br.jabuti.lookup.Program;
 import br.jabuti.util.ToolConstants;
 

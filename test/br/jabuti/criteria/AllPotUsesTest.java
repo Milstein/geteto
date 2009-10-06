@@ -3,7 +3,7 @@ package br.jabuti.criteria;
 
 import org.junit.Before;
 
-import br.jabuti.graph.datastructure.defuse.CFG;
+import br.jabuti.graph.datastructure.dug.CFG;
 
 public class AllPotUsesTest
 {

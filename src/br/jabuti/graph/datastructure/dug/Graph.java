@@ -18,7 +18,7 @@
 
 
 
-package br.jabuti.graph.datastructure.defuse;
+package br.jabuti.graph.datastructure.dug;
 
 
 import java.util.*;

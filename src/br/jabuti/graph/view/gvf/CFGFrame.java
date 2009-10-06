@@ -37,7 +37,7 @@ import br.jabuti.project.*;
 import br.jabuti.ui.gui.*;
 import br.jabuti.util.*;
 
-import br.jabuti.graph.datastructure.defuse.*;
+import br.jabuti.graph.datastructure.dug.*;
 
 
 public class CFGFrame extends JFrame implements ItemListener {

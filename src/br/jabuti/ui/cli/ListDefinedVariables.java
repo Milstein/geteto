@@ -26,7 +26,7 @@ import java.io.*;
 import java.util.*;
 
 import br.jabuti.util.*;
-import br.jabuti.graph.datastructure.defuse.*;
+import br.jabuti.graph.datastructure.dug.*;
 import br.jabuti.lookup.*;
 import br.jabuti.project.*;
 

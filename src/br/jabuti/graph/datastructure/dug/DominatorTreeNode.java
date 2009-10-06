@@ -17,23 +17,44 @@
 */
 
 
-package br.jabuti.graph.datastructure.defuse;
+package br.jabuti.graph.datastructure.dug;
 
 
-import br.jabuti.verifier.*;
-import org.aspectj.apache.bcel.generic.*;
+import java.util.*;
 
 
-public class CFGSuperNode extends CFGCallNode {
-
-	/**
+public class DominatorTreeNode extends ReduceNode {
+	
+    /**
 	 * Added to jdk1.5.0_04 compiler
 	 */
-	private static final long serialVersionUID = 9190824248421013922L;
-
-	public CFGSuperNode(CFGNode x, InstructionNode ins, ConstantPoolGen cp) {
-        super(x, ins, cp);
+	private static final long serialVersionUID = -4963913295760006124L;
+	boolean covered;
+	
+    /** Creates an empty node */
+    public DominatorTreeNode() {
+        super();
+        covered = false;
     }
 	
-}		
+    /** Creates from existing node */
+    public DominatorTreeNode(GraphNode x) {
+        super(x);
+        covered = false;
+    }
+	
+    /** Creates from an existing set of nodes */
+    public DominatorTreeNode(Collection x) {
+        super(x);
+        covered = false;
+    }
+
+    public void setCovered(boolean b) {
+        covered = b;
+    }
+
+    public boolean getCovered() {
+        return covered;
+    }
+}
 

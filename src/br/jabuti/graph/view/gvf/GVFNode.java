@@ -39,7 +39,7 @@ import br.jabuti.util.*;
 
 import org.aspectj.apache.bcel.generic.*;
 
-import br.jabuti.graph.datastructure.defuse.*;
+import br.jabuti.graph.datastructure.dug.*;
 
 
 public class GVFNode implements GVFDisplayable {

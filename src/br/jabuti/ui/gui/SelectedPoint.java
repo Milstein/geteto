@@ -21,7 +21,7 @@ package br.jabuti.ui.gui;
 
 import java.util.*;
 
-import br.jabuti.graph.datastructure.defuse.*;
+import br.jabuti.graph.datastructure.dug.*;
 
 /**
  * This class store the global about a given point
