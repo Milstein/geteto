@@ -26,7 +26,6 @@ import java.net.*;
 import br.jabuti.probe.desktop.*;
 
 import mucode.*;
-import br.jabuti.mobility.mobile.agent.*;
 
 
 /** <p>This class implements a class to create 
