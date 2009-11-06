@@ -26,7 +26,7 @@ import org.aspectj.apache.bcel.generic.InstructionHandle;
 import org.aspectj.apache.bcel.generic.InstructionList;
 import org.aspectj.apache.bcel.generic.MethodGen;
 
-import br.jabuti.instrumenter.ASMInstrumenter;
+import br.jabuti.instrumenter.bytecode.bcel.ASMInstrumenter;
 import br.jabuti.util.ToolConstants;
 
 

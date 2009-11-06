@@ -172,20 +172,6 @@ public class JaBUTiService1_0 {
 		WsProject control = new WsProject();
 		return control.getRequiredElementsByCriterion(projectId, criterion);
 	}
-	/**
-	 * Description of the method getGraph.
-	 *
-	 * @param projectId
-	 * @param classes
-	 * @return graphImages
-	 */
-	public GraphDetails[] getGraph(String projectId, String[] classes) 
-		throws InvalidProjectIdFault, OperationSequenceFault, ClassNotFoundFault, InvalidExpressionFault
-	{
-		//(to do)
-		
-		return null;
-	}
 
 	/**
 	 * Description of the method addTestCases.

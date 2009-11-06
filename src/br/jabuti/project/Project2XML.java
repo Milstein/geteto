@@ -79,13 +79,6 @@ public class Project2XML {
     	emit( xmlOut.toString() );
 
 
-        // Saving the BASE_CLASS and its attributes
-        indentLevel++;
-        xmlOut = new StringBuffer( "<" + XML2Project.BASE_CLASS );
-    	xmlOut.append( " name=\"" + prj.getMain() + "\"/>" );
-    	nl();
-    	emit( xmlOut.toString() );
-
         // Saving the CLASSPATH and its attributes
         xmlOut = new StringBuffer( "<" + XML2Project.CLASSPATH );
         

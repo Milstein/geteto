@@ -633,8 +633,6 @@ class ProjectManagerDialog extends JDialog {
         String s = prj.getClasspath();
 
         classpathTextArea.setText(s);
-        
-        s = prj.getMain();
         baseClassTextField.setText(s);
         
         cfgOptionCheckBox.setSelected( (prj.getCFGOption() == CFG.NONE)? false : true );
@@ -752,7 +750,6 @@ class ProjectManagerDialog extends JDialog {
     }
 
     void baseClassTextField_focusLost(FocusEvent e) {
-        prj.setMain(baseClassTextField.getText().trim());
         loadProjExec( prj );
     }
 

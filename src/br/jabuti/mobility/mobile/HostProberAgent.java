@@ -17,14 +17,13 @@
 */
 
 
-package br.jabuti.mobility.mobile.agent;
+package br.jabuti.mobility.mobile;
 
 import java.util.*;
 import java.io.*;
 import mucode.abstractions.*;
 import mucode.*;
 import br.jabuti.mobility.HostProberServer;
-import br.jabuti.mobility.mobile.*;
 
 public class HostProberAgent extends MuAgent
 {

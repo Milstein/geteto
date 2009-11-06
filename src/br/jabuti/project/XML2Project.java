@@ -600,7 +600,7 @@ public class XML2Project extends DefaultHandler {
 
 			// Creating the JaBUTi's project object
 			try {
-				jbtProject = new JabutiProject(baseClass, classPath);
+				jbtProject = new JabutiProject(classPath);
 			} catch (Exception e) {
 				throw new SAXException("Error creating a project from "
 						+ urlString);

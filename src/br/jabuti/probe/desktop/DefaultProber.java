@@ -17,7 +17,7 @@
 */
 
 
-package br.jabuti.probe;
+package br.jabuti.probe.desktop;
 
 
 import java.io.FileOutputStream;

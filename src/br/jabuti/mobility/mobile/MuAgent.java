@@ -19,7 +19,7 @@
 
 
 
-package br.jabuti.mobility.abstractions;
+package br.jabuti.mobility.mobile;
 
 
 import mucode.*;

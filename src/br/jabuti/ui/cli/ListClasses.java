@@ -81,7 +81,7 @@ public class ListClasses {
             
             String classPath = System.getProperty("java.class.path");
 
-            Program prog = new Program(baseClass, true, null, classPath);
+            Program prog = new Program(true, null, classPath);
             System.out.println("\nCode classes");
             String[] ccl = prog.getCodeClasses();
             for (int j = 0; j < ccl.length; j++)

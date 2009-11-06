@@ -16,9 +16,8 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-package br.jabuti.probe.mobiledevice.mobile.agent;
+package br.jabuti.probe.mobiledevice.mobile;
 
-import br.jabuti.probe.mobiledevice.mobile.HostProber;
 import br.jabuti.probe.mobiledevice.server.MuServer;
 
 
@@ -27,7 +26,7 @@ import br.jabuti.probe.mobiledevice.server.MuServer;
 *	It replaces that class for code instrumentation proposes. The comments
 *	in this doc. reproduces the documentatio of that class
 */
-public abstract class MuAgent extends br.jabuti.probe.mobiledevice.server.abstractions.MuAgent 
+public abstract class MuAgent extends br.jabuti.probe.mobiledevice.server.MuAgent 
 {
   protected String hostDestino, projectName;
   protected int delay;

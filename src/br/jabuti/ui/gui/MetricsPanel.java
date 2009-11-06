@@ -238,7 +238,7 @@ public class MetricsPanel extends JScrollPane {
 
         try {
         	//Program p = new Program(args[0], true, null, args[1]);
-        	Program p = new Program("br.jabuti.metrics.Metrics", true, null, ".");
+        	Program p = new Program(true, null, ".");
         	//String[] classes = p.getCodeClasses();
         	String[] classes = {"br.jabuti.metrics.Metrics"};
             

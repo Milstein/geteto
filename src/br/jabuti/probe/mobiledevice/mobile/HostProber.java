@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.Hashtable;
 
 import br.jabuti.probe.desktop.ProbedNode;
-import br.jabuti.probe.mobiledevice.mobile.agent.HostProberAgent;
 import br.jabuti.probe.mobiledevice.server.MuServer;
 
 

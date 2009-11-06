@@ -141,11 +141,7 @@ public class XMLGen {
         project.setAttribute("mobility", new Boolean(prj.isMobility() ).toString());
         project.setAttribute("cfg_option",new Integer(prj.getCFGOption()).toString());
         
-//		baseclass element and attributes
-        Element base = xmlDoc.createElement("base_class");
-        base.setAttribute("name", prj.getMain());
-        project.appendChild(base);
-        
+       
 //      classpath element and attributes
         Element classpath = xmlDoc.createElement("classpath");
         classpath.setAttribute("path", prj.getClasspath() );

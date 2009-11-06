@@ -1,11 +1,10 @@
-package br.jabuti.probe.mobiledevice.server.util;
+package br.jabuti.probe.mobiledevice.server;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.IllegalArgumentException;
 import java.util.Vector;
 
-import br.jabuti.probe.mobiledevice.server.MuServer;
 
 public class Launcher
 {

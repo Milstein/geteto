@@ -1,4 +1,4 @@
-package br.jabuti.probe.mobiledevice.server.util;
+package br.jabuti.probe.mobiledevice.server;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInput;
@@ -9,9 +9,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Vector;
 
-import br.jabuti.probe.mobiledevice.server.ClassSpace;
-import br.jabuti.probe.mobiledevice.server.MuClassLoader;
-import br.jabuti.probe.mobiledevice.server.MuServer;
 
 public class ClassInspector
 {

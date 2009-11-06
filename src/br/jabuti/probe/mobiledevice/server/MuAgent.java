@@ -1,13 +1,8 @@
-package br.jabuti.probe.mobiledevice.server.abstractions;
+package br.jabuti.probe.mobiledevice.server;
 
 import java.io.IOException;
 import java.io.Serializable;
 
-import br.jabuti.probe.mobiledevice.server.Group;
-import br.jabuti.probe.mobiledevice.server.GroupHandler;
-import br.jabuti.probe.mobiledevice.server.MuCodeException;
-import br.jabuti.probe.mobiledevice.server.MuServer;
-import br.jabuti.probe.mobiledevice.server.util.ClassInspector;
 
 public  abstract  class  MuAgent extends  Thread  implements  GroupHandler , Serializable
 

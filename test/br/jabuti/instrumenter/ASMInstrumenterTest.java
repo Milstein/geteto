@@ -10,6 +10,9 @@ import org.aspectj.apache.bcel.generic.ConstantPoolGen;
 import org.aspectj.apache.bcel.generic.MethodGen;
 import org.junit.Before;
 
+import br.jabuti.instrumenter.bytecode.bcel.ASMInstrumenter;
+import br.jabuti.instrumenter.bytecode.bcel.ParseException;
+
 public class ASMInstrumenterTest
 {
 

@@ -28,7 +28,7 @@ import org.aspectj.apache.bcel.generic.*;
 import java.util.*;
 
 import br.jabuti.lookup.*;
-import br.jabuti.mobility.abstractions.MuAgent;
+import br.jabuti.mobility.mobile.MuAgent;
 
 
 /** This class is designed to insert probes on each 

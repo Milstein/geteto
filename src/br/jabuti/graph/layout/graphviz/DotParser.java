@@ -4,101 +4,107 @@ package br.jabuti.graph.layout.graphviz;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.io.*;
-
-import br.jabuti.graph.view.gvf.BoundingBox;
-import br.jabuti.graph.view.gvf.GVFLink;
 import br.jabuti.graph.view.gvf.GVFNode;
+import br.jabuti.graph.view.gvf.GVFLink;
+import br.jabuti.graph.view.gvf.BoundingBox;
 import br.jabuti.graph.view.gvf.Position;
 
 public class DotParser implements DotParserConstants {
-        private Vector vnode;
+                private Vector vnode;
 
-        private Vector vlink;
+                private Vector vlink;
 
-        private double graphHeight = 0;
+                private double graphHeight = 0;
 
-        private double graphWidth = 0;
+                private double graphWidth = 0;
 
-    public DotParser(Vector v, Vector v2, InputStream is)
-    {
-        this(is);
-        if (v == null || v2 == null) {
-                throw new IllegalArgumentException("No nodes or links have been supplied as argument");
-        }
-
-        vnode = v;
-        vlink = v2;
-    }
-
-    private GVFNode findLabel(String x)
-    {
-        if (vnode == null) {
-                return null;
+                public DotParser(Vector v, Vector v2, InputStream is)
+                {
+                                this (is);
+                                if (v == null || v2 == null)
+                                {
+                                                throw new IllegalArgumentException("No nodes or links have been supplied as argument");
+                                }
+                                vnode = v;
+                                vlink = v2;
                 }
 
-        Iterator i = vnode.iterator();
-        while (i.hasNext()) {
-                GVFNode ret = (GVFNode) i.next();;
-                if (x.equals(ret.getSource())) {
-                        return ret;
+                private GVFNode findLabel(String x)
+                {
+                                if (vnode == null)
+                                {
+                                                return null;
+                                }
+                                Iterator i = vnode.iterator();
+                                while (i.hasNext())
+                                {
+                                                GVFNode ret = (GVFNode) i.next();
+                                                ;
+                                                if (x.equals(ret.getSource()))
+                                                {
+                                                                return ret;
+                                                }
+                                }
+                                return null;
                 }
-        }
 
-        return null;
-    }
-
-    private GVFLink findLink(String orig, String dest)
-    {
-        if (vlink == null) {
-                return null;
-        }
-
-        Iterator i = vlink.iterator();
-        while (i.hasNext()) {
-                GVFLink ret = (GVFLink) i.next();
-                if (orig.equals(ret.getSourceNode().getSource()) && dest.equals(ret.getDestinationNode().getSource())) {
-                        return ret;
+                private GVFLink findLink(String orig, String dest)
+                {
+                                if (vlink == null)
+                                {
+                                                return null;
+                                }
+                                Iterator i = vlink.iterator();
+                                while (i.hasNext())
+                                {
+                                                GVFLink ret = (GVFLink) i.next();
+                                                if (orig.equals(ret.getSourceNode().getSource()) && dest.equals(ret.getDestinationNode().getSource()))
+                                                {
+                                                                return ret;
+                                                }
+                                }
+                                return null;
                 }
-        }
 
-        return null;
-    }
-
-    private void setPositionPreCheck()
-    {
-        if (graphHeight == 0 || graphWidth == 0) {
-                throw new IllegalArgumentException("The graph height and width must be set before adding nodes or links");
-        }
-    }
-
-    private void setPosition(String label, Position pos)
-    {
-        GVFNode node = findLabel(label);
-        if (node != null) {
-                setPositionPreCheck();
-                node.moveTo((int) pos.getX(), (int) (graphHeight - pos.getY()));
-        }
-    }
-
-    private void setLinkPosition(String l1, String l2, List<Position> pos)
-    {
-        GVFLink link = findLink(l1, l2);
-        if (link == null) {
-                return;
+                private void setPositionPreCheck()
+                {
+                                if (graphHeight == 0 || graphWidth == 0)
+                                {
+                                                throw new IllegalArgumentException("The graph height and width must be set before adding nodes or links");
+                                }
                 }
-                Iterator<Position> i = pos.iterator();
-                while (i.hasNext()) {
-                setPositionPreCheck();
-                        Position p = i.next();
-                link.addPoint((int) p.getX(), (int) (graphHeight - p.getY()));
-        }
-    }
 
-        private void setBoundingBox(BoundingBox bb)
-        {
-                graphHeight = (int) bb.getHeight();
-                graphWidth = (int) bb.getWidth();
-        }
+                private void setPosition(String label, Position pos)
+                {
+                                GVFNode node = findLabel(label);
+                                if (node != null)
+                                {
+                                                setPositionPreCheck();
+                                                node.moveTo((int) pos.getX(), (int) (graphHeight - pos.getY()));
+                                }
+                }
+
+                private void setLinkPosition(String l1, String l2, List < Position > pos)
+                {
+                                GVFLink link = findLink(l1, l2);
+                                if (link == null)
+                                {
+                                                return;
+                                }
+                                Iterator < Position > i = pos.iterator();
+                                while (i.hasNext())
+                                {
+                                                setPositionPreCheck();
+                                                Position p = i.next();
+                                                link.addPoint((int) p.getX(), (int) (graphHeight - p.getY()));
+                                }
+                }
+
+                private void setBoundingBox(BoundingBox bb)
+                {
+                                graphHeight = (int) bb.getHeight();
+                                graphWidth = (int) bb.getWidth();
+                }
 
   final public void parse() throws ParseException {
     jj_consume_token(DIGRAPH);
@@ -174,13 +180,13 @@ public class DotParser implements DotParserConstants {
   }
 
   final public void graphDef() throws ParseException {
-        BoundingBox bb = null;
+                BoundingBox bb = null;
     jj_consume_token(GRAPH);
     jj_consume_token(LBRACKET);
     switch (jj_nt.kind) {
     case BBOX:
       bb = boundingBox();
-                                        setBoundingBox(bb);
+                                                                setBoundingBox(bb);
       break;
     default:
       ;
@@ -198,7 +204,7 @@ public class DotParser implements DotParserConstants {
       switch (jj_nt.kind) {
       case BBOX:
         bb = boundingBox();
-                                                setBoundingBox(bb);
+                                                                                setBoundingBox(bb);
         break;
       default:
         ;
@@ -208,13 +214,13 @@ public class DotParser implements DotParserConstants {
   }
 
   final public void nodeDef() throws ParseException {
-        Position p = null;
-        String l = null;
-        Token t = null;
+                Position p = null;
+                String l = null;
+                Token t = null;
     switch (jj_nt.kind) {
     case NODEIDENT:
       t = jj_consume_token(NODEIDENT);
-                     l = t.image;
+                                                l = t.image;
       break;
     default:
       ;
@@ -228,7 +234,7 @@ public class DotParser implements DotParserConstants {
       switch (jj_nt.kind) {
       case POS:
         p = nodePosition();
-                                                                                  setPosition(l, p);
+                                                                setPosition(l, p);
         break;
       default:
         ;
@@ -252,7 +258,7 @@ public class DotParser implements DotParserConstants {
         switch (jj_nt.kind) {
         case POS:
           p = nodePosition();
-                                                                                                                                                    setPosition(l, p);
+                                                                                setPosition(l, p);
           break;
         default:
           ;
@@ -262,70 +268,69 @@ public class DotParser implements DotParserConstants {
     jj_consume_token(RBRACKET);
   }
 
-  final public List<Position> linkPosition() throws ParseException {
-        Token t = null;
-        List<Position> positions = new ArrayList<Position>();
+  final public List < Position > linkPosition() throws ParseException {
+                Token t = null;
+                List < Position > positions = new ArrayList < Position > ();
     jj_consume_token(POS);
     jj_consume_token(EQUALS);
     if (jj_2_2(2)) {
       t = jj_consume_token(STRING);
-                String lineBreak = Matcher.quoteReplacement("\u005cn");
-                String carriageReturn = Matcher.quoteReplacement("\u005cr");
-                String endLineSlash = Matcher.quoteReplacement("\u005c\u005c");
-                String quote = Matcher.quoteReplacement("\u005c"");
-
-                String token = t.image.replaceAll(lineBreak, "").replaceAll(carriageReturn, "").replaceAll(endLineSlash, "").replaceAll(quote, "").substring(2);
-                StringTokenizer st = new StringTokenizer(token, " ");
-                while (st.hasMoreTokens()) {
-                        String s = st.nextToken();
-                        String[] sps = s.split(",");
-                        Position p = new Position(Double.valueOf(sps[0]), Double.valueOf(sps[1]));
-                        positions.add(p);
-                }
+                                                String lineBreak = Matcher.quoteReplacement("\u005cn");
+                                                String carriageReturn = Matcher.quoteReplacement("\u005cr");
+                                                String endLineSlash = Matcher.quoteReplacement("\u005c\u005c");
+                                                String quote = Matcher.quoteReplacement("\u005c"");
+                                                String token = t.image.replaceAll(lineBreak, "").replaceAll(carriageReturn, "").replaceAll(endLineSlash, "").replaceAll(quote, "").substring(2);
+                                                StringTokenizer st = new StringTokenizer(token, " ");
+                                                while (st.hasMoreTokens())
+                                                {
+                                                                String s = st.nextToken();
+                                                                String [ ] sps = s.split(",");
+                                                                Position p = new Position(Double.valueOf(sps [ 0 ]), Double.valueOf(sps [ 1 ]));
+                                                                positions.add(p);
+                                                }
     } else {
       ;
     }
-                {if (true) return positions;}
+                                {if (true) return positions;}
     throw new Error("Missing return statement in function");
   }
 
   final public Position nodePosition() throws ParseException {
-        Token t = null;
+                Token t = null;
     jj_consume_token(POS);
     jj_consume_token(EQUALS);
     t = jj_consume_token(STRING);
-                String[] sps = t.image.replaceAll("\u005c"", "").split(",");
-                Position p = new Position(Double.valueOf(sps[0]), Double.valueOf(sps[1]));
-                {if (true) return p;}
+                                String [ ] sps = t.image.replaceAll("\u005c"", "").split(",");
+                                Position p = new Position(Double.valueOf(sps [ 0 ]), Double.valueOf(sps [ 1 ]));
+                                {if (true) return p;}
     throw new Error("Missing return statement in function");
   }
 
   final public BoundingBox boundingBox() throws ParseException {
-        Token t = null;
+                Token t = null;
     jj_consume_token(BBOX);
     jj_consume_token(EQUALS);
     t = jj_consume_token(STRING);
-                BoundingBox box = null;
-                String[] values = t.image.replaceAll("\u005c"", "").split(",");
-                double x = Double.valueOf(values[0]);
-                double y = Double.valueOf(values[1]);
-                double width = Double.valueOf(values[2]);
-                double height = Double.valueOf(values[3]);
-
-                {if (true) return new BoundingBox(x, y, width, height);}
+                                BoundingBox box = null;
+                                String [ ] values = t.image.replaceAll("\u005c"", "").split(",");
+                                double x = Double.valueOf(values [ 0 ]);
+                                double y = Double.valueOf(values [ 1 ]);
+                                double width = Double.valueOf(values [ 2 ]);
+                                double height = Double.valueOf(values [ 3 ]);
+                                {if (true) return new BoundingBox(x, y, width, height);}
     throw new Error("Missing return statement in function");
   }
 
   final public void linkDef() throws ParseException {
-        String s1 = null;
-        String s2 = null;
-        Token t1 = null;
-        Token t2 = null;
-        List<Position> p = null;
+                String s1 = null;
+                String s2 = null;
+                Token t1 = null;
+                Token t2 = null;
+                List < Position > p = null;
     switch (jj_nt.kind) {
     case NODEIDENT:
       t1 = jj_consume_token(NODEIDENT);
-                           s1 = t1.image;
+                                                s1 = t1.image;
       break;
     default:
       ;
@@ -334,7 +339,7 @@ public class DotParser implements DotParserConstants {
     switch (jj_nt.kind) {
     case NODEIDENT:
       t2 = jj_consume_token(NODEIDENT);
-                                                                    s2 = t2.image;
+                                                s2 = t2.image;
       break;
     default:
       ;
@@ -348,7 +353,7 @@ public class DotParser implements DotParserConstants {
       switch (jj_nt.kind) {
       case POS:
         p = linkPosition();
-                                                     setLinkPosition(s1, s2, p);
+                                                                setLinkPosition(s1, s2, p);
         break;
       default:
         ;
@@ -372,7 +377,7 @@ public class DotParser implements DotParserConstants {
         switch (jj_nt.kind) {
         case POS:
           p = linkPosition();
-                                                            setLinkPosition(s1, s2, p);
+                                                                                setLinkPosition(s1, s2, p);
           break;
         default:
           ;

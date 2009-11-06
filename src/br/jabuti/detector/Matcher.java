@@ -25,7 +25,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.ironiacorp.commons.JavaBeanUtil;
+import com.ironiacorp.persistence.JavaBeanUtil;
+
+
 
 public class Matcher
 {

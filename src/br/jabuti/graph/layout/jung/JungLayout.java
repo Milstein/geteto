@@ -31,7 +31,6 @@ public class JungLayout implements GraphLayout
 		graph.addEdge("Node " + i++, src, dest, EdgeType.DIRECTED);
 	}
 
-	@Override
 	public void addNode(GVFNode node)
 	{
 		System.out.println("[node] " + node.toString());
@@ -43,12 +42,10 @@ public class JungLayout implements GraphLayout
 		graph.addVertex(node);
 	}
 
-	@Override
 	public void end_graph()
 	{
 	}
 
-	@Override
 	public void layout(Vector vNodes, Vector vLinks)
 	{
 		HierachicalGraphLayout<GVFNode, String> layout = new HierachicalGraphLayout<GVFNode, String>(graph, rootNode);
@@ -72,7 +69,6 @@ public class JungLayout implements GraphLayout
 		}
 	}
 
-	@Override
 	public void start_graph()
 	{
 	}

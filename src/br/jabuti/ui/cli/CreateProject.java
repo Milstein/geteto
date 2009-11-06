@@ -204,7 +204,7 @@ public class CreateProject {
 			// Try to create a project from the base class
 			if ( baseClass != null && prjFile != null ) {
 				try {
-					jbtProject = new JabutiProject( baseClass, classPath );
+					jbtProject = new JabutiProject(classPath );
 				}
 				catch (Exception e ) {
 					System.err.println( "Error creating the project " + prjFile );

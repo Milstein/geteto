@@ -26,7 +26,7 @@ import org.aspectj.apache.bcel.generic.*;
 import java.io.*;
 import java.util.*;
 
-import br.jabuti.instrumenter.*;
+import br.jabuti.instrumenter.bytecode.bcel.*;
 import br.jabuti.lookup.*;
 import br.jabuti.project.JabutiProject;
 

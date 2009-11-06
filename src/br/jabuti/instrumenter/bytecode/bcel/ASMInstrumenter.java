@@ -18,7 +18,7 @@
 
 
 
-package br.jabuti.instrumenter;
+package br.jabuti.instrumenter.bytecode.bcel;
 
 
 import java.io.*;

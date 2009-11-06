@@ -36,7 +36,7 @@ import org.aspectj.apache.bcel.generic.MethodGen;
 
 import br.jabuti.lookup.Program;
 import br.jabuti.probe.desktop.DefaultProbeInsert;
-import br.jabuti.probe.mobiledevice.mobile.agent.MuAgent;
+import br.jabuti.probe.mobiledevice.mobile.MuAgent;
 import br.jabuti.verifier.InvalidInstructionException;
 import br.jabuti.verifier.InvalidStackArgument;
 

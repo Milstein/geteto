@@ -17,7 +17,7 @@
 */
 
 
-package br.jabuti.device.j2me;
+package br.jabuti.probe.j2me;
 
 
 import java.io.IOException;

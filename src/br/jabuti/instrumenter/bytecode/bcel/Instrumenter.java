@@ -17,7 +17,7 @@
 */
 
 
-package br.jabuti.instrumenter;
+package br.jabuti.instrumenter.bytecode.bcel;
 
 
 import org.aspectj.apache.bcel.generic.*;

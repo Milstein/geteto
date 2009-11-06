@@ -101,17 +101,14 @@ public class JabutiProject {
 	/**
 	 * Creates a empty JaBUTi Project
 	 * 
-	 * @param b
-	 *            a {@link String} corresponding to the name of the base class.
 	 * @param cpath
 	 *            a {@link String} corresponding to the classpath to run the
 	 *            base class.
 	 * @throw {@link Exception} in case occurs any problem on identifying the
 	 *        other classes necessary to run the base class.
 	 */
-	public JabutiProject(String b, String cpath) throws Exception {
-		prog = new Program(b, true, null, cpath);
-		baseClass = b;
+	public JabutiProject(String cpath) throws Exception {
+		prog = new Program(true, null, cpath);
 		classpath = new String(cpath);
 		junitSrcDir = new String();
 		junitBinDir = new String();
@@ -148,8 +145,7 @@ public class JabutiProject {
 	 *        other classes necessary to run the base class.
 	 */
 	public JabutiProject(JabutiProject prj) throws Exception {
-		prog = new Program(prj.getBaseClass(), true, null, prj.getClasspath());
-		baseClass = new String(prj.getBaseClass());
+		prog = new Program(true, null, prj.getClasspath());
 		classpath = new String(prj.getClasspath());
 
 		junitSrcDir = new String(prj.getJunitSrcDir());
@@ -349,7 +345,6 @@ public class JabutiProject {
 	public String toString() {
 		String out = new String(ToolConstants.toolName + " Project\n");
 
-		out = out + "Base Class File: " + getMain() + "\n";
 		out = out + "Current Coverage:\n";
 		out = out + coverage2TXT("\t");
 
@@ -358,7 +353,6 @@ public class JabutiProject {
 
 		while (it.hasNext()) {
 			ClassFile cf = (ClassFile) it.next();
-
 			out = out + cf.toString("\t");
 		}
 
@@ -403,26 +397,6 @@ public class JabutiProject {
 	 * Get and Set Methods implementation
 	 **************************************************************************/
 
-	public String getMain() {
-		return getBaseClass();
-	}
-
-	public void setMain(String s) {
-		setBaseClass(s);
-	}
-
-	public String getBaseClass() {
-		return baseClass;
-	}
-
-	public void setBaseClass(String s) {
-		if (baseClass.equals(s)) {
-			return;
-		}
-		execChanged = true;
-		baseClass = s;
-	}
-
 	public String getClasspath() {
 		return classpath;
 	}
@@ -448,7 +422,7 @@ public class JabutiProject {
 			String s = list(avoidSet);
 
 			try {
-				prog = new Program(baseClass, true, s, classpath);
+				prog = new Program(true, s, classpath);
 			} catch (Exception e) {
 			}
 		}

@@ -1,160 +1,111 @@
-<project
-	xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
-	<groupId>labes</groupId>
-	<artifactId>jabuti</artifactId>
-	<packaging>jar</packaging>
 
-	<name>JaBUTi</name>
-	<url>http://incubadora.fapesp.br/projects/jabuti</url>
-	<version>1.0</version>
-	<inceptionYear>2004</inceptionYear>
+	<groupId>ironiacorp</groupId>
+	<artifactId>geteto</artifactId>
+	<packaging>jar</packaging>
+	<version>1.0.0</version>
+
+
+	<name>GeTeTo</name>
+	<description>Java testing tool aimed to education</description>
+	<url>http://www.ironiacorp.com/projects/geteto</url>
+	<inceptionYear>2009</inceptionYear>
 
 	<licenses>
 		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<name>GNU General Public License (GPL) 3</name>
+			<url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
 			<distribution>repo</distribution>
-			<comments/>
+			<comments />
 		</license>
 	</licenses>
 
+	<developers>
+		<developer>
+			<id>magsilva</id>
+			<name>Marco Aurélio Graciotto Silva</name>
+			<email>magsilva@icmc.usp.br</email>
+			<url>http://www.icmc.usp.br/~magsilva/</url>
+			<organization>Ironia Corporation</organization>
+			<organizationUrl>http://www.ironiacorp.com</organizationUrl>
+			<timezone>+3</timezone>
+			<roles>
+				<role>Manager</role>
+				<role>Main developer</role>
+			</roles>
+		</developer>
+	</developers>
+
 	<organization>
-		<name>Software Engineering Laboratory</name>
-		<url>http://www.labes.icmc.usp.br</url>
+		<name>Ironia Corporation</name>
+		<url>http://www.ironiacorp.com</url>
 	</organization>
+
+	<issueManagement>
+		<system>Bugzilla</system>
+		<url>http://www.ironiacorp.com/Admin/Bugzilla/</url>
+	</issueManagement>
+
+	<scm>
+		<connection>scm:svn:https://www.ironiacorp.com/svn/projects/GeTeTo/trunk</connection>
+		<developerConnection>scm:svn:https://www.ironiacorp.com/svn/projects/GeTeTo/trunk</developerConnection>
+		<tag>trunk</tag>
+		<url>https://www.ironiacorp.com/Admin/ViewVC/viewvc.cgi/GeTeTo/trunk</url>
+	</scm>
+
+	<ciManagement>
+		<system>Hudson</system>
+		<url>http://www.ironiacorp.com:8080/Hudson</url>
+		<notifiers>
+			<notifier>
+				<type>mail</type>
+				<sendOnError>true</sendOnError>
+				<sendOnFailure>true</sendOnFailure>
+				<sendOnSuccess>false</sendOnSuccess>
+				<sendOnWarning>true</sendOnWarning>
+				<address>magsilva@icmc.usp.br</address>
+			</notifier>
+		</notifiers>
+	</ciManagement>
 
 	<distributionManagement>
 		<repository>
-			<id>releases</id>
-			<name>Internal Releases</name>
-			<url>http://143.107.183.167:8080/nexus/content/repositories/releases</url>
+			<id>labes-pc-010808-releases</id>
+			<name>labes-pc-010808-releases</name>
+			<url>http://www.ironiacorp.com:8080/artifactory/libs-releases-local</url>
 		</repository>
-		
-		<snapshotRepository>
-			<id>snapshots</id>
-			<name>Internal Snapshots</name>
-			<url>http://143.107.183.167:8080/nexus/content/repositories/snapshots</url>
-		</snapshotRepository>
 	</distributionManagement>
+
 
 	<repositories>
 		<repository>
-			<id>central</id>
-			<name>Maven Repository Switchboard</name>
-			<layout>default</layout>
-			<url>http://repo1.maven.org/maven2</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-				<checksumPolicy>warn</checksumPolicy>
-			</snapshots>
+			<id>labes-pc-010808-releases</id>
+			<url>http://www.ironiacorp.com:8080/artifactory/repo</url>
 		</repository>
-		
+
+		<repository>
+			<id>jboss-releases</id>
+			<url>http://repository.jboss.org/maven2</url>
+		</repository>
+
+		<!-- 
 		<repository>
 			<id>java.net</id>
 			<name>Java.net Repository</name>
 			<url>http://download.java.net/maven/2/</url>
 			<layout>default</layout>
 		</repository>
-		
-		<repository>
-			<id>labes-icmc-apps-release</id>
-			<url>http://143.107.183.167:8080/nexus/content/repositories/releases</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-
-		<repository>
-			<id>labes-icmc-apps-devel</id>
-			<url>http://143.107.183.167:8080/nexus/content/repositories/snapshots</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-		</repository>
-
-		<repository>
-			<id>labes-icmc-apps-thirdpart</id>
-			<url>http://143.107.183.167:8080/nexus/content/repositories/thirdpart</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-		</repository>
-
+ 	-->
 	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>central</id>
-			<name>Maven Plugin Repository</name>
-			<url>http://repo1.maven.org/maven2</url>
-			<layout>default</layout>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-		</pluginRepository>
-
-		<pluginRepository>
-			<id>apache-snapshot</id>
-			<name>Maven Plugin Snapshots</name>
-			<url>http://people.apache.org/repo/m2-snapshot-repository</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-
-		<pluginRepository>
-			<id>codehaus-snapshot</id>
-			<name>CodeHaus Plugin Snapshots</name>
-			<url>http://snapshots.repository.codehaus.org</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-
-		<pluginRepository>
-			<id>labes-icmc-plugins-release</id>
-			<url>http://www.labes.icmc.usp.br:8080/artifactory/repo</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-
-		<pluginRepository>
-			<id>labes-icmc-plugins-devel</id>
-			<url>http://www.labes.icmc.usp.br:8080/artifactory/repo</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-		</pluginRepository>
-	</pluginRepositories>
 
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.4</version>
-		</dependency> 
-	
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.ant</groupId>
 			<artifactId>ant</artifactId>
@@ -171,20 +122,20 @@
 			<groupId>org.apache.ant</groupId>
 			<artifactId>ant-testutil</artifactId>
 			<version>1.7.1</version>
-		</dependency> 
-		
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.ant</groupId>
 			<artifactId>ant-junit</artifactId>
 			<version>1.7.1</version>
-		</dependency> 
-		
+		</dependency>
+
 		<dependency>
 			<groupId>org.apache.ant</groupId>
 			<artifactId>ant-antunit</artifactId>
 			<version>1.1</version>
 		</dependency>
-		
+
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -230,15 +181,9 @@
 		</dependency>
 
 		<dependency>
-			<version>1.0</version>
-			<groupId>labes.testing</groupId>
-			<artifactId>testbed</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>ironiacorp</groupId>
-			<artifactId>ironia-commons</artifactId>
-			<version>1.0.0</version>
+			<artifactId>testbed</artifactId>
+			<version>1.0</version>
 		</dependency>
 
 		<dependency>
@@ -246,20 +191,131 @@
 			<artifactId>jgraph</artifactId>
 			<version>5.8.3.1</version>
 		</dependency>
-		
 		<dependency>
 			<groupId>jgrapht</groupId>
 			<artifactId>jgrapht</artifactId>
 			<version>0.7.3</version>
-		</dependency> 
-		
+		</dependency>
+
 		<dependency>
 			<groupId>org.prefuse</groupId>
 			<artifactId>prefuse</artifactId>
 			<version>20071021</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.microemu</groupId>
+			<artifactId>api</artifactId>
+			<version>2.0.3</version>
+			<type>pom</type>
+		</dependency>
+
+		<dependency>
+			<groupId>org.microemu</groupId>
+			<artifactId>microemu-midp</artifactId>
+			<version>2.0.3</version>
+			<type>jar</type>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.microemu</groupId>
+			<artifactId>microemulator</artifactId>
+			<version>2.0.3</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.microemu</groupId>
+			<artifactId>microemu-javase-applet</artifactId>
+			<version>2.0.3</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.microemu</groupId>
+			<artifactId>microemu-jsr-75</artifactId>
+			<version>2.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.bluecove</groupId>
+			<artifactId>bluecove</artifactId>
+			<version>1.2.2</version>
+			<scope>provided</scope>
+		</dependency>
+
+
+		<dependency>
+			<groupId>ironiacorp</groupId>
+			<artifactId>commons-collection</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>activation</artifactId>
+			<version>1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>asm</groupId>
+			<artifactId>asm</artifactId>
+			<version>3.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>apache-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.jung</groupId>
+			<artifactId>jung-api</artifactId>
+			<version>2.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.jung</groupId>
+			<artifactId>jung-jai</artifactId>
+			<version>2.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>ironiacorp</groupId>
+			<artifactId>commons-persistence</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.jung</groupId>
+			<artifactId>jung-graph-impl</artifactId>
+			<version>2.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>mucode</groupId>
+			<artifactId>mucode</artifactId>
+			<version>1.0</version>
+		</dependency>
+		
 	</dependencies>
-	
+
+	<properties>
+		<wtk.bluetooth.enabled>true</wtk.bluetooth.enabled>
+		<wtk.optionalpda.enabled>true</wtk.optionalpda.enabled>
+	</properties>
+
+
+
 	<build>
 		<finalName>${artifactId}-${version}</finalName>
 
@@ -300,46 +356,18 @@
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
 					<classesDirectory>${project.build.outputDirectory}</classesDirectory>
-					<finalName>captor</finalName>
+					<finalName>geteto</finalName>
 					<outputDirectory>${project.build.directory}</outputDirectory>
 					<archive>
 						<index>true</index>
-						<!-- 
-						<manifestEntries>
-								<mode>development</mode>
-								<url>${pom.url}</url>
-						</manifestEntries>
- 						-->
 						<manifest>
-							<mainClass>captor.app.CaptorBuilder</mainClass>
-							<packageName>captor</packageName>
+							<mainClass>br.jabuti.ui.gui.JabutiGUI</mainClass>
+							<packageName>geteto</packageName>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib</classpathPrefix>
-							<!--
-							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-							-->
 						</manifest>
 					</archive>
 				</configuration>
-			</plugin>
-			
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<descriptors>
-						<descriptor>pom-assembly-release.xml</descriptor>
-					</descriptors>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>attached</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>

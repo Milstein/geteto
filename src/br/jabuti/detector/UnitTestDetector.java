@@ -24,7 +24,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.ironiacorp.commons.JavaBeanUtil;
+import com.ironiacorp.persistence.JavaBeanUtil;
+
 
 public class UnitTestDetector
 {

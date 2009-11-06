@@ -193,7 +193,7 @@ public class TableSortTest extends JFrame {
         try {
             Program p = null;
 
-            p = new Program(args[0], true, null, args[1]);
+            p = new Program(true, null, args[1]);
             //String[] classes = {"br.jabuti.metrics.Metrics"};
             String[] classes = p.getCodeClasses();
             

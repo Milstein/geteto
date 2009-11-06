@@ -38,8 +38,6 @@ import java.util.*;
 import java.net.*;
 
 import org.aspectj.apache.bcel.classfile.*;
-import org.aspectj.apache.bcel.generic.ClassGen;
-import org.aspectj.apache.bcel.generic.ConstantPoolGen;
 
 import br.jabuti.criteria.*;
 import br.jabuti.device.ProberServer;
@@ -262,7 +260,7 @@ public class JabutiGUI extends JFrame {
 
 	JCheckBox cfgOptionCheckBox = new JCheckBox();
 
-	JFileChooser openFileDialog = openFileDialogCreate("Open class file...");
+	JFileChooser openFileDialog = openFileDialogCreate("New Project");
 
 	// JFileChooser openJarZipFileDialog = openJarZipFileDialogCreate("Open
 	// jar/zip file...");
@@ -916,7 +914,7 @@ public class JabutiGUI extends JFrame {
 
 		// File submenu
 		// Open class Submenu
-		openClass.setText("Open Class");
+		openClass.setText("New Project");
 		openClass.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				openClass_actionPerformed(e);
@@ -1077,7 +1075,7 @@ public class JabutiGUI extends JFrame {
 		} while (cpath.length() == 0 || invalid);
 
 		try {
-			jbtProject = new JabutiProject(pclass, cpath);
+			jbtProject = new JabutiProject(cpath);
 			jbtProject
 					.setCFGOption((cfgOptionCheckBox.isSelected()) ? CFG.NO_CALL_NODE
 							: CFG.NONE);
@@ -1671,55 +1669,30 @@ public class JabutiGUI extends JFrame {
 		JabutiProject prj = getProject();
 		String fileName = prj.getInstrumentedJarFileName();
 
-		boolean noMain = false;
-		int op = JOptionPane
-		.showConfirmDialog(
-				JabutiGUI.mainWindow(),
-				"Has the base class \"" + prj.getBaseClass() + "\" a main method?",
-				"Warning", JOptionPane.YES_NO_OPTION);
-		if (op == JOptionPane.NO_OPTION) {
-			noMain = true;
-		}
-		
 		try {
 			File jarFile = new File(fileName);
 			if (jarFile.exists()) {
 				// default icon, custom title
-				op = JOptionPane.showConfirmDialog(null,
+				int op = JOptionPane.showConfirmDialog(null,
 						"Instrumented JAR File " + fileName
 								+ " already exists.\n" + "Overwrite it?",
 						"Question", JOptionPane.YES_NO_OPTION);
 
 				if (op == JOptionPane.YES_OPTION) {
 					boolean deleted = jarFile.delete();
-					if (deleted)
-						System.out.println("JAR file " + fileName
-								+ " deleted successfuly!!!");
-					else
-						System.out.println("JAR file " + fileName
-								+ " NOT deleted");
-				} else
+				} else {
 					return;
+				}
 			}
 		} catch (Exception e) {
 			ToolConstants.reportException(e, ToolConstants.STDERR);
 		}
 		
-		String[] args = { "-p", prj.getProjectFileName(), "-o", fileName,
-				prj.getBaseClass(), (noMain)? "-nomain": "" };
-
-		for (int i = 0; i < args.length; i++) {
-			System.out.println("Arg " + i + " " + args[i]);
-		}
-		
-		if (br.jabuti.probe.desktop.ProberInstrum.instrumentProject(prj, prj
-				.getBaseClass(), fileName, noMain)) {
-			JOptionPane.showMessageDialog(null, "File " + fileName
-					+ " created successfully.", "Information",
+		if (br.jabuti.probe.desktop.ProberInstrum.instrumentProject(prj, fileName)) {
+			JOptionPane.showMessageDialog(null, "File " + fileName + " created successfully.", "Information",
 					JOptionPane.INFORMATION_MESSAGE);
 		} else {
-			JOptionPane.showMessageDialog(null, "File " + fileName
-					+ " not created successfully.", "Error",
+			JOptionPane.showMessageDialog(null, "File " + fileName + " not created successfully.", "Error",
 					JOptionPane.ERROR_MESSAGE);
 		}
 	}
@@ -2856,14 +2829,9 @@ public class JabutiGUI extends JFrame {
 								JabutiGUI.mainWindow(),
 								"Execution trace information can only be generated when test cases are executed against instrumented classes.",
 								"Information", JOptionPane.INFORMATION_MESSAGE);
-				app = JabutiGUI.getProject().getBaseClass();
-				try {
-					app = JabutiGUI.getProject().getProjectResource(app);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
 			}
 		}
+		
 		final Main executor = new br.jabuti.runner.junit.Main(JabutiGUI
 				.mainWindow(), true);
 		executor.addWindowListener(new WindowAdapter() {

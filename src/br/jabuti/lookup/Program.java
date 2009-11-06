@@ -99,7 +99,7 @@ public class Program implements Serializable {
      *     @throws IOException Error reading root class file
      *      
      *     */
-    public Program(String className, boolean noSys, String toAvoid, String classPath)
+    public Program(boolean noSys, String toAvoid, String classPath)
             throws ClassNotFoundException, FileNotFoundException, IOException {
         classes = new Hashtable();
         ClassClosure cc = null;
@@ -110,35 +110,8 @@ public class Program implements Serializable {
         } else {
             cc = new ClassClosure(classPath);
         }
-        String[] closure = cc.getClosure(className, noSys, toAvoid);
-
-        for (int i = 0; i < closure.length; i++) {
-            String s = cc.findFile(closure[i]);
-            RClass mc = null;
-
-            if (s != null &&	// do I have the code for the class?
-                    !cc.doMatch(closure[i], noSys, toAvoid)) {
-                JavaClass javaClass = new ClassParser(s).parse();
-
-                mc = new RClassCode(javaClass, closure[i]);
-            } else {
-                mc = new RClass(closure[i]);
-            }
-            classes.put(closure[i], mc);
-        }
+        
         updateSubSuper();	// links super and subclasses
-    }
-
-    /** The same of <BR>
-     *     <center> <code>Program( className, true, null ) </code></center>
-     *      
-     *     @param className The name of the starting class
-     *      
-     **/
-    public Program(String className)
-            throws ClassNotFoundException, FileNotFoundException, IOException {
-        this(className, true, null, System.getProperty("java.class.path"));
-        System.out.println("Property: " + System.getProperty("java.class.path"));
     }
 
 	/** this constructor uses a Map where the keys have the names of the 
@@ -595,42 +568,6 @@ public class Program implements Serializable {
     	}
     }
 
-    /**
-     *     <p>A test driver. Can be called as: <BR></p>
-     *     <p>
-     *     java program.Program classname [avoid-name-list]
-     *     </p>
-     *     or
-     *     <p>
-     *     java program.Program zipfilename
-     *     </p>
-     *      
-     *     <p>
-     *     In both cases the system classes are not included in the 
-     *     program structure
-     *     </p>
-     *     */
-    static public void main(String args[]) throws Exception {
-        Program p = null;
 
-        if (args.length >= 3) {
-            p = new Program(args[0], true, args[2], args[1]);
-        } else {
-            ZipFile zippedFile = null;
-
-            if (args[0].endsWith(".jar")) {
-                zippedFile = new JarFile(args[0]);
-            } else if (args[0].endsWith(".zip")) {
-                zippedFile = new ZipFile(args[0]);
-            }
-
-            if (zippedFile == null) {
-                p = new Program(args[0]);
-            } else {
-                p = new Program(zippedFile, true, null);
-            }
-        }
-        p.print();
-    }
 
 }

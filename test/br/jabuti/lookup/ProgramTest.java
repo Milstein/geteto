@@ -1,5 +1,8 @@
 package br.jabuti.lookup;
 
+import java.util.jar.JarFile;
+import java.util.zip.ZipFile;
+
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -49,4 +52,44 @@ public class ProgramTest
 		System.out.println(program.getCodePackages().length + " " + ArrayUtil.toString(program.getCodePackages(), ", "));
 		System.out.println(program.getSysClasses().length + " " + ArrayUtil.toString(program.getSysClasses(), ", "));
 	}
+	
+	/**
+     *     <p>A test driver. Can be called as: <BR></p>
+     *     <p>
+     *     java program.Program classname [avoid-name-list]
+     *     </p>
+     *     or
+     *     <p>
+     *     java program.Program zipfilename
+     *     </p>
+     *      
+     *     <p>
+     *     In both cases the system classes are not included in the 
+     *     program structure
+     *     </p>
+     */
+	/*
+    static public void main(String args[]) throws Exception {
+        Program p = null;
+
+        if (args.length >= 3) {
+            p = new Program(args[0], true, args[2], args[1]);
+        } else {
+            ZipFile zippedFile = null;
+
+            if (args[0].endsWith(".jar")) {
+                zippedFile = new JarFile(args[0]);
+            } else if (args[0].endsWith(".zip")) {
+                zippedFile = new ZipFile(args[0]);
+            }
+
+            if (zippedFile == null) {
+                p = new Program(args[0]);
+            } else {
+                p = new Program(zippedFile, true, null);
+            }
+        }
+        p.print();
+    }
+    */
 }
