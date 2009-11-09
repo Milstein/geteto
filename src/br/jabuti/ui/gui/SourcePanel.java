@@ -25,6 +25,7 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.text.*;
 
+import br.jabuti.graph.datastructure.GraphNode;
 import br.jabuti.graph.datastructure.dug.*;
 import br.jabuti.project.*;
 import br.jabuti.util.*;
@@ -378,7 +379,7 @@ class SourcePanel extends JPanel {
                         } else {
                             // Traversing the CFG looking for the color of each node...
                             CFG cfg = method.getCFG();
-                            GraphNode[] fdt = cfg.findDFT(true);
+                            GraphNode[] fdt = cfg.findDFTNodes(true);
 			
                             int c = 0;	            
 		

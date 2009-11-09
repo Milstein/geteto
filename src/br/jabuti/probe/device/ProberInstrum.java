@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.jar.*;
 
 import br.jabuti.lookup.*;
+import br.jabuti.lookup.java.bytecode.Program;
 import br.jabuti.project.JabutiProject;
 
 import br.jabuti.util.*;
@@ -182,7 +183,7 @@ public class ProberInstrum {
             Map mp = null;
 
             try {
-                mp = dpi.instrument( project.getCFGOption() );
+                mp = dpi.instrument();
                 // substitui os objetos JavaClass por byte[]
                 JavaClass jv;
                 

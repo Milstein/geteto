@@ -42,6 +42,7 @@ import java.awt.font.*;
 import org.aspectj.apache.bcel.classfile.*;
 import org.aspectj.apache.bcel.generic.*;
 
+import br.jabuti.graph.datastructure.GraphNode;
 import br.jabuti.graph.datastructure.dug.*;
 
 

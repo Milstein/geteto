@@ -5,9 +5,9 @@ import org.aspectj.apache.bcel.classfile.Method;
 import org.aspectj.apache.bcel.generic.ConstantPoolGen;
 import org.aspectj.apache.bcel.generic.MethodGen;
 
-import br.jabuti.lookup.Program;
-import br.jabuti.lookup.RClass;
-import br.jabuti.lookup.RClassCode;
+import br.jabuti.lookup.java.bytecode.Program;
+import br.jabuti.lookup.java.bytecode.RClass;
+import br.jabuti.lookup.java.bytecode.RClassCode;
 
 /**
  * <p>Tamanho m�dio do m�todo </p> <p>M�trica calculada atrav�s da divis�o

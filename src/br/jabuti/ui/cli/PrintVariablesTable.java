@@ -27,9 +27,9 @@ import java.util.Hashtable;
 
 import org.aspectj.apache.bcel.generic.LocalVariableGen;
 
+import br.jabuti.graph.datastructure.GraphNode;
 import br.jabuti.graph.datastructure.dug.CFG;
 import br.jabuti.graph.datastructure.dug.CFGNode;
-import br.jabuti.graph.datastructure.dug.GraphNode;
 import br.jabuti.project.ClassFile;
 import br.jabuti.project.ClassMethod;
 import br.jabuti.project.JabutiProject;
@@ -170,7 +170,7 @@ public class PrintVariablesTable {
                         int countSysVar = localVar.length;
 		
                         CFG cfg = cm.getCFG();
-                        GraphNode[] fdt = cfg.findDFT(true);
+                        GraphNode[] fdt = cfg.findDFTNodes(true);
                         for (int x = 0; x < fdt.length; x++) {
                             GraphNode gn = fdt[x];
 		            		

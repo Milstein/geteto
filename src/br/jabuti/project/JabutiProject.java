@@ -33,7 +33,7 @@ import java.util.StringTokenizer;
 import br.jabuti.criteria.AbstractCriterion;
 import br.jabuti.criteria.Criterion;
 import br.jabuti.graph.datastructure.dug.CFG;
-import br.jabuti.lookup.Program;
+import br.jabuti.lookup.java.bytecode.Program;
 import br.jabuti.util.ToolConstants;
 
 /**
@@ -127,8 +127,6 @@ public class JabutiProject {
 		coverageChanged = false;
 		mobility = false;
 
-		cfgOption = CFG.NO_CALL_NODE;
-
 		// Setting the coverage of the project as zero
 		projCoverage = new Coverage[Criterion.NUM_CRITERIA];
 		for (int i = 0; i < Criterion.NUM_CRITERIA; i++) {
@@ -165,8 +163,6 @@ public class JabutiProject {
 		execChanged = prj.execChanged;
 		coverageChanged = prj.coverageChanged;
 		mobility = prj.mobility;
-
-		cfgOption = prj.cfgOption;
 
 		// Setting the coverage of the project as zero
 		projCoverage = new Coverage[Criterion.NUM_CRITERIA];
@@ -278,40 +274,6 @@ public class JabutiProject {
 	
 	static public JabutiProject reloadProj(String fileName, boolean full) {
 		return JabutiProject.reloadProj(fileName, null, full);
-	}
-
-	// Close the project by seting all variables with null
-	public void closeProject() {
-		prog = null;
-
-		baseClass = null;
-		classpath = null;
-		junitSrcDir = null;
-		junitBinDir = null;
-		junitTestSet = null;
-		junitJar = null;
-
-		avoidSet = null;
-		instrSet = null;
-
-		instrClassTable = null;
-
-		progChanged = false;
-		instrChanged = false;
-		execChanged = false;
-		coverageChanged = false;
-		mobility = false;
-
-		cfgOption = CFG.NO_CALL_NODE;
-
-		projCoverage = null;
-
-		saveName = null;
-		traceFileName = null;
-		jarFileName = null;
-
-		curClassName = null;
-		curMethodName = null;
 	}
 
 	public void updateProjectCoverage() {
@@ -429,17 +391,6 @@ public class JabutiProject {
 		return prog;
 	}
 
-	public int getCFGOption() {
-		return (cfgOption);
-	}
-
-	public void setCFGOption(int op) {
-		if (cfgOption == op) {
-			return;
-		}
-		execChanged = true;
-		cfgOption = op;
-	}
 
 	public boolean isMobility() {
 		return (mobility);
@@ -747,5 +698,11 @@ public class JabutiProject {
 			return null;
 
 		return f.getCanonicalPath();
+	}
+
+	public void closeProject()
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

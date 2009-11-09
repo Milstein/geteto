@@ -39,7 +39,7 @@ import org.aspectj.apache.bcel.util.ClassPath;
 
 import br.jabuti.graph.datastructure.dug.CFG;
 import br.jabuti.instrumenter.bytecode.bcel.ASMInstrumenter;
-import br.jabuti.lookup.Program;
+import br.jabuti.lookup.java.bytecode.Program;
 import br.jabuti.project.JabutiProject;
 import br.jabuti.util.ToolConstants;
 
@@ -188,8 +188,7 @@ public class ProberInstrum {
 					hs.add(classes[i]);
 				}
 
-				ProberInstrum.instrumentProgram(program, hs, CFG.NO_CALL_NODE,
-						outName);
+				ProberInstrum.instrumentProgram(program, hs, outName);
 			}
 		} else {
 			usage();
@@ -200,7 +199,7 @@ public class ProberInstrum {
 		Program program = project.getProgram();
 		HashSet toInstrumenter = project.getInstr();
 
-		return instrumentProgram(program, toInstrumenter, project.getCFGOption(), outName, project.getTraceFileName());
+		return instrumentProgram(program, toInstrumenter, outName, project.getTraceFileName());
 	}
 
 	/**
@@ -212,8 +211,8 @@ public class ProberInstrum {
 	 * @param CFGOption
 	 * @return
 	 */
-	public static boolean instrumentProgram(Program program, HashSet toInstrumenter, int CFGOption, String outName) {
-		return instrumentProgram(program, toInstrumenter, CFGOption, outName, null);
+	public static boolean instrumentProgram(Program program, HashSet toInstrumenter, String outName) {
+		return instrumentProgram(program, toInstrumenter, outName, null);
 	}
 
 	/**
@@ -230,7 +229,7 @@ public class ProberInstrum {
 	 *            - name of the trace file, in case there is a main
 	 * @return OK?
 	 */
-	public static boolean instrumentProgram(Program program, HashSet toInstrumenter, int CFGOption, String outName, String traceFileName) {
+	public static boolean instrumentProgram(Program program, HashSet toInstrumenter, String outName, String traceFileName) {
 
 		DefaultProbeInsert dpi = new DefaultProbeInsert(program, toInstrumenter);
 		Map mp = null;
@@ -241,7 +240,7 @@ public class ProberInstrum {
 		// jar sem serem instrumentadas.
 
 		try {
-			mp = dpi.instrument(CFGOption);
+			mp = dpi.instrument();
 			// substitui os objetos JavaClass por byte[]
 
 			Iterator it0 = mp.keySet().iterator();

@@ -22,10 +22,12 @@ package br.jabuti.graph.datastructure.dug;
 
 import java.util.*;
 import org.aspectj.apache.bcel.generic.*;
+
+import br.jabuti.graph.datastructure.GraphCallNode;
 import br.jabuti.verifier.*;
 
 
-public class CFGCallNode extends CFGNode {
+public class CFGCallNode extends CFGNode implements GraphCallNode {
 
 	
 	/**

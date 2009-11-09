@@ -28,6 +28,7 @@ import org.aspectj.apache.bcel.generic.*;
 import java.util.*;
 
 import br.jabuti.lookup.*;
+import br.jabuti.lookup.java.bytecode.Program;
 import br.jabuti.mobility.mobile.MuAgent;
 
 
@@ -42,7 +43,7 @@ public class HostProbeInsert extends DefaultProbeInsert {
 
 private Collection classList; // list of class to class instrument
 /** The constructor.
-     * @param p - The {@link br.jabuti.lookup.Program structure} that represents
+     * @param p - The {@link br.jabuti.lookup.java.bytecode.Program structure} that represents
      * the program to be instrumented
      * @param c - The list of classes to be instrumented. Each element
      * is a string with the complete name of the class

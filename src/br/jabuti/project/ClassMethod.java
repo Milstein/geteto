@@ -21,7 +21,12 @@ package br.jabuti.project;
 
 import java.util.*;
 
+import br.jabuti.graph.datastructure.GraphNode;
 import br.jabuti.graph.datastructure.dug.*;
+import br.jabuti.graph.datastructure.reducetree.DominatorTree;
+import br.jabuti.graph.datastructure.reducetree.DominatorTreeNode;
+import br.jabuti.graph.datastructure.reducetree.RRDominator;
+import br.jabuti.graph.datastructure.reducetree.ReduceNode;
 import br.jabuti.util.*;
 import org.aspectj.apache.bcel.generic.*;
 import org.aspectj.apache.bcel.classfile.*;
@@ -97,8 +102,7 @@ public class ClassMethod {
 
 		try {
 			
-			cfg = new CFG(mg, cg, proj.getCFGOption());
-			//cfgPersistent = util.Persistency.add(cfg);
+			cfg = new CFG(mg, cg);
 			
 			criteria = new Criterion[Criterion.NUM_CRITERIA];
 			methodCoverage = new Coverage[Criterion.NUM_CRITERIA];
@@ -295,7 +299,7 @@ public class ClassMethod {
 
 				try {
 					CFG cfg = getCFG();
-					GraphNode[] fdt = cfg.findDFT(true);
+					GraphNode[] fdt = cfg.findDFTNodes(true);
 
 					if (fdt.length > 0) {
 						GraphNode gn = fdt[0];
@@ -324,7 +328,7 @@ public class ClassMethod {
 
 				try {
 					CFG cfg = getCFG();
-					GraphNode[] fdt = cfg.findDFT(true);
+					GraphNode[] fdt = cfg.findDFTNodes(true);
 
 					LineNumberTable lnTable = mg.getLineNumberTable(cp);
 
@@ -556,7 +560,7 @@ public class ClassMethod {
 							// node and its child is painted (if it has a child)
 							if ((i == (required.length - 1)) && !hasDecision) {
 								// Finding the edge related with the entry node.
-								String theNode = getCFG().getEntry().getLabel();
+								String theNode = getCFG().getFirstEntryNode().getLabel();
 								mainEdg = null;
 								for (int k = 0;
 									k < required.length && mainEdg == null;
@@ -859,7 +863,7 @@ public class ClassMethod {
 			try {
 				CFG cfg = getCFG();
 
-				GraphNode[] fdt = cfg.findDFT(true);
+				GraphNode[] fdt = cfg.findDFTNodes(true);
 
 				for (int i = 0; i < fdt.length && theNode == null; i++) {
 					GraphNode gn = fdt[i];
@@ -889,7 +893,7 @@ public class ClassMethod {
 			try {
 				CFG cfg = getCFG();
 
-				GraphNode[] fdt = cfg.findDFT(true);
+				GraphNode[] fdt = cfg.findDFTNodes(true);
 
 				for (int i = 0; i < fdt.length && theNode == null; i++) {
 					GraphNode gn = fdt[i];
@@ -932,7 +936,7 @@ public class ClassMethod {
 				try {
 					CFG cfg = getCFG();
 
-					GraphNode[] fdt = cfg.findDFT(true);
+					GraphNode[] fdt = cfg.findDFTNodes(true);
 
 					for (int i = 0; i < fdt.length; i++) {
 						GraphNode gn = fdt[i];
@@ -987,8 +991,8 @@ public class ClassMethod {
 
 				// Calculating the Basic Block Dominator TREE
 				bbDom = (DominatorTree) DominatorTree.reduceSCC(dtDom, false);
-				if (dtDom.getEntry() != null) {
-					bbDom.setEntry(bbDom.getReduceNodeOf(dtDom.getEntry()));
+				if (dtDom.getFirstEntryNode() != null) {
+					bbDom.setEntryNode(bbDom.getReduceNodeOf(dtDom.getFirstEntryNode()));
 					bbDom.setDefaultNumbering();
 
 					// Calculating the Final Basic Block Dominator TREE
@@ -1145,7 +1149,7 @@ public class ClassMethod {
 
 		public void removeCFGWeightData() {
 			CFG cfg = getCFG();
-			GraphNode[] fdt = cfg.findDFT(true);
+			GraphNode[] fdt = cfg.findDFTNodes(true);
 
 			for (int i = 0; i < fdt.length; i++) {
 				GraphNode gn = fdt[i];

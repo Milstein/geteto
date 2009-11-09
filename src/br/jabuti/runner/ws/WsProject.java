@@ -27,7 +27,7 @@ import javax.activation.FileDataSource;
 import br.jabuti.criteria.AbstractCriterion;
 import br.jabuti.criteria.Criterion;
 import br.jabuti.criteria.Requirement;
-import br.jabuti.lookup.Program;
+import br.jabuti.lookup.java.bytecode.Program;
 import br.jabuti.probe.desktop.ProberInstrum;
 import br.jabuti.project.ClassFile;
 import br.jabuti.project.ClassMethod;

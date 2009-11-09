@@ -24,7 +24,7 @@ import javax.swing.plaf.FontUIResource;
 
 import br.jabuti.graph.datastructure.dug.*;
 import br.jabuti.graph.view.gvf.*;
-import br.jabuti.lookup.*;
+import br.jabuti.lookup.java.bytecode.Program;
 import br.jabuti.metrics.Metrics;
 import br.jabuti.mobility.*;
 import br.jabuti.project.*;
@@ -1076,9 +1076,6 @@ public class JabutiGUI extends JFrame {
 
 		try {
 			jbtProject = new JabutiProject(cpath);
-			jbtProject
-					.setCFGOption((cfgOptionCheckBox.isSelected()) ? CFG.NO_CALL_NODE
-							: CFG.NONE);
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Cannot parser file " + pclass
 					+ "! ", "Error", JOptionPane.ERROR_MESSAGE);
@@ -1249,13 +1246,6 @@ public class JabutiGUI extends JFrame {
 			gridBagConstraints.weighty = 2.0;
 
 			add(classpathScroll, gridBagConstraints);
-
-			cfgOptionCheckBox = new JCheckBox("Hide CFG Call Nodes");
-			cfgOptionCheckBox.setSelected(true);
-			gridBagConstraints = new java.awt.GridBagConstraints();
-			gridBagConstraints.insets = new java.awt.Insets(0, 5, 5, 0);
-			gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTH;
-			add(cfgOptionCheckBox, gridBagConstraints);
 
 			blankLabel = new JLabel();
 

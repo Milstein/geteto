@@ -170,7 +170,6 @@ public class HTMLGen {
 		String[][] tab = { {"Name", prj.getProjectFileName() }, 
 						   {"Type", "Research" },
 						   {"Mobility", new Boolean(prj.isMobility() ).toString() },
-						   {"CFG Option", new Integer(prj.getCFGOption()).toString() },
 						   {"Avoided Packages", pkgs },						   
 						 };
 		

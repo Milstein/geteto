@@ -24,6 +24,7 @@ import java.io.*;
 
 import br.jabuti.criteria.Criterion;
 import br.jabuti.lookup.*;
+import br.jabuti.lookup.java.bytecode.RClassCode;
 
 import org.aspectj.apache.bcel.generic.*;
 import org.aspectj.apache.bcel.classfile.*;

@@ -2,9 +2,9 @@ package br.jabuti.metrics;
 
 import org.aspectj.apache.bcel.classfile.JavaClass;
 
-import br.jabuti.lookup.Program;
-import br.jabuti.lookup.RClass;
-import br.jabuti.lookup.RClassCode;
+import br.jabuti.lookup.java.bytecode.Program;
+import br.jabuti.lookup.java.bytecode.RClass;
+import br.jabuti.lookup.java.bytecode.RClassCode;
 
 /**
  * <p>n�mero de interfaces implementadas pela classe </p>

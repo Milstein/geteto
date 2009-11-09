@@ -17,7 +17,7 @@
 */
 
 
-package br.jabuti.lookup;
+package br.jabuti.lookup.java.bytecode;
 
 
 import java.io.*;

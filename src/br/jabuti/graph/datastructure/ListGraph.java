@@ -18,11 +18,13 @@
 
 
 
-package br.jabuti.graph.datastructure.dug;
+package br.jabuti.graph.datastructure;
 
 
 import java.util.*;
 import java.io.*;
+
+import br.jabuti.graph.datastructure.reducetree.RoundRobinExecutor;
 
 
 /**
@@ -38,12 +40,12 @@ import java.io.*;
 
  
  */
-abstract public class Graph extends Vector {
+abstract public class ListGraph extends Vector implements Graph {
     private Vector entry;
     private Vector exit;	
 	
     /** Creates an empty program graph */
-    public Graph() {
+    public ListGraph() {
         super();
         entry = new Vector();
         exit = new Vector();
@@ -83,7 +85,7 @@ abstract public class Graph extends Vector {
      */
 
 
-    public void setEntry(GraphNode x) {
+    public void setEntryNode(GraphNode x) {
         entry.add(x);
     }
 	
@@ -95,7 +97,7 @@ abstract public class Graph extends Vector {
      @param x The node that will be the exit.
 
      */
-    public void setExit(GraphNode x) {
+    public void setExitNode(GraphNode x) {
         exit.add(x);
     }
 	
@@ -103,14 +105,14 @@ abstract public class Graph extends Vector {
 
      @param x - The node to be removed from the  entry set
      */
-    public void removeEntry(GraphNode x) {
+    public void removeEntryNode(GraphNode x) {
         entry.removeElement(x);
     }
 	
     /** Removes all entries.
 
      */
-    public void removeEntries() {
+    public void removeEntryNodes() {
         entry = new Vector();
     }
 
@@ -118,13 +120,13 @@ abstract public class Graph extends Vector {
 
      @param x - The node to be removed from the  exit set
      */
-    public void removeExit(GraphNode x) {
+    public void removeExitNode(GraphNode x) {
         exit.removeElement(x);
     }
 
     /** Removes all exit nodes.
      */
-    public void removeExits() {
+    public void removeExitNodes() {
         exit = new Vector();
     }
 
@@ -136,7 +138,7 @@ abstract public class Graph extends Vector {
      none has been set.
 
      */
-    public GraphNode getEntry() {
+    public GraphNode getFirstEntryNode() {
         if (entry.size() == 0) {
             return null;
         }
@@ -150,8 +152,10 @@ abstract public class Graph extends Vector {
 
      */
 
-    public GraphNode[] getEntries() {
-        return (GraphNode[]) entry.toArray(new GraphNode[0]);
+    public Set<GraphNode> getEntryNodes() {
+    	Set<GraphNode> entries = new HashSet<GraphNode>();
+    	entries.addAll(entry);
+        return entries;
     }
 
     /**
@@ -162,7 +166,7 @@ abstract public class Graph extends Vector {
      none has been set.
 
      */
-    public GraphNode getExit() {
+    public GraphNode getFirstExitNode() {
         if (exit.size() == 0) {
             return null;
         }
@@ -176,8 +180,10 @@ abstract public class Graph extends Vector {
 
      */
 
-    public GraphNode[] getExits() {
-        return (GraphNode[]) exit.toArray(new GraphNode[0]);
+    public Set<GraphNode> getExitNodes() {
+    	Set<GraphNode> exitNodes = new HashSet<GraphNode>();
+    	exitNodes.addAll(exit);
+        return exitNodes;
     }
 	
     /**
@@ -187,7 +193,7 @@ abstract public class Graph extends Vector {
      @return true if the node is an exit node
 
      */
-    public boolean isExit(GraphNode n) {
+    public boolean isExitNode(GraphNode n) {
         return exit.contains(n);
     }
 
@@ -198,7 +204,7 @@ abstract public class Graph extends Vector {
      @return true if the node is an entry node
 
      */
-    public boolean isEntry(GraphNode n) {
+    public boolean isEntryNode(GraphNode n) {
         return entry.contains(n);
     }
 
@@ -212,10 +218,10 @@ abstract public class Graph extends Vector {
     public void computeExit(boolean ex) {
         for (int i = 0; i < size(); i++) {
             GraphNode gn = (GraphNode) elementAt(i);
-            Vector v = getNext(gn, ex);
+            Vector v = getLeavingNodes(gn, ex);
 
             if (v.size() == 0) {
-                setExit(gn);
+                setExitNode(gn);
             }
         }
     }
@@ -231,7 +237,7 @@ abstract public class Graph extends Vector {
 
      */
     void getSubgraph(GraphNode gn, Vector subg, boolean ex) {
-        Vector next = getNext(gn, ex);
+        Vector next = getLeavingNodes(gn, ex);
 
         if (!subg.contains(gn)) {
             subg.add(gn);
@@ -250,21 +256,10 @@ abstract public class Graph extends Vector {
      @para y The destination node
 
      */
-    public void addPrimEdge(GraphNode x, GraphNode y) {
+    public void addPrimaryEdge(GraphNode x, GraphNode y) {
         x.addPrimNext(y);
     }
 		
-    /**
-     Adds several directed edges between two nodes
-
-     @param x The source node
-     @para y The set of destination nodes
-
-     */
-    public void addPrimEdge(GraphNode x, Vector y) {
-        x.addPrimNext(y);
-    }
-
     /**
      Adds an directed secondary edge between two nodes
 
@@ -272,20 +267,10 @@ abstract public class Graph extends Vector {
      @para y The destination node
 
      */
-    public void addSecEdge(GraphNode x, GraphNode y) {
+    public void addSecondaryEdge(GraphNode x, GraphNode y) {
         x.addSecNext(y);
     }
 		
-    /**
-     Adds several directed secondary edges between two nodes
-
-     @param x The source node
-     @para y The set of destination nodes
-
-     */
-    public void addSecEdge(GraphNode x, Vector y) {
-        x.addSecNext(y);
-    }
 
     /**
      Remove an directed edge between two nodes
@@ -294,7 +279,7 @@ abstract public class Graph extends Vector {
      @para y The destination node
 
      */
-    public void deletePrimEdge(GraphNode x, GraphNode y) {
+    public void removePrimaryEdge(GraphNode x, GraphNode y) {
         x.deletePrimNext(y);
     }
 	
@@ -305,7 +290,7 @@ abstract public class Graph extends Vector {
      @para y The destination node
 
      */
-    public void deleteSecEdge(GraphNode x, GraphNode y) {
+    public void removeSecondaryEdge(GraphNode x, GraphNode y) {
         x.deleteSecNext(y);
     }
 
@@ -319,11 +304,11 @@ abstract public class Graph extends Vector {
      (or a secondary edge).
 
      */
-    public Vector getNext(GraphNode x, boolean us) {
-        Vector y = (Vector) getPrimNext(x).clone();
+    public Vector getLeavingNodes(GraphNode x, boolean us) {
+        Vector y = (Vector) getLeavingNodesByPrimaryEdge(x).clone();
 
         if (us) {
-            y.addAll(getSecNext(x));
+            y.addAll(getLeavingNodesBySecondaryEdge(x));
         }
         return y;
     }
@@ -337,7 +322,7 @@ abstract public class Graph extends Vector {
      @return The set of primary nodes for wich the node of interest has an edge.
 
      */
-    public Vector getPrimNext(GraphNode x) {
+    public Vector getLeavingNodesByPrimaryEdge(GraphNode x) {
         return x.getPrimNext();
     }
 	
@@ -350,7 +335,7 @@ abstract public class Graph extends Vector {
      @return The set of secondary nodes for wich the node of interest has an edge.
 
      */
-    public Vector getSecNext(GraphNode x) {
+    public Vector getLeavingNodesBySecondaryEdge(GraphNode x) {
         return x.getSecNext();
     }
 
@@ -364,11 +349,11 @@ abstract public class Graph extends Vector {
      (or a secondary edge).
 
      */
-    public Vector getArriving(GraphNode x, boolean us) {
-        Vector y = (Vector) getPrimArriving(x).clone();
+    public Vector getArrivingNodes(GraphNode x, boolean us) {
+        Vector y = (Vector) getArrivingNodesByPrimaryEdge(x).clone();
 
         if (us) {
-            y.addAll(getSecArriving(x));
+            y.addAll(getArrivingNodesBySecondaryEdge(x));
         }
         return y;
     }
@@ -382,7 +367,7 @@ abstract public class Graph extends Vector {
      primary edge.
 
      */
-    public Vector getPrimArriving(GraphNode x) {
+    public Vector getArrivingNodesByPrimaryEdge(GraphNode x) {
         return x.getPrimArriving();
     }
 
@@ -395,7 +380,7 @@ abstract public class Graph extends Vector {
      secondary edge.
 
      */
-    public Vector getSecArriving(GraphNode x) {
+    public Vector getArrivingNodesBySecondaryEdge(GraphNode x) {
         return x.getSecArriving();
     }
 
@@ -410,7 +395,7 @@ abstract public class Graph extends Vector {
      */
     public void removeNode(GraphNode x) {
         // elimina arestas saindo
-        Vector v = getNext(x, true);
+        Vector v = getLeavingNodes(x, true);
 
         for (int i = v.size() - 1; i >= 0; i--) {
             GraphNode y = (GraphNode) v.elementAt(i);
@@ -419,7 +404,7 @@ abstract public class Graph extends Vector {
             x.deleteSecNext(y);
         }
         // elimina arestas chegando
-        v = getArriving(x, true);
+        v = getArrivingNodes(x, true);
         for (int i = v.size() - 1; i >= 0; i--) {
             GraphNode y = (GraphNode) v.elementAt(i);
 
@@ -441,15 +426,15 @@ abstract public class Graph extends Vector {
      * @param x The node to remove
      * @param ex If it should consider also the secondary links
      */
-    public void jumpOver(GraphNode x, boolean ex) {
-        if ( isEntry(x) )
+    public void jumpOverNode(GraphNode x, boolean ex) {
+        if ( isEntryNode(x) )
         {
         	// nao mexer se for no inicial pois podem existir
         	// variaveis definidas no noh...
         	return;
         }
-        Vector nx = getPrimNext(x),
-                ar = getPrimArriving(x);
+        Vector nx = getLeavingNodesByPrimaryEdge(x),
+                ar = getArrivingNodesByPrimaryEdge(x);
 
         for (int i = 0; i < ar.size(); i++) {
             GraphNode f = (GraphNode) ar.elementAt(i);
@@ -457,19 +442,19 @@ abstract public class Graph extends Vector {
             for (int j = 0; j < nx.size(); j++) {
                 GraphNode t = (GraphNode) nx.elementAt(j);
 
-                addPrimEdge(f, t);
+                addPrimaryEdge(f, t);
             }
         }
 	    
-        nx = getPrimNext(x); // sic eh realmente PRIMARY
-        ar = getSecArriving(x);
+        nx = getLeavingNodesByPrimaryEdge(x); // sic eh realmente PRIMARY
+        ar = getArrivingNodesBySecondaryEdge(x);
         for (int i = 0; i < ar.size(); i++) {
             GraphNode f = (GraphNode) ar.elementAt(i);
 
             for (int j = 0; j < nx.size(); j++) {
                 GraphNode t = (GraphNode) nx.elementAt(j);
 
-                addSecEdge(f, t);
+                addSecondaryEdge(f, t);
             }
         }
         removeNode(x); 
@@ -485,7 +470,7 @@ abstract public class Graph extends Vector {
      * "next" nodes.
      *
      */
-    public GraphNode[] findDFT(boolean ex) {
+    public GraphNode[] findDFTNodes(boolean ex) {
         fdtf = new GraphNode[size()];
         for (int i = 0; i < size(); i++) {
             GraphNode x = (GraphNode) elementAt(i);
@@ -493,10 +478,10 @@ abstract public class Graph extends Vector {
             x.setMark(false);
         }
         ctdtf = 0;
-        GraphNode[] entr = getEntries();
-
-        for (int i = 0; i < entr.length; i++) {
-            DFS(entr[i], ex);
+        Set<GraphNode> entr = getEntryNodes();
+        Iterator<GraphNode> i = entr.iterator();
+        while (i.hasNext()) {
+            DFS(i.next(), ex);
         }
         GraphNode[] ret = new GraphNode[ctdtf];
 
@@ -509,7 +494,7 @@ abstract public class Graph extends Vector {
             if (x.getMark()) {
                 return;
             }
-            Vector next = getNext(x, ex);
+            Vector next = getLeavingNodes(x, ex);
             int k = next.size();
 
             x.setMark(true);
@@ -539,7 +524,7 @@ abstract public class Graph extends Vector {
     public void roundRobinAlgorithm(RoundRobinExecutor x, 
             boolean reverse) {
         Vector nx, nx2;
-        GraphNode[] dft = findDFT(true);
+        GraphNode[] dft = findDFTNodes(true);
         int cont = 0, nchange;
         int inc = -1, init = dft.length - 1, end = -1;
 
@@ -595,18 +580,19 @@ abstract public class Graph extends Vector {
      * "next" nodes.
      *
      */
-    public GraphNode[] findIDFT(boolean ex) {
+    public GraphNode[] findIDFTNodes(boolean ex) {
         fdtf = new GraphNode[size()];
         for (int i = 0; i < size(); i++) {
             GraphNode x = (GraphNode) elementAt(i);
 
             x.setMark(false);
         }
-        GraphNode[] ext = getExits();
+        Set<GraphNode> ext = getExitNodes();
+        Iterator<GraphNode> i = ext.iterator();
 
         ctdtf = 0;
-        for (int i = 0; i < ext.length; i++) {
-            IDFS(ext[i], ex);
+        while (i.hasNext()) {
+        	IDFS(i.next(), ex);
         }
         GraphNode[] ret = new GraphNode[ctdtf];
 
@@ -644,7 +630,7 @@ abstract public class Graph extends Vector {
             if (x.getMark()) {
                 return;
             }
-            Vector next = getArriving(x, ex);
+            Vector next = getArrivingNodes(x, ex);
             int k = next.size();
 
             x.setMark(true);
@@ -675,14 +661,14 @@ abstract public class Graph extends Vector {
             boolean reverse) {
 		// System.out.println("Entrou RR");
         Vector nx, nx2;
-        GraphNode[] dft = findIDFT(true);
+        GraphNode[] dft = findIDFTNodes(true);
         // System.out.println("Tamanho dft " + dft.length);
 
 		// se dft.lnegth == 0 isso significa que metodo nao tem nos
 		// de saida. assim, deve fazer apenas a inicializacao.
 		if ( dft.length == 0 )
 		{
-			dft = findDFT(true);
+			dft = findDFTNodes(true);
 		
 	        for (int i = 0; i < dft.length; i++) {
 	            GraphNode in = dft[i];
@@ -751,7 +737,7 @@ abstract public class Graph extends Vector {
      * the nodes is not part of this graph, returns null. If theres is 
      * no such path, returns an array of size 0.
      */
-    public GraphNode[] computeAPath(GraphNode orig,
+    public GraphNode[] computeSimplePath(GraphNode orig,
             GraphNode dest,
             boolean sec) {
         if (!contains(orig) || !contains(dest)) {
@@ -782,7 +768,7 @@ abstract public class Graph extends Vector {
             return v; 
         }
         Vector ret = null;
-        Vector nx = getNext(f, sec);
+        Vector nx = getLeavingNodes(f, sec);
 
         for (int i = 0; ret == null && i < nx.size(); i++) {
             GraphNode ngn = (GraphNode) nx.elementAt(i);
@@ -814,12 +800,12 @@ abstract public class Graph extends Vector {
 
             for (int i = 0; i < v.size(); i++) {
                 GraphNode gn = (GraphNode) v.elementAt(i);
-                GraphNode vem[] = computeAPath(gn, prim, sec);
+                GraphNode vem[] = computeSimplePath(gn, prim, sec);
 
                 if (vem == null || vem.length == 0) {
                     continue;
                 } // no paths from this nodes
-                GraphNode vai[] = computeAPath(prim, gn, sec);
+                GraphNode vai[] = computeSimplePath(prim, gn, sec);
 
                 if (vai == null || vai.length == 0) {
                     continue;
@@ -841,7 +827,7 @@ abstract public class Graph extends Vector {
         // System.out.println("Remove composite");
         for (int j = 0; j < size(); j++) {
             GraphNode gn = (GraphNode) elementAt(j);
-            Vector next = getNext(gn, sec);
+            Vector next = getLeavingNodes(gn, sec);
 
             nextNode:
             // System.out.println("Remove composite " + gn);
@@ -849,7 +835,7 @@ abstract public class Graph extends Vector {
                 GraphNode nx = (GraphNode) next.elementAt(i);
 
                 if (gn == nx) {
-                    deletePrimEdge(gn, nx);
+                    removePrimaryEdge(gn, nx);
                     break;
                 }
                 // System.out.println(i + " Next: " + nx);
@@ -860,11 +846,11 @@ abstract public class Graph extends Vector {
                     GraphNode nx2 = (GraphNode) next.elementAt(k);
                     // System.out.println(" Testando: " + k + " / " + next.size() + "\n" + nx2);
 					
-                    GraphNode path[] = computeAPath(nx2, nx, false);
+                    GraphNode path[] = computeSimplePath(nx2, nx, false);
 
                     // System.out.println(" Caminho achado: " + (path != null));
                     if (path != null) {
-                        deletePrimEdge(gn, nx);
+                        removePrimaryEdge(gn, nx);
                         break;
                     }
                 }

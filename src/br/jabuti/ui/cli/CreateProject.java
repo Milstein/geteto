@@ -26,6 +26,7 @@ import br.jabuti.graph.datastructure.dug.*;
 import br.jabuti.project.*;
 
 import br.jabuti.lookup.*;
+import br.jabuti.lookup.java.bytecode.Program;
 
 
 /** 
@@ -218,7 +219,6 @@ public class CreateProject {
 				// Setting the project file name.
 				jbtProject.setProjectFile( new File( prjFile ) );
 				jbtProject.setMobility( isMobility );
-				jbtProject.setCFGOption( cfgOption );
 				
 				// Checking the set of packages to be avoided
 				Program prg = jbtProject.getProgram();

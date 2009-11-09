@@ -23,6 +23,7 @@ package br.jabuti.project;
 import java.io.*;
 
 import br.jabuti.lookup.*;
+import br.jabuti.lookup.java.bytecode.RClassCode;
 
 import org.aspectj.apache.bcel.util.*;
 import org.aspectj.apache.bcel.classfile.*;

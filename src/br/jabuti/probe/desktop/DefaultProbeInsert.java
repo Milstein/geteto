@@ -25,7 +25,8 @@ import org.aspectj.apache.bcel.generic.*;
 import java.util.*;
 
 import br.jabuti.instrumenter.bytecode.bcel.*;
-import br.jabuti.lookup.*;
+import br.jabuti.lookup.java.bytecode.Program;
+import br.jabuti.lookup.java.bytecode.RClassCode;
 
 /**
  * This class is designed to insert probes on each node of certain classes in a given program
@@ -43,7 +44,7 @@ public class DefaultProbeInsert
 	/**
 	 * The constructor.
 	 * 
-	 * @param p - The {@link br.jabuti.lookup.Program structure} that represents the program to be
+	 * @param p - The {@link br.jabuti.lookup.java.bytecode.Program structure} that represents the program to be
 	 *        instrumented
 	 * @param c - The list of classes to be instrumented. Each element is a string with the complete
 	 *        name of the class
@@ -59,7 +60,7 @@ public class DefaultProbeInsert
 		return "br.jabuti.probe.DefaultProber";
 	}
 
-	public Map instrument(int typeOfCFG) throws InvalidInstructionException, InvalidStackArgument
+	public Map instrument() throws InvalidInstructionException, InvalidStackArgument
 	{
 		String[] userClass = null;
 		HashSet inst = new HashSet();
@@ -94,7 +95,7 @@ public class DefaultProbeInsert
 			if ((!achou) && inst.contains(userClass[i]) && !jv.isInterface()) {
 				// chama a rotina que faz a instrumentacao
 				try {
-					jv = doDefaultInstrument(jv, userClass[i], typeOfCFG);
+					jv = doDefaultInstrument(jv, userClass[i]);
 					hs.put(r.getName(), jv);
 				} catch (Exception e) {
 					hs.put(userClass[i], jv);
@@ -107,7 +108,7 @@ public class DefaultProbeInsert
 		return hs;
 	}
 
-	private JavaClass doDefaultInstrument(JavaClass java_class, String className, int typeOfCFG)
+	private JavaClass doDefaultInstrument(JavaClass java_class, String className)
 					throws InvalidInstructionException, InvalidStackArgument
 	{
 
@@ -137,7 +138,7 @@ public class DefaultProbeInsert
 				ASMInstrumenter gi = new ASMInstrumenter(mg, cg, cp);
 
 				int nextLocal = mg.getMaxLocals() + 1;
-				CFG gfc = new CFG(mg, cg, typeOfCFG);
+				CFG gfc = new CFG(mg, cg);
 
 				// gfc.releaseInstructionGraph(); // free some memory
 
@@ -235,7 +236,7 @@ public class DefaultProbeInsert
 						InstructionHandle ih = InstructionList.findHandle(ihVec, ihOffset,
 										ihOffset.length, gn.getStart());
 
-						if (gfc.isEntry(gn)) {
+						if (gfc.isEntryNode(gn)) {
 							String s = "invokestatic " + getProbeClass() + " getNest \"()J\""
 											+ " lstore " + nextLocal;
 							gi.addBefore(ih, s);

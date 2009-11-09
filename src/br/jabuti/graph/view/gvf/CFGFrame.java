@@ -37,6 +37,9 @@ import br.jabuti.project.*;
 import br.jabuti.ui.gui.*;
 import br.jabuti.util.*;
 
+import br.jabuti.graph.datastructure.GraphCallNode;
+import br.jabuti.graph.datastructure.GraphExitNode;
+import br.jabuti.graph.datastructure.GraphNode;
 import br.jabuti.graph.datastructure.dug.*;
 
 
@@ -229,7 +232,7 @@ public class CFGFrame extends JFrame implements ItemListener {
         vetLinks = new Vector();
 
         CFG cfg = cm.getCFG();
-        GraphNode[] fdt = cfg.findDFT(true);
+        GraphNode[] fdt = cfg.findDFTNodes(true);
 
         Hashtable nodesTable = new Hashtable();
 
@@ -244,9 +247,9 @@ public class CFGFrame extends JFrame implements ItemListener {
             if (nodesTable.containsKey(label)) {
                 curNode = (GVFNode) nodesTable.get(label);
             } else {
-                if (gn instanceof CFGCallNode) {
+                if (gn instanceof GraphCallNode) {
                     curNode = new GVFCallNode(gn, cm);
-                } else if (gn instanceof CFGExitNode
+                } else if (gn instanceof GraphExitNode
                         || ((gn.getPrimNext().size() == 0)
                         && (gn.getSecNext().size() == 0))) {
                     curNode = new GVFExitNode(gn, cm);
@@ -273,9 +276,9 @@ public class CFGFrame extends JFrame implements ItemListener {
                 if (nodesTable.containsKey(childLabel)) {
                     childNode = (GVFNode) nodesTable.get(childLabel);
                 } else {
-                    if (gn2 instanceof CFGCallNode) {
+                    if (gn2 instanceof GraphCallNode) {
                         childNode = new GVFCallNode(gn2, cm);
-                    } else if (gn2 instanceof CFGExitNode
+                    } else if (gn2 instanceof GraphExitNode
                             || ((gn2.getPrimNext().size() == 0)
                             && (gn2.getSecNext().size() == 0))) {
                         childNode = new GVFExitNode(gn2, cm);
@@ -305,9 +308,9 @@ public class CFGFrame extends JFrame implements ItemListener {
                 if (nodesTable.containsKey(childLabel)) {
                     childNode = (GVFNode) nodesTable.get(childLabel);
                 } else {
-                    if (gn2 instanceof CFGCallNode) {
+                    if (gn2 instanceof GraphCallNode) {
                         childNode = new GVFCallNode(gn2, cm);
-                    } else if (gn2 instanceof CFGExitNode
+                    } else if (gn2 instanceof GraphExitNode
                             || ((gn2.getPrimNext().size() == 0)
                             && (gn2.getSecNext().size() == 0))) {
                         childNode = new GVFExitNode(gn2, cm);

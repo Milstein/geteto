@@ -11,10 +11,10 @@ import org.junit.Before;
 
 import br.jabuti.criteria.AbstractCriterion;
 import br.jabuti.graph.datastructure.dug.CFG;
-import br.jabuti.graph.datastructure.dug.DominatorTree;
-import br.jabuti.graph.datastructure.dug.DominatorTreeNode;
-import br.jabuti.graph.datastructure.dug.RRDominator;
-import br.jabuti.graph.datastructure.dug.RRLiveDefs;
+import br.jabuti.graph.datastructure.reducetree.DominatorTree;
+import br.jabuti.graph.datastructure.reducetree.DominatorTreeNode;
+import br.jabuti.graph.datastructure.reducetree.RRDominator;
+import br.jabuti.graph.datastructure.reducetree.RRLiveDefs;
 
 public class DominatorTreeTest
 {
@@ -46,8 +46,6 @@ public class DominatorTreeTest
 			CFG g = new CFG(mg, cg);
 
 			// g.computeDefUse();
-
-			g.print(System.out);
 			RRDominator rrd = new RRDominator("Dominator");
 
 			g.roundRobinAlgorithm(rrd, true);
@@ -63,28 +61,28 @@ public class DominatorTreeTest
 			DominatorTree dtDom = new DominatorTree(g, "Dominator");
 
 			dtDom.setDefaultNumbering();
-			dtDom.print(System.out);
+			//dtDom.print(System.out);
 
 			System.out.println("\n\nPos dominator TREE ***************");
 			DominatorTree dtIDom = new DominatorTree(g, "IDominator");
 
 			dtIDom.setDefaultNumbering();
-			dtIDom.print(System.out);
+			//dtIDom.print(System.out);
 
 			dtDom.merge(dtIDom);
 			System.out.println("\n\nMerged dominator TREE ***************");
-			dtDom.print(System.out);
+			//dtDom.print(System.out);
 
 			DominatorTree bbDom = (DominatorTree) DominatorTree.reduceSCC(dtDom, false);
 
-			bbDom.setEntry(bbDom.getReduceNodeOf(dtDom.getEntry()));
+			bbDom.setEntryNode(bbDom.getReduceNodeOf(dtDom.getFirstEntryNode()));
 			bbDom.setDefaultNumbering();
 			System.out.println("\n\nBasic Block Dominator TREE ***************");
-			bbDom.print(System.out);
+			//bbDom.print(System.out);
 
 			System.out.println("\n\nFinal Basic Block Dominator TREE ***************");
 			bbDom.removeComposite(false);
-			bbDom.print(System.out);
+			//bbDom.print(System.out);
 
 			System.out.println("\n\nPesos dos nos ***************");
 			for (int z1 = 0; z1 < bbDom.size(); z1++) {

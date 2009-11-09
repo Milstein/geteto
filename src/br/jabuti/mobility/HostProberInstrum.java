@@ -28,6 +28,7 @@ import java.util.*;
 
 import br.jabuti.instrumenter.bytecode.bcel.*;
 import br.jabuti.lookup.*;
+import br.jabuti.lookup.java.bytecode.Program;
 import br.jabuti.project.JabutiProject;
 
 import br.jabuti.util.*;

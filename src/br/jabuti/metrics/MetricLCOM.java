@@ -11,9 +11,9 @@ import org.aspectj.apache.bcel.generic.ConstantPoolGen;
 import org.aspectj.apache.bcel.generic.MethodGen;
 
 import br.jabuti.graph.datastructure.dug.CFG;
-import br.jabuti.lookup.Program;
-import br.jabuti.lookup.RClass;
-import br.jabuti.lookup.RClassCode;
+import br.jabuti.lookup.java.bytecode.Program;
+import br.jabuti.lookup.java.bytecode.RClass;
+import br.jabuti.lookup.java.bytecode.RClassCode;
 import br.jabuti.util.Debug;
 
 /**

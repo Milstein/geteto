@@ -6,9 +6,9 @@ import org.aspectj.apache.bcel.generic.ClassGen;
 import org.aspectj.apache.bcel.generic.ConstantPoolGen;
 import org.aspectj.apache.bcel.generic.MethodGen;
 
-import br.jabuti.lookup.Program;
-import br.jabuti.lookup.RClass;
-import br.jabuti.lookup.RClassCode;
+import br.jabuti.lookup.java.bytecode.Program;
+import br.jabuti.lookup.java.bytecode.RClass;
+import br.jabuti.lookup.java.bytecode.RClassCode;
 
 /**
  * Complexidade Ciclom�tica de McCabe; Calculado como o valor

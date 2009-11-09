@@ -17,10 +17,12 @@
 */
 
 
-package br.jabuti.graph.datastructure.dug;
+package br.jabuti.graph.datastructure.reducetree;
 
 
 import java.util.*;
+
+import br.jabuti.graph.datastructure.GraphNode;
 
 
 public interface RoundRobinExecutor {

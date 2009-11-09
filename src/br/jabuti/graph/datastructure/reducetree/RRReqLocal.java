@@ -17,11 +17,12 @@
 */
 
 
-package br.jabuti.graph.datastructure.dug;
+package br.jabuti.graph.datastructure.reducetree;
 
 
 import java.util.*;
 
+import br.jabuti.graph.datastructure.GraphNode;
 import br.jabuti.verifier.InstructionNode;
 import org.aspectj.apache.bcel.generic.*;
 

@@ -20,7 +20,9 @@
 package br.jabuti.criteria;
 
 
+import br.jabuti.graph.datastructure.GraphNode;
 import br.jabuti.graph.datastructure.dug.*;
+import br.jabuti.graph.datastructure.reducetree.RRLiveDefs;
 
 import java.util.*;
 
@@ -73,7 +75,7 @@ public class AllUses extends AbstractCriterion {
 
 			// pega o numero de arestas primarias saindo
 			// se for <= 1, nao considera os usos locais
-            Vector nextG = graph.getNext(g, false);
+            Vector nextG = graph.getLeavingNodes(g, false);
 			int contNext = nextG.size();
 
 			// primeiro trata dos usos locais
@@ -139,7 +141,7 @@ public class AllUses extends AbstractCriterion {
 				{
 					Vector pair = new Vector(2);
 					pair.add(useVarName);
-					pair.add(graph.getEntry());
+					pair.add(graph.getFirstEntryNode());
 					h2.add(pair);
 				}
 				
@@ -157,7 +159,7 @@ public class AllUses extends AbstractCriterion {
             		boolean isSecDef = 
             		         secNodes.required.containsKey(defNode.getLabel());
             		
-	                Vector v = graph.getNext(g, false);
+	                Vector v = graph.getLeavingNodes(g, false);
 					
 					// se numero de sucesores <= 1 entao existe uma 
 					// associa��o defini��o / uso no noh (computacional)

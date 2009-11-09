@@ -19,6 +19,8 @@
 
 package br.jabuti.criteria;
 
+import br.jabuti.graph.datastructure.Graph;
+import br.jabuti.graph.datastructure.GraphNode;
 import br.jabuti.graph.datastructure.dug.*;
 
 import java.util.*;
@@ -396,7 +398,7 @@ public abstract class AbstractCriterion implements Criterion {
 
 	final public static String[] changePath(Graph graph, String[] pat) {
 		String[] newPat = new String[pat.length];
-		GraphNode[] dft = graph.findDFT(false);
+		GraphNode[] dft = graph.findDFTNodes(false);
 
 		// Find the entry node for the constructor
 		int i = 0;
@@ -409,7 +411,7 @@ public abstract class AbstractCriterion implements Criterion {
 
 		for (; i < pat.length; i++) {
 			newPat[i] = gn.getLabel();
-			Vector nx = graph.getNext(gn, true);
+			Vector nx = graph.getLeavingNodes(gn, true);
 
 			for (int k = 0; k < nx.size(); k++) {
 				GraphNode gnx = (GraphNode) nx.elementAt(k);

@@ -19,10 +19,12 @@
 
 package br.jabuti.graph.datastructure.dug;
 
+import br.jabuti.graph.datastructure.GraphExitNode;
 
 
 
-public class CFGExitNode extends CFGNode {
+
+public class CFGExitNode extends CFGNode implements GraphExitNode {
 	/**
 	 * Added to jdk1.5.0_04 compiler
 	 */
@@ -39,12 +41,6 @@ public class CFGExitNode extends CFGNode {
 	
     public CFGExitNode() {
         super();
-    }
-	
-    public String toString() {
-        String str = "node " + number + " dummy exit node";
-
-        return str;
     }
 }		
 

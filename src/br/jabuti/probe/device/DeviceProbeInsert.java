@@ -6,6 +6,7 @@ import org.aspectj.apache.bcel.classfile.*;
 import java.util.*;
 
 import br.jabuti.lookup.*;
+import br.jabuti.lookup.java.bytecode.Program;
 import br.jabuti.probe.desktop.DefaultProbeInsert;
 
  
@@ -25,7 +26,7 @@ public class DeviceProbeInsert extends DefaultProbeInsert {
 	private boolean keepAlive;
 	
     /** The constructor.
-     * @param p - The {@link br.jabuti.lookup.Program structure} that represents
+     * @param p - The {@link br.jabuti.lookup.java.bytecode.Program structure} that represents
      * the program to be instrumented
      * @param c - The list of classes to be instrumented. Each element
      * is a string with the complete name of the class
@@ -51,11 +52,11 @@ public class DeviceProbeInsert extends DefaultProbeInsert {
         return "br.jabuti.probe.device.j2me.DeviceProber";
     }
 	
-    public Map instrument(int typeOfCFG) throws InvalidInstructionException,
+    public Map instrument() throws InvalidInstructionException,
     											InvalidStackArgument 
     {
 		
-		Map mp = super.instrument(typeOfCFG);
+		Map mp = super.instrument();
 		
 		Hashtable hs = new Hashtable();
 		

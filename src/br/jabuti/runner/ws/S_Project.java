@@ -16,7 +16,7 @@ import java.util.zip.ZipFile;
 import br.jabuti.criteria.AbstractCriterion;
 import br.jabuti.criteria.Criterion;
 import br.jabuti.runner.junit.JUnitJabutiCore;
-import br.jabuti.lookup.Program;
+import br.jabuti.lookup.java.bytecode.Program;
 import br.jabuti.probe.desktop.ProberInstrum;
 import br.jabuti.project.Coverage;
 import br.jabuti.project.JabutiProject;

@@ -24,7 +24,9 @@ import org.aspectj.apache.bcel.generic.*;
 import br.jabuti.util.*;
 import java.util.*;
 
+import br.jabuti.graph.datastructure.GraphNode;
 import br.jabuti.graph.datastructure.dug.*;
+import br.jabuti.graph.datastructure.reducetree.RRReqLocal;
 
 
 /** This class represents a node of a {@link InstructionGraph} that

@@ -27,6 +27,7 @@ import java.util.*;
 
 import br.jabuti.instrumenter.bytecode.bcel.*;
 import br.jabuti.lookup.*;
+import br.jabuti.lookup.java.bytecode.Program;
 import br.jabuti.project.JabutiProject;
 
 import br.jabuti.util.*;
@@ -178,7 +179,7 @@ public class ProberLoader {
 			Map mp = null;
 
 			try {
-				mp = dpi.instrument(project.getCFGOption());
+				mp = dpi.instrument();
 				// substitui os objetos JavaClass por byte[]
 				Iterator it0 = mp.keySet().iterator();
 				Hashtable ht = new Hashtable();

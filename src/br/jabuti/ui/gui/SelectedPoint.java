@@ -21,6 +21,7 @@ package br.jabuti.ui.gui;
 
 import java.util.*;
 
+import br.jabuti.graph.datastructure.GraphNode;
 import br.jabuti.graph.datastructure.dug.*;
 
 /**

@@ -18,10 +18,14 @@
 
 
 
-package br.jabuti.graph.datastructure.dug;
+package br.jabuti.graph.datastructure.reducetree;
 
 
 import java.util.*;
+
+import br.jabuti.graph.datastructure.Graph;
+import br.jabuti.graph.datastructure.ListGraph;
+import br.jabuti.graph.datastructure.GraphNode;
 
 
 /**
@@ -32,7 +36,7 @@ import java.util.*;
  @author: Marcio Delamaro
 
  */
-public class ReduceGraph extends Graph {
+public class ReduceGraph extends ListGraph {
 
     /**
 	 * Added to jdk1.5.0_04 compiler
@@ -83,7 +87,7 @@ public class ReduceGraph extends Graph {
      **/
 
     static public ReduceGraph reduceSCC(Graph g, boolean sec) {
-        HashSet v[] = g.computeSCC(sec);
+        Set v[] = g.computeSCC(sec);
 
         return reduce(v, g, sec);
     }
@@ -98,7 +102,7 @@ public class ReduceGraph extends Graph {
      * @param sec - if secondary edges should be considered
      * @return the reduced graph.
      */
-    static public ReduceGraph reduce(HashSet hs[], Graph g, boolean sec) {
+    static public ReduceGraph reduce(Set hs[], Graph g, boolean sec) {
         ReduceGraph rd = new ReduceGraph();
 
         for (int i = 0; i < hs.length; i++) {
@@ -112,14 +116,14 @@ public class ReduceGraph extends Graph {
             GraphNode inNodes[] = rn.getOriginalNodes();
 
             for (int j = 0; j < inNodes.length; j++) {
-                Vector v = g.getNext(inNodes[j], sec);
+                Vector v = g.getLeavingNodes(inNodes[j], sec);
 
                 for (int k = 0; k < v.size(); k++) {
                     GraphNode gnex = (GraphNode) v.elementAt(k);
                     ReduceNode rdNex = rd.getReduceNodeOf(gnex);
 
                     if (rdNex != rn) {
-                        rd.addPrimEdge(rn, rdNex);
+                        rd.addPrimaryEdge(rn, rdNex);
                     }
                 }
             }

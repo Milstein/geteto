@@ -18,12 +18,17 @@
 
 
 
-package br.jabuti.graph.datastructure.dug;
+package br.jabuti.graph.datastructure.reducetree;
 
 
 import java.util.*;
 import org.aspectj.apache.bcel.classfile.*;
 import org.aspectj.apache.bcel.generic.*;
+
+import br.jabuti.graph.datastructure.Graph;
+import br.jabuti.graph.datastructure.ListGraph;
+import br.jabuti.graph.datastructure.GraphNode;
+import br.jabuti.graph.datastructure.dug.CFG;
 
 
 /**
@@ -42,20 +47,20 @@ public class DominatorTree extends ReduceGraph {
 	private static final long serialVersionUID = 8555812394502893222L;
 
 	/** Creates a pre- or a pos-dominator tree for a
-     * {@link Graph}. The set of dominator must have been creted
+     * {@link ListGraph}. The set of dominator must have been creted
      * before calling this constructor.
-     * @param g - the {@link Graph} to be analyzed
+     * @param g - the {@link ListGraph} to be analyzed
      * @param label - the label to access the dominator set of each
      * node in the original graph */
-    public DominatorTree(Graph g, String label) {
+    public DominatorTree(ListGraph g, String label) {
         super();
         for (int i = 0; i < g.size(); i++) {
             GraphNode gn = (GraphNode) g.elementAt(i);
             DominatorTreeNode rn = new DominatorTreeNode(gn);
 
             add(rn); // inclui no no grafo
-            if (g.isEntry(gn)) {
-                setEntry(rn);
+            if (g.isEntryNode(gn)) {
+                setEntryNode(rn);
             }
         }
         for (int i = 0; i < g.size(); i++) {
@@ -68,7 +73,7 @@ public class DominatorTree extends ReduceGraph {
                 GraphNode donmGN = (GraphNode) it.next();
 
                 if (donmGN != gn) {
-                    addPrimEdge(getReduceNodeOf(donmGN), rn);
+                    addPrimaryEdge(getReduceNodeOf(donmGN), rn);
                 }
             }
         }
@@ -92,10 +97,10 @@ public class DominatorTree extends ReduceGraph {
                 GraphNode gnOther = rnNextOther.getOriginalNode();
                 ReduceNode rnNext = getReduceNodeOf(gnOther);
 
-                addPrimEdge(rn, rnNext); 
+                addPrimaryEdge(rn, rnNext); 
             }
         }
-        removeExits();
+        removeExitNodes();
     }
 	
     public void markCovered(GraphNode x) {
@@ -143,7 +148,7 @@ public class DominatorTree extends ReduceGraph {
      **/
 
     static public ReduceGraph reduceSCC(Graph g, boolean sec) {
-        HashSet v[] = g.computeSCC(sec);
+        Set v[] = g.computeSCC(sec);
 
         return reduce(v, g, sec);
     }
@@ -158,7 +163,7 @@ public class DominatorTree extends ReduceGraph {
      * @param sec - if secondary edges should be considered
      * @return the reduced graph.
      */
-    static public ReduceGraph reduce(HashSet hs[], Graph g, boolean sec) {
+    static public ReduceGraph reduce(Set hs[], Graph g, boolean sec) {
         DominatorTree rd = new DominatorTree();
 
         for (int i = 0; i < hs.length; i++) {
@@ -172,93 +177,19 @@ public class DominatorTree extends ReduceGraph {
             GraphNode inNodes[] = rn.getOriginalNodes();
 
             for (int j = 0; j < inNodes.length; j++) {
-                Vector v = g.getNext(inNodes[j], sec);
+                Vector v = g.getLeavingNodes(inNodes[j], sec);
 
                 for (int k = 0; k < v.size(); k++) {
                     GraphNode gnex = (GraphNode) v.elementAt(k);
                     ReduceNode rdNex = rd.getReduceNodeOf(gnex);
 
                     if (rdNex != rn) {
-                        rd.addPrimEdge(rn, rdNex);
+                        rd.addPrimaryEdge(rn, rdNex);
                     }
                 }
             }
         }
         return rd;
     }
-
-    public static void main(String args[])
-            throws Exception {
-    	
-        JavaClass java_class;
-
-        java_class = new ClassParser(args[0]).parse();	// May throw IOException
-        ConstantPoolGen cp =
-                new ConstantPoolGen(java_class.getConstantPool());
-        ClassGen cg = new ClassGen(java_class);
-        Method[] methods = java_class.getMethods();
-
-        for (int i = 0; i < methods.length; i++) {
-            if (args.length > 1 && !args[1].equals(methods[i].getName())) {
-                continue;
-            }
-            System.out.println("\n\n--------------------------");
-            System.out.println(methods[i].getName());
-            System.out.println("--------------------------");
-            MethodGen mg =
-                    new MethodGen(methods[i], java_class.getClassName(), cp);
-            CFG g = new CFG(mg, cg);
-
-//            g.computeDefUse();
-            
-            g.print(System.out);
-            RRDominator rrd = new RRDominator("Dominator");
-
-            g.roundRobinAlgorithm(rrd, true);
-
-            rrd = new RRDominator("IDominator");
-            g.roundIRobinAlgorithm(rrd, true);
-
-            RRLiveDefs rral = new RRLiveDefs("Alive definitions", RRLiveDefs.ALL);
-
-            g.roundRobinAlgorithm(rral, true);
-            
-            System.out.println("\n\nPre dominator TREE ***************");
-            DominatorTree dtDom = new DominatorTree(g, "Dominator");
-
-            dtDom.setDefaultNumbering();
-            dtDom.print(System.out);
-
-            System.out.println("\n\nPos dominator TREE ***************");
-            DominatorTree dtIDom = new DominatorTree(g, "IDominator");
-
-            dtIDom.setDefaultNumbering();
-            dtIDom.print(System.out);
-
-            dtDom.merge(dtIDom);
-            System.out.println("\n\nMerged dominator TREE ***************");
-            dtDom.print(System.out);
-
-            DominatorTree bbDom = (DominatorTree) reduceSCC(dtDom, false);
-
-            bbDom.setEntry(bbDom.getReduceNodeOf(dtDom.getEntry()));
-            bbDom.setDefaultNumbering();
-            System.out.println("\n\nBasic Block Dominator TREE ***************");
-            bbDom.print(System.out);
-            
-            System.out.println("\n\nFinal Basic Block Dominator TREE ***************");
-            bbDom.removeComposite(false);
-            bbDom.print(System.out);
-            
-            System.out.println("\n\nPesos dos nos ***************");
-            for (int z1 = 0; z1 < bbDom.size(); z1++) {
-                DominatorTreeNode dtn = (DominatorTreeNode) bbDom.elementAt(z1);
-
-                System.out.println(dtn);
-                System.out.println("\nPeso: " + bbDom.getWeigth(dtn));
-            }
-        }
-    }
-
 }
 

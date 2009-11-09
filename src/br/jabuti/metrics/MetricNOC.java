@@ -1,7 +1,7 @@
 package br.jabuti.metrics;
 
-import br.jabuti.lookup.Program;
-import br.jabuti.lookup.RClass;
+import br.jabuti.lookup.java.bytecode.Program;
+import br.jabuti.lookup.java.bytecode.RClass;
 
 /**
  * Implements the NOC - number of children.

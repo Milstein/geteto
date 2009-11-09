@@ -1,9 +1,6 @@
 package br.jabuti.graph;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -21,8 +18,8 @@ import br.jabuti.TestConfiguration;
 import br.jabuti.criteria.AbstractCriterion;
 import br.jabuti.graph.datastructure.dug.CFG;
 import br.jabuti.graph.datastructure.dug.CFGNode;
-import br.jabuti.graph.datastructure.dug.RRDominator;
-import br.jabuti.graph.datastructure.dug.RRLiveDefs;
+import br.jabuti.graph.datastructure.reducetree.RRDominator;
+import br.jabuti.graph.datastructure.reducetree.RRLiveDefs;
 import br.jabuti.util.Debug;
 import br.jabuti.verifier.InvalidInstructionException;
 import br.jabuti.verifier.InvalidStackArgument;
@@ -66,8 +63,6 @@ public class CFGTest
 			System.out.println("--------------------------");
 			MethodGen mg = new MethodGen(methods[i], java_class.getClassName(), cp);
 			CFG g = new CFG(mg, cg, CFG.NONE);
-
-			g.print(System.out);
 			RRDominator rrd = new RRDominator("Dominator");
 
 			g.roundRobinAlgorithm(rrd, true);

@@ -25,6 +25,7 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.text.*;
 
+import br.jabuti.graph.datastructure.GraphNode;
 import br.jabuti.graph.datastructure.dug.*;
 import br.jabuti.project.*;
 import br.jabuti.util.*;
@@ -386,7 +387,7 @@ class BytecodePanel extends JPanel {
                     }
                 } else {
                     CFG cfg = method.getCFG();
-                    GraphNode[] fdt = cfg.findDFT(true);
+                    GraphNode[] fdt = cfg.findDFTNodes(true);
 	
                     int c = 0;
                     

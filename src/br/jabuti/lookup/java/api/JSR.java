@@ -1,4 +1,4 @@
-package br.jabuti.lookup.api;
+package br.jabuti.lookup.java.api;
 
 
 // http://en.wikipedia.org/wiki/Java_Community_Process

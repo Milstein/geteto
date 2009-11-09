@@ -34,8 +34,8 @@ import br.jabuti.criteria.Criterion;
 import br.jabuti.criteria.DefUse;
 import br.jabuti.criteria.Edge;
 import br.jabuti.criteria.Requirement;
-import br.jabuti.lookup.Program;
-import br.jabuti.lookup.RClassCode;
+import br.jabuti.lookup.java.bytecode.Program;
+import br.jabuti.lookup.java.bytecode.RClassCode;
 import br.jabuti.util.HTMLGen;
 import br.jabuti.util.ToolConstants;
 
@@ -74,7 +74,7 @@ public class Project2XML {
     	xmlOut.append( " name=\"" + prj.getProjectFileName() + "\"" );
     	xmlOut.append( " type=\"research\"" );
     	xmlOut.append( " mobility=\"" + (prj.isMobility()? "Y":"N") + "\"" );
-    	xmlOut.append( " CFGOption=\"" + new Integer( prj.getCFGOption() ).toString() + "\">" );
+    	xmlOut.append( "\">" );
     	nl();
     	emit( xmlOut.toString() );
 

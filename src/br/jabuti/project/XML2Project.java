@@ -614,7 +614,6 @@ public class XML2Project extends DefaultHandler {
 			jbtProject.setProjectFile(new File(urlString));
 
 			jbtProject.setMobility(isMobility);
-			jbtProject.setCFGOption(cfgOption);
 
 		} else {
 			throw new SAXException(CLASSPATH + " found outside a " + PROJECT);

@@ -26,12 +26,12 @@ import org.aspectj.apache.bcel.generic.ClassGen;
 import org.aspectj.apache.bcel.generic.ConstantPoolGen;
 import org.aspectj.apache.bcel.generic.MethodGen;
 
+import br.jabuti.graph.datastructure.GraphCallNode;
 import br.jabuti.graph.datastructure.dug.CFG;
-import br.jabuti.graph.datastructure.dug.CFGCallNode;
 import br.jabuti.graph.datastructure.dug.CFGNode;
-import br.jabuti.lookup.Program;
-import br.jabuti.lookup.RClass;
-import br.jabuti.lookup.RClassCode;
+import br.jabuti.lookup.java.bytecode.Program;
+import br.jabuti.lookup.java.bytecode.RClass;
+import br.jabuti.lookup.java.bytecode.RClassCode;
 
 // TODO: review this metric implementation. JaBUTi/AJ and plain JaBUTi
 // have different results for the same input.
@@ -86,10 +86,10 @@ public class MetricRFC extends AbstractMetric
 			HashSet hs = new HashSet();
 			for (int j = 0; j < g.size(); j++) {
 				CFGNode gn = (CFGNode) g.get(j);
-				if (!(gn instanceof CFGCallNode)) {
+				if (!(gn instanceof GraphCallNode)) {
 					continue;
 				}
-				CFGCallNode gcn = (CFGCallNode) gn;
+				GraphCallNode gcn = (GraphCallNode) gn;
 				for (int h = 0; h < gcn.getClasse().length; h++) {
 					hs.add(gcn.getClasse()[h] + gcn.getName());
 				}

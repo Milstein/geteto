@@ -20,6 +20,7 @@
 package br.jabuti.ui.cli;
 
 import br.jabuti.lookup.*;
+import br.jabuti.lookup.java.bytecode.Program;
 
 /** 
  * This script lists the complete class closure, considering

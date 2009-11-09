@@ -17,23 +17,24 @@
 */
 
 
-package br.jabuti.graph.datastructure.dug;
+package br.jabuti.graph.datastructure;
 
 
 import java.util.*;
 
+
 /**
  This is the abstract class that represents a node of a Program
  Graph. A program graph is represented by a subclass of 
- {@link Graph}. <BR>
+ {@link ListGraph}. <BR>
 
  Objects of this class stores only basic information about a 
  node as adjacent nodes (see the variables below). Other information
  can be added by the extending classes.<BR>
 
- Most methods here are used by {@link Graph} methods. The user is
+ Most methods here are used by {@link ListGraph} methods. The user is
  advised to use those methods instead of the ones in this class.
- To add an edge, for example, use {@link Graph#addPrimEdge} instead
+ To add an edge, for example, use {@link ListGraph#addPrimEdge} instead
  of {@link GraphNode#addPrimNext}.<BR>
 
  The class implements <code>Comparator</code> so the subclasses are
@@ -49,29 +50,29 @@ abstract public class GraphNode  implements Comparator, java.io.Serializable
 {
 		
     /** Set of nodes to which there exist a primary edge */		
-    Vector next = new Vector(); 
+    protected Vector next = new Vector(); 
 
     /** Set of nodes to which there exist a secondary edge */		
-    Vector secNext = new Vector();
+    protected Vector secNext = new Vector();
 
     /** Set of nodes from which there exist a primary edge */		
-    Vector arriving = new Vector();
+    protected Vector arriving = new Vector();
 
     /** Set of nodes from which there exist a secondary edge */		
-    Vector secArriving = new Vector();
+    protected Vector secArriving = new Vector();
 
     /** Each node has a number, this is it. It is initialized 
      with -1 */
-    int number = -1;
+    protected int number = -1;
 
     /** This is used to associate an object to the node */
     protected Hashtable objectSet = new Hashtable(0);
 
     /** Each node can also have a label. It is not initialized 
      (is <code>null</code> by default) */
-    String label = null;
+    protected String label = null;
 
-    /** Auxiliary, use in {@link Graph#findDFT} */
+    /** Auxiliary, use in {@link ListGraph#findDFT} */
     private boolean mark;
 	
     /** Just creates an (empty) node */
@@ -289,7 +290,7 @@ abstract public class GraphNode  implements Comparator, java.io.Serializable
 	
     /**
      Auxiliary method used to "mark" a node. Used, for example
-     by the {@link Graph#findDFT} method 
+     by the {@link ListGraph#findDFT} method 
 
      @param x The value to be assigned 
      */
@@ -299,7 +300,7 @@ abstract public class GraphNode  implements Comparator, java.io.Serializable
 	
     /**
      Auxiliary method used to get a "mark" of a node. Used, for example
-     by the {@link Graph#findDFT} method 
+     by the {@link ListGraph#findDFT} method 
 
      @param x The value to be assigned 
      */
@@ -360,5 +361,9 @@ abstract public class GraphNode  implements Comparator, java.io.Serializable
         return s;
     }
 
+	public Vector getNext()
+	{
+		return next;
+	}
 }
 

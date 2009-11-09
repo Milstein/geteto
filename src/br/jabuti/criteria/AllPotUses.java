@@ -20,7 +20,9 @@
 package br.jabuti.criteria;
 
 
+import br.jabuti.graph.datastructure.GraphNode;
 import br.jabuti.graph.datastructure.dug.*;
+import br.jabuti.graph.datastructure.reducetree.RRLiveDefs;
 
 import java.util.*;
 
@@ -72,7 +74,7 @@ public class AllPotUses extends AbstractCriterion {
             }
 
 			// pega o numero de arestas primarias saindo
-            Vector nextG = graph.getNext(g, false);
+            Vector nextG = graph.getLeavingNodes(g, false);
 			int contNext = nextG.size();
 			
 			// se for uso predicativo, inclui as definicoes no

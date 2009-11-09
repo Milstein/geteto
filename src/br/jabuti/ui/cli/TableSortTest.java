@@ -34,6 +34,7 @@ import javax.swing.table.*;
 import org.w3c.dom.Document;
 
 import br.jabuti.lookup.*;
+import br.jabuti.lookup.java.bytecode.Program;
 import br.jabuti.metrics.Metrics;
 
 import br.jabuti.util.*;

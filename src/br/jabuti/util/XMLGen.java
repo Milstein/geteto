@@ -24,11 +24,10 @@ import java.util.*;
 import javax.swing.JOptionPane;
 import javax.xml.parsers.*;
 
-import br.jabuti.lookup.Program;
-import br.jabuti.lookup.RClassCode;
+import br.jabuti.lookup.java.bytecode.Program;
+import br.jabuti.lookup.java.bytecode.RClassCode;
 
 import org.w3c.dom.*;
-import org.w3c.dom.Document;
 
 import br.jabuti.criteria.*;
 import br.jabuti.project.*;
@@ -139,7 +138,6 @@ public class XMLGen {
         project.setAttribute("name", prj.getProjectFileName());
         project.setAttribute("type", "research");
         project.setAttribute("mobility", new Boolean(prj.isMobility() ).toString());
-        project.setAttribute("cfg_option",new Integer(prj.getCFGOption()).toString());
         
        
 //      classpath element and attributes

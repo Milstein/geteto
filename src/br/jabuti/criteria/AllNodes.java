@@ -20,6 +20,8 @@
 package br.jabuti.criteria;
 
 
+import br.jabuti.graph.datastructure.Graph;
+import br.jabuti.graph.datastructure.GraphNode;
 import br.jabuti.graph.datastructure.dug.*;
 
 import java.util.*;
@@ -51,7 +53,7 @@ public class AllNodes extends AbstractCriterion {
     public AllNodes(Graph g, int which) {
         super(g);
 
-        GraphNode[] fdt = g.findDFT(which == ALL);
+        GraphNode[] fdt = g.findDFTNodes(which == ALL);
 
         for (int i = 0; i < fdt.length; i++) {
 

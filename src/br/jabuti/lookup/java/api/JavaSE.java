@@ -1,4 +1,4 @@
-package br.jabuti.lookup.api;
+package br.jabuti.lookup.java.api;
 
 import java.util.ArrayList;
 import java.util.List;

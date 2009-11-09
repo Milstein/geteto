@@ -22,7 +22,7 @@ package br.jabuti.ui.gui;
 
 import javax.swing.JMenuItem;
 
-import br.jabuti.graph.datastructure.dug.GraphNode;
+import br.jabuti.graph.datastructure.GraphNode;
 
 
 

@@ -33,9 +33,9 @@ import org.aspectj.apache.bcel.generic.MethodGen;
 
 import br.jabuti.graph.datastructure.dug.CFG;
 import br.jabuti.graph.datastructure.dug.CFGNode;
-import br.jabuti.lookup.Program;
-import br.jabuti.lookup.RClass;
-import br.jabuti.lookup.RClassCode;
+import br.jabuti.lookup.java.bytecode.Program;
+import br.jabuti.lookup.java.bytecode.RClass;
+import br.jabuti.lookup.java.bytecode.RClassCode;
 import br.jabuti.util.Persistency;
 import br.jabuti.verifier.InvalidInstructionException;
 import br.jabuti.verifier.InvalidStackArgument;
@@ -120,7 +120,7 @@ public abstract class AbstractMetric implements Metric
 				CFGNode gn = (CFGNode) g.get(i);
 				arcos += gn.getPrimNext().size();
 			}
-			arcos += g.getExits().length;
+			arcos += g.getExitNodes().size();
 		} catch (Exception e) {
 			return -1.0;
 		}

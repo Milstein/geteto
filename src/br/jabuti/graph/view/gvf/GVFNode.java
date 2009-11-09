@@ -39,6 +39,7 @@ import br.jabuti.util.*;
 
 import org.aspectj.apache.bcel.generic.*;
 
+import br.jabuti.graph.datastructure.GraphNode;
 import br.jabuti.graph.datastructure.dug.*;
 
 

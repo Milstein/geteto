@@ -24,6 +24,7 @@ import javax.swing.*;
 
 import br.jabuti.criteria.Criterion;
 import br.jabuti.criteria.Node;
+import br.jabuti.graph.datastructure.GraphNode;
 import br.jabuti.graph.datastructure.dug.*;
 import br.jabuti.project.*;
 import br.jabuti.util.*;
@@ -154,7 +155,7 @@ public class WeightColor {
             ClassMethod method = cf.getMethod(methodName);
 	
             CFG cfg = method.getCFG();
-            GraphNode[] fdt = cfg.findDFT(true);
+            GraphNode[] fdt = cfg.findDFTNodes(true);
 	
             int c = ToolConstants.COLOR_0;
 
@@ -274,7 +275,7 @@ public class WeightColor {
             try {
                 CFG cfg = method.getCFG();
 							
-                GraphNode[] fdt = cfg.findDFT(true);
+                GraphNode[] fdt = cfg.findDFTNodes(true);
                 for (int j = 0; j < fdt.length; j++) {
                     GraphNode gn = fdt[j];
                     int fromWeight = -1;
@@ -365,7 +366,7 @@ public class WeightColor {
                 return null;
             }
 				
-            GraphNode[] fdt = cfg.findDFT(true);
+            GraphNode[] fdt = cfg.findDFTNodes(true);
 
             // Giving color for each definition node
             // based on the weight of its defined variables.				

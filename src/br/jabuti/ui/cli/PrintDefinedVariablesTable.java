@@ -26,8 +26,10 @@ import java.io.*;
 import java.util.*;
 
 import br.jabuti.util.*;
+import br.jabuti.graph.datastructure.GraphNode;
 import br.jabuti.graph.datastructure.dug.*;
 import br.jabuti.lookup.*;
+import br.jabuti.lookup.java.bytecode.Program;
 import br.jabuti.project.*;
 
 
@@ -175,7 +177,7 @@ public class PrintDefinedVariablesTable {
                 int countSysVar = localVar.length;
 
                 CFG cfg = cm.getCFG();
-                GraphNode[] fdt = cfg.findDFT(true);
+                GraphNode[] fdt = cfg.findDFTNodes(true);
                 GraphNode theNode = null;
           		
                 for (i = 0; i < fdt.length; i++) {

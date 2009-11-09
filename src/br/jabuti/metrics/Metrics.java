@@ -23,14 +23,14 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import br.jabuti.lookup.Program;
+import br.jabuti.lookup.java.bytecode.Program;
 
 /**
  * This classe implemnts a set o OO metrics, calculated on a Program structure.
  * Each class is represented in the structure by a
- * {@link br.jabuti.lookup.RClassCode} and will have its set of metrics.
+ * {@link br.jabuti.lookup.java.bytecode.RClassCode} and will have its set of metrics.
  * 
- * If desired, a subset of the {@link br.jabuti.lookup.RClassCode} can also be
+ * If desired, a subset of the {@link br.jabuti.lookup.java.bytecode.RClassCode} can also be
  * used as the set of classes where the metrics will be applied, for example,
  * only the class files that are under testing.
  */

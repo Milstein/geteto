@@ -29,6 +29,8 @@ import javax.swing.tree.*;
 
 import br.jabuti.graph.datastructure.dug.CFG;
 import br.jabuti.lookup.*;
+import br.jabuti.lookup.java.bytecode.Program;
+import br.jabuti.lookup.java.bytecode.RClass;
 import br.jabuti.project.*;
 
 import java.io.*;
@@ -633,11 +635,7 @@ class ProjectManagerDialog extends JDialog {
         String s = prj.getClasspath();
 
         classpathTextArea.setText(s);
-        baseClassTextField.setText(s);
-        
-        cfgOptionCheckBox.setSelected( (prj.getCFGOption() == CFG.NONE)? false : true );
-//        mobilityButton.setSelected( prj.isMobility() ); 
-//        nonMobilityButton.setSelected( !(prj.isMobility()) );         
+        baseClassTextField.setText(s);  
     }
 	
     void toAvoidButton_actionPerformed(ActionEvent e) {

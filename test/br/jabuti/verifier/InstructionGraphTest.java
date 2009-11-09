@@ -82,7 +82,7 @@ public class InstructionGraphTest
 
                 // g.calcReqLocal();
                 g.calcStack(all);
-                g.print(System.out);
+                //g.print(System.out);
             }
             return;
         }

@@ -28,7 +28,12 @@ import java.util.zip.*;
 import java.util.jar.*;
 import java.io.*;
 import br.jabuti.util.*;
+import br.jabuti.graph.datastructure.ListGraph;
+import br.jabuti.graph.datastructure.GraphNode;
 import br.jabuti.graph.datastructure.dug.*;
+import br.jabuti.graph.datastructure.reducetree.RRDominator;
+import br.jabuti.graph.datastructure.reducetree.RRReqLocal;
+import br.jabuti.graph.datastructure.reducetree.RoundRobinExecutor;
 
 
 /** <p> This class represents a program graph where each node is 
@@ -43,7 +48,7 @@ import br.jabuti.graph.datastructure.dug.*;
  * i.e, the first {@link InstructionNode} of an exeception handler
  * is linked to all the instructions inside its hadled block. This
  * linking is done using the "secondary edge" of the graph (See the
- * {@link Graph} class for explanation). 
+ * {@link ListGraph} class for explanation). 
  * </p>
  * 
  * <p>
@@ -108,10 +113,10 @@ import br.jabuti.graph.datastructure.dug.*;
  * several exit nodes may be present due to throw intructions).
  * </p>
  * 
- * @see Graph
+ * @see ListGraph
  * @see InstructionNode
  */
-public class InstructionGraph extends Graph {
+public class InstructionGraph extends ListGraph {
 	
     /**
 	 * Added to jdk1.5.0_04 compiler
@@ -166,7 +171,7 @@ public class InstructionGraph extends Graph {
                 init = ceg[j].getStartPC().getPosition();
                 fim = ceg[j].getEndPC().getPosition();
                 if (vf.ih.getPosition() >= init && vf.ih.getPosition() <= fim) {
-                    addSecEdge(vf, (InstructionNode) verify.get(ceg[j].getHandlerPC()));
+                    addSecondaryEdge(vf, (InstructionNode) verify.get(ceg[j].getHandlerPC()));
                 }
             }
 			
@@ -177,12 +182,12 @@ public class InstructionGraph extends Graph {
                 // Coloca o proximo fisico como proximo no grafo
                 InstructionHandle nih = (InstructionHandle) vf.ih.getNext();
 
-                addPrimEdge(vf, (GraphNode) verify.get(nih));
+                addPrimaryEdge(vf, (GraphNode) verify.get(nih));
                 // mapeamento JSR -- Entrada
                 jumpsAndEntries.put(vf.ih, nx[0]);
             } else {
                 for (int j = 0; j < nx.length; j++) {
-                    addPrimEdge(vf, (GraphNode) verify.get(nx[j]));
+                    addPrimaryEdge(vf, (GraphNode) verify.get(nx[j]));
                 }
             }
         }
@@ -202,7 +207,7 @@ public class InstructionGraph extends Graph {
             for (int i = lastsize; i < cursize; i++) {
                 InstructionNode entr = (InstructionNode) ventry.elementAt(i);
 
-                setEntry(entr);
+                setEntryNode(entr);
                 // Calcula os dominators
                 RRDominator rrd = new RRDominator("Dominator");
 
@@ -247,9 +252,9 @@ public class InstructionGraph extends Graph {
                     continue;
                 }
                 InstructionNode retTarget = 
-                        (InstructionNode) getPrimNext(isJmp).elementAt(0);
+                        (InstructionNode) getLeavingNodesByPrimaryEdge(isJmp).elementAt(0);
 
-                deletePrimEdge(isJmp, retTarget);
+                removePrimaryEdge(isJmp, retTarget);
                 InstructionNode retNode = null;
 
                 cont++;
@@ -285,14 +290,14 @@ public class InstructionGraph extends Graph {
                     InstructionNode inSet = (InstructionNode) in.next();
                     InstructionNode newNode = (InstructionNode) auxVerify.get(inSet);
                     GraphNode[] nx = 
-                            (GraphNode[]) getPrimNext(inSet).toArray(new GraphNode[0]);
+                            (GraphNode[]) getLeavingNodesByPrimaryEdge(inSet).toArray(new GraphNode[0]);
         		        
                     for (int j = 0; j < nx.length; j++) {
                         InstructionNode nxin = (InstructionNode) auxVerify.get(nx[j]);
 
-                        addPrimEdge(newNode, nxin);
+                        addPrimaryEdge(newNode, nxin);
                     }
-                    nx = (GraphNode[]) getSecNext(inSet).toArray(new GraphNode[0]);
+                    nx = (GraphNode[]) getLeavingNodesBySecondaryEdge(inSet).toArray(new GraphNode[0]);
                     for (int j = 0; j < nx.length; j++) {
                         InstructionNode nxin = (InstructionNode) auxVerify.get(nx[j]);
 
@@ -300,14 +305,14 @@ public class InstructionGraph extends Graph {
                         // conjunto. Para corrigir isso no final eh feito
                         // tratamento especial (ver *** )
                         if (nxin != null) {
-                            addSecEdge(newNode, nxin);
+                            addSecondaryEdge(newNode, nxin);
                         }
                     }
                 }
                 // liga agora o JSR e o RET, se existir
-                addPrimEdge(isJmp, (InstructionNode) auxVerify.get(entr));
+                addPrimaryEdge(isJmp, (InstructionNode) auxVerify.get(entr));
                 if (retNode != null) {
-                    addPrimEdge(retNode, retTarget);
+                    addPrimaryEdge(retNode, retTarget);
                 }
             }
         } while (cont > 0);
@@ -325,11 +330,11 @@ public class InstructionGraph extends Graph {
         }
         
         // ***		
-        removeEntries();
-        setEntry(entries[0]);
+        removeEntryNodes();
+        setEntryNode(entries[0]);
         
         // acha Depth firs tree
-        GraphNode[] dft = findDFT(true);
+        GraphNode[] dft = findDFTNodes(true);
 
         for (int i = 0; i < dft.length; i++) {
             // include edges from each node to its exception handlers
@@ -344,7 +349,7 @@ public class InstructionGraph extends Graph {
                 InstructionHandle handler = ceg[j].getHandlerPC();
 				
                 if (vf.ih.getPosition() >= init && vf.ih.getPosition() <= fim) {
-                    Vector vnx = getSecNext(vf);
+                    Vector vnx = getLeavingNodesBySecondaryEdge(vf);
 
                     for (int k = 0; k < vnx.size(); k++) {
                         InstructionNode nx = (InstructionNode) vnx.elementAt(k);
@@ -359,7 +364,7 @@ public class InstructionGraph extends Graph {
 
                         if (dftk.ih.getPosition() >= init
                                 && dftk.ih.getPosition() <= fim) {
-                            Vector vx = getSecNext(dft[k]);
+                            Vector vx = getLeavingNodesBySecondaryEdge(dft[k]);
                             InstructionNode hdl = null;
 
                             for (int z1 = 0; z1 < vx.size(); z1++) {
@@ -424,7 +429,7 @@ public class InstructionGraph extends Graph {
         VMLocal locals = new VMLocal(h);
 		
         // pega a instrucao inicial
-        InstructionNode start = (InstructionNode) getEntry();
+        InstructionNode start = (InstructionNode) getFirstEntryNode();
 
         // se nao eh static tem que colocar "this" em local[0] 
         int l = 0;
@@ -495,7 +500,7 @@ public class InstructionGraph extends Graph {
 
             curr.setChanged(false);
             // atualiza cada sucessor			
-            Vector nx = getPrimNext(curr);
+            Vector nx = getLeavingNodesByPrimaryEdge(curr);
 
             for (int i = 0; i < nx.size(); i++) {
                 InstructionNode fx = (InstructionNode) nx.elementAt(i);
@@ -514,7 +519,7 @@ public class InstructionGraph extends Graph {
             }
 			
             // atualiza cada tratador de excessoes
-            Vector ex = getSecNext(curr);
+            Vector ex = getLeavingNodesBySecondaryEdge(curr);
 
             for (int i = 0; i < ex.size(); i++) {
                 InstructionNode exi = (InstructionNode) ex.elementAt(i);
@@ -572,20 +577,20 @@ public class InstructionGraph extends Graph {
                 }
 				
                 // adiciona predecessores de um ao outro
-                Vector arr = getPrimArriving(vf);
+                Vector arr = getArrivingNodesByPrimaryEdge(vf);
 
                 for (int j = 0; j < arr.size(); j++) {
                     InstructionNode jsr = (InstructionNode) arr.elementAt(j);
 
-                    addPrimEdge(jsr, vf0);
+                    addPrimaryEdge(jsr, vf0);
                 }
 				
                 // adiciona sucessores de um ao outro
-                arr = getPrimNext(vf);
+                arr = getLeavingNodesByPrimaryEdge(vf);
                 for (int j = 0; j < arr.size(); j++) {
                     InstructionNode jsr = (InstructionNode) arr.elementAt(j);
 
-                    addPrimEdge(vf0, jsr);
+                    addPrimaryEdge(vf0, jsr);
                 }
                 // tira o noh repetido do grafo
                 removeNode(vf);
@@ -637,124 +642,11 @@ public class InstructionGraph extends Graph {
     public void print(PrintStream out) {
         Vector v = (Vector) clone();
 
-        Collections.sort(v, getEntry());
+        Collections.sort(v, getFirstEntryNode());
         for (int i = 0; i < v.size(); i++) {
             InstructionNode vf = (InstructionNode) v.elementAt(i);
 
             out.println(i + ") " + vf);
         } 
     }
-	
-    /** A driver for testing the class. Creates the graph and calls
-     * {@link InstructionGraph#calcStack}. The arguments determine
-     * to which methods to apply.
-     * 
-     * @param args[0] A file name. Can be a classfile, a jar file or a 
-     * zip file. If jar or zip, the second and third arguments does not apply.
-     * In this case, the output is only the name of the classes and of the 
-     * methods in the class. The test is applyied in all the listed 
-     * methods. If this is a single class file name, the output will be
-     * the complete graph (as presented by {InstructionNode#print}) for
-     * each selected method.
-     * @param args[1] The name of a method. The test is applyed to all
-     * methods in the class that match this name.
-     * @param args[2] The signature of a method. Used to select one
-     * between several homonymous methods.
-     */
-		
-    public static void main(String args[]) throws Exception {
-        boolean all = true;
-        String filename = args[0];
-        ZipFile jf = null;
- 		
-        if (filename.endsWith(".jar")) {
-            jf = new JarFile(filename);
-        } else
-        if (filename.endsWith(".zip")) {
-            jf = new ZipFile(filename);
-        }
- 		
-        if (jf == null) {
-            JavaClass java_class;
-
-            java_class = new ClassParser(filename).parse(); // May throw IOException
-
-            ConstantPoolGen cp = new ConstantPoolGen(java_class.getConstantPool());
-            Method[] methods = java_class.getMethods();
-
-            for (int i = 0; i < methods.length; i++) {
-                if (args.length >= 2 && (!args[1].equals(methods[i].getName()))) {
-                    continue;
-                }
-                if (args.length >= 3
-                        && (!args[2].equals(methods[i].getSignature()))) {
-                    continue;
-                }
-                System.out.println("--------------------------");						 
-                System.out.println(methods[i].getName());
-                System.out.println(methods[i].getSignature());
-                System.out.println("--------------------------");						 
-                MethodGen mg = new MethodGen(methods[i], 
-                        java_class.getClassName(),
-                        cp);
-
-                if (mg.getInstructionList() == null) {
-                    continue;
-                }
-                InstructionGraph g = new InstructionGraph(mg);
-
-                // g.calcReqLocal();
-                g.calcStack(all);
-                g.print(System.out);
-            }
-            return;
-        }
- 			
-        Enumeration en = jf.entries();
-        ZipEntry ze = null;
-
-        while (en.hasMoreElements()) {
-            ze = (ZipEntry) en.nextElement();
-            if (!ze.getName().endsWith(".class")) {
-                System.out.println("Not a class file: " + ze.getName());
-                continue;
-            }
- 				
-            System.out.println("\n\n**************************"); 
-            System.out.println(ze.getName()); 
-            System.out.println("**************************"); 
- 		
-            JavaClass java_class;
-
-            java_class = new ClassParser(jf.getInputStream(ze),
-                    ze.getName()).parse(); // May throw IOException
-
-            ConstantPoolGen cp = new ConstantPoolGen(java_class.getConstantPool());
-            Method[] methods = java_class.getMethods();
-
-            for (int i = 0; i < methods.length; i++) {
-                System.out.println("Memory : " + Runtime.getRuntime().freeMemory());
-                System.out.println("--------------------------");						 
-                System.out.println(methods[i].getName());
-                System.out.println("--------------------------");						 
-                MethodGen mg = new MethodGen(methods[i], 
-                        java_class.getClassName(),
-                        cp);
-
-                if (mg.getInstructionList() == null) {
-                    continue;
-                }
-                InstructionGraph g = new InstructionGraph(mg);
-
-                // g.calcReqLocal();
-                g.calcStack(all);
-                System.out.println("Memory : " + Runtime.getRuntime().freeMemory());
-                g = null;
-                System.out.println("Collecting garbage...");
-                System.out.println();
-
-            }
-        }
-    }
- 	
 }

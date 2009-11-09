@@ -18,7 +18,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 package br.jabuti.metrics;
 
-import br.jabuti.lookup.Program;
+import br.jabuti.lookup.java.bytecode.Program;
 
 public interface Metric
 {

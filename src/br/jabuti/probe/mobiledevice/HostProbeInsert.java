@@ -34,7 +34,7 @@ import org.aspectj.apache.bcel.generic.ClassGen;
 import org.aspectj.apache.bcel.generic.ConstantPoolGen;
 import org.aspectj.apache.bcel.generic.MethodGen;
 
-import br.jabuti.lookup.Program;
+import br.jabuti.lookup.java.bytecode.Program;
 import br.jabuti.probe.desktop.DefaultProbeInsert;
 import br.jabuti.probe.mobiledevice.mobile.MuAgent;
 import br.jabuti.verifier.InvalidInstructionException;
@@ -52,7 +52,7 @@ public class HostProbeInsert extends DefaultProbeInsert {
 
 private Collection classList; // list of class to class instrument
 /** The constructor.
-     * @param p - The {@link br.jabuti.lookup.Program structure} that represents
+     * @param p - The {@link br.jabuti.lookup.java.bytecode.Program structure} that represents
      * the program to be instrumented
      * @param c - The list of classes to be instrumented. Each element
      * is a string with the complete name of the class
@@ -75,12 +75,12 @@ private Collection classList; // list of class to class instrument
     }
 
 
-    public Map instrument(int typeOfCFG)
+    public Map instrument()
             throws InvalidInstructionException,
             InvalidStackArgument {
         HashSet inst = new HashSet();
 
-		Map mp = super.instrument(typeOfCFG);
+		Map mp = super.instrument();
 
         if (classList != null) {
             inst.addAll(classList);

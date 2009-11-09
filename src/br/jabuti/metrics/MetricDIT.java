@@ -1,8 +1,8 @@
 package br.jabuti.metrics;
 
-import br.jabuti.lookup.Program;
-import br.jabuti.lookup.RClass;
-import br.jabuti.lookup.RClassCode;
+import br.jabuti.lookup.java.bytecode.Program;
+import br.jabuti.lookup.java.bytecode.RClass;
+import br.jabuti.lookup.java.bytecode.RClassCode;
 
 /**
  * Implements the DIT - depth in tree. Considers only the part of the program

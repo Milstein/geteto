@@ -17,7 +17,7 @@
 */
 
 
-package br.jabuti.graph.datastructure.dug;
+package br.jabuti.ui.cli;
 
 
 import org.aspectj.apache.bcel.classfile.*;
@@ -28,6 +28,15 @@ import java.util.*;
 import java.util.zip.*;
 import java.util.jar.*;
 
+import br.jabuti.graph.datastructure.GraphCallNode;
+import br.jabuti.graph.datastructure.GraphNode;
+import br.jabuti.graph.datastructure.dug.CFG;
+import br.jabuti.graph.datastructure.dug.CFGNode;
+import br.jabuti.graph.datastructure.reducetree.DominatorTree;
+import br.jabuti.graph.datastructure.reducetree.DominatorTreeNode;
+import br.jabuti.graph.datastructure.reducetree.RRDominator;
+import br.jabuti.graph.datastructure.reducetree.RRLiveDefs;
+import br.jabuti.graph.datastructure.reducetree.ReduceNode;
 import br.jabuti.util.*;
 
 import br.jabuti.verifier.*;
@@ -66,7 +75,7 @@ public class ClassSummary {
         System.out.println("      -du:                    Shows Variables Definitions and Uses of each Node, if any.");
         System.out.println("      -li:                    Shows Alive Variables of each Node, if any.");		
         System.out.println("      -do:                    Shows Dominators and Inverse Dominators of each Node, if any.");		
-        System.out.println("      -ch:                    Shows Primary and Secundary Children of each Node, if any.");				
+        System.out.println("      -ch:                    Shows Primary and Secondary Children of each Node, if any.");				
         System.out.println("      -cfg:                   Generates a text file representation (dot format) with the CFG of each method.");
         System.out.println("      -all:                   Enables all options except -h and -v.");
         System.out.println(" If no option is specified a very simple summary w.r.t. ");
@@ -219,10 +228,7 @@ public class ClassSummary {
                         cp);
                 
                 CFG g;
-                if (callNodes)
-	                g = new CFG(mg, cg, CFG.NONE );
-	            else
-	            	g = new CFG(mg, cg, CFG.NO_CALL_NODE );
+            	g = new CFG(mg, cg);
             	
                 // For collecting data w.r.t Dominators, Inverse Dominator and Live Variables
                 if (detailed) {
@@ -273,7 +279,7 @@ public class ClassSummary {
                             // Primary children
                             getPrimChildren(pred);
 						
-                            // Secundary children (Exceptions)
+                            // Secondary children (Exceptions)
                             getSecChildren(pred);
                         }
 	
@@ -360,7 +366,7 @@ public class ClassSummary {
             dotFile.println("\tnodesep=0.1;");
 
             if (gfc != null) {
-                GraphNode[] fdt = gfc.findDFT(true);
+                GraphNode[] fdt = gfc.findDFTNodes(true);
 
                 for (int i = 0; i < fdt.length; i++) {
                     CFGNode current = (CFGNode) fdt[i];
@@ -369,7 +375,7 @@ public class ClassSummary {
                     // dotFile.println("\t" + current.getLabel() + " [style=bold];");
                     // } else
 					
-                    if (current instanceof CFGCallNode) {
+                    if (current instanceof GraphCallNode) {
                         dotFile.println("\t" + current.getLabel() + " [shape=doublecircle];");
                     } else
                     if ( ( current.getPrimNext().size() == 0 ) &&
@@ -457,8 +463,8 @@ public class ClassSummary {
             // Calculating the Basic Block Dominator TREE
             DominatorTree bbDom = (DominatorTree) DominatorTree.reduceSCC(dtDom, false);
 
-            if (dtDom.getEntry() != null) {
-                bbDom.setEntry(bbDom.getReduceNodeOf(dtDom.getEntry()));
+            if (dtDom.getFirstEntryNode() != null) {
+                bbDom.setEntryNode(bbDom.getReduceNodeOf(dtDom.getFirstEntryNode()));
                 bbDom.setDefaultNumbering();
             
                 // Calculating the Final Basic Block Dominator TREE

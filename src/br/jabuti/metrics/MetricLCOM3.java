@@ -1,6 +1,6 @@
 package br.jabuti.metrics;
 
-import br.jabuti.lookup.Program;
+import br.jabuti.lookup.java.bytecode.Program;
 
 /**
  * Falta de Coes�o entre os m�todos (lcom + lcom_2).
