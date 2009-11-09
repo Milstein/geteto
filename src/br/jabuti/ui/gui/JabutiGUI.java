@@ -22,7 +22,6 @@ package br.jabuti.ui.gui;
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 
-import br.jabuti.graph.datastructure.dug.*;
 import br.jabuti.graph.view.gvf.*;
 import br.jabuti.lookup.java.bytecode.Program;
 import br.jabuti.metrics.Metrics;
@@ -43,20 +42,11 @@ import br.jabuti.criteria.*;
 import br.jabuti.device.ProberServer;
 
 /**
- * This is the main class responsible to build the JaBUTi GUI.
- * 
- * It uses all other packages to build the functionalities of the testing tool.
- * 
- * @version: 1.0
- * @author: Auri Vincenzi
- * @author: Marcio Delamaro
- * 
+ * This is the main class responsible to build the JaBUTi GUI. It uses
+ * all other packages to build the functionalities of the testing tool.
  */
-public class JabutiGUI extends JFrame {
-
-	/**
-	 * Added to jdk1.5.0_04 compiler
-	 */
+public class JabutiGUI extends JFrame
+{
 	private static final long serialVersionUID = 1625786250251866044L;
 
 	/***************************************************************************
@@ -72,11 +62,6 @@ public class JabutiGUI extends JFrame {
 	// to share the information common to all of them
 	static private JabutiGUI mainWindow = null;
 
-	// Default main window size
-	public static final int WIDTH = 860;
-
-	public static final int HEIGHT = 660;
-
 	/***************************************************************************
 	 * The variables below are responsible to take care of the JaBUTi menu bar
 	 * and its options
@@ -84,25 +69,21 @@ public class JabutiGUI extends JFrame {
 	// JabutiGUI Menu Bar
 	JMenuBar menuBar = new JMenuBar();
 
-	// File Menu
-	private JMenu fileMenu = new JMenu();
+	// Project menu
+	private JMenu projectMenu = new JMenu();
 
-	// File Submenu Items
-	private JMenuItem openClass = new JMenuItem();
+	// Project menu items
+	private JMenuItem newProjectMenuItem = new JMenuItem();
 
-	private JMenuItem openJarZip = new JMenuItem();
+	private JMenuItem openProjectMenuItem = new JMenuItem();
 
-	private JMenuItem openPrj = new JMenuItem();
+	private JMenuItem saveProjectMenuItem = new JMenuItem();
 
-	private JMenuItem savePrj = new JMenuItem();
+	private JMenuItem saveProjectAsMenuItem = new JMenuItem();
 
-	private JMenuItem saveAsPrj = new JMenuItem();
+	private JMenuItem closeProjectMenuItem = new JMenuItem();
 
-	private JMenuItem saveInst = new JMenuItem();
-
-	private JMenuItem closePrj = new JMenuItem();
-
-	private JMenuItem exitPrj = new JMenuItem();
+	private JMenuItem exitMenuItem = new JMenuItem();
 
 	// Tools Menu
 	private JMenu toolsMenu = new JMenu();
@@ -417,9 +398,13 @@ public class JabutiGUI extends JFrame {
 
 			mainWindow.setIconImage(img);
 
-			mainWindow.setTitle(ToolConstants.toolName + " v. "
-					+ ToolConstants.toolVersion);
-			mainWindow.setSize(WIDTH, HEIGHT);
+			//get local graphics environment
+			GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+					
+			//get maximum window bounds
+			Rectangle maximumWindowBounds = graphicsEnvironment.getMaximumWindowBounds();
+			mainWindow.setTitle(ToolConstants.toolName + " v. " + ToolConstants.toolVersion);
+			mainWindow.setSize(maximumWindowBounds.width, maximumWindowBounds.height);
 
 			mainWindow.setVisible(true);
 
@@ -640,10 +625,9 @@ public class JabutiGUI extends JFrame {
 	 */
 	private void disableDefaultOptions() {
 		// File Menu
-		savePrj.setEnabled(false);
-		saveAsPrj.setEnabled(false);
-		saveInst.setEnabled(false);
-		closePrj.setEnabled(false);
+		saveProjectMenuItem.setEnabled(false);
+		saveProjectAsMenuItem.setEnabled(false);
+		closeProjectMenuItem.setEnabled(false);
 
 		// Tools Menu
 		toolsMenu.setEnabled(false);
@@ -693,10 +677,9 @@ public class JabutiGUI extends JFrame {
 
 	void enableDefaultOptions() {
 		// File Menu
-		savePrj.setEnabled(true);
-		saveAsPrj.setEnabled(true);
-		saveInst.setEnabled(true);
-		closePrj.setEnabled(true);
+		saveProjectMenuItem.setEnabled(true);
+		saveProjectAsMenuItem.setEnabled(true);
+		closeProjectMenuItem.setEnabled(true);
 
 		// Tools Menu
 		toolsMenu.setEnabled(true);
@@ -909,94 +892,72 @@ public class JabutiGUI extends JFrame {
 	private void buildFileMenu() {
 		// Build the entire menu
 		// File Menu
-		fileMenu.setText("File");
-		fileMenu.setMnemonic('F');
+		projectMenu.setText("File");
+		projectMenu.setMnemonic('F');
 
 		// File submenu
 		// Open class Submenu
-		openClass.setText("New Project");
-		openClass.addActionListener(new java.awt.event.ActionListener() {
+		newProjectMenuItem.setText("New Project");
+		newProjectMenuItem.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				openClass_actionPerformed(e);
 			}
 		});
-		fileMenu.add(openClass);
-
-		// Open Jar/Zip Submenu
-		openJarZip.setText("Open Jar/Zip");
-		openJarZip.setEnabled(false);
-		openJarZip.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				openJarZip_actionPerformed(e);
-			}
-		});
-		fileMenu.add(openJarZip);
+		projectMenu.add(newProjectMenuItem);
 
 		// Open Project Submenu
-		openPrj.setText("Open Project");
-		openPrj.addActionListener(new java.awt.event.ActionListener() {
+		openProjectMenuItem.setText("Open Project");
+		openProjectMenuItem.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				openPrj_actionPerformed(e);
 			}
 		});
-		fileMenu.add(openPrj);
+		projectMenu.add(openProjectMenuItem);
 
 		// Close Project Submenu
-		closePrj.setText("Close Project");
-		closePrj.addActionListener(new java.awt.event.ActionListener() {
+		closeProjectMenuItem.setText("Close Project");
+		closeProjectMenuItem.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				closePrj_actionPerformed(e);
 			}
 		});
-		fileMenu.add(closePrj);
+		projectMenu.add(closeProjectMenuItem);
 
-		fileMenu.addSeparator();
+		projectMenu.addSeparator();
 
 		// Save Project Submenu
-		savePrj.setText("Save");
-		savePrj.addActionListener(new java.awt.event.ActionListener() {
+		saveProjectMenuItem.setText("Save");
+		saveProjectMenuItem.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				savePrj_actionPerformed(e);
 			}
 		});
-		fileMenu.add(savePrj);
+		projectMenu.add(saveProjectMenuItem);
 
 		// Save As Submenu
-		saveAsPrj.setText("Save As...");
-		saveAsPrj.addActionListener(new java.awt.event.ActionListener() {
+		saveProjectAsMenuItem.setText("Save As...");
+		saveProjectAsMenuItem.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				saveAsPrj_actionPerformed(e);
 			}
 		});
 
-		fileMenu.add(saveAsPrj);
+		projectMenu.add(saveProjectAsMenuItem);
 
-		fileMenu.addSeparator();
-
-		// Save Instrumented Classes
-		saveInst.setText("Save Instrumented Classes");
-		saveInst.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				saveInst_actionPerformed(e);
-			}
-		});
-		fileMenu.add(saveInst);
-
-		fileMenu.addSeparator();
-
-		exitPrj.setText("Exit");
-		exitPrj.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X,
-				InputEvent.CTRL_MASK));
-		exitPrj.setMnemonic('x');
-		exitPrj.addActionListener(new java.awt.event.ActionListener() {
+		
+		projectMenu.addSeparator();
+		exitMenuItem.setText("Exit");
+		exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_MASK));
+		exitMenuItem.setMnemonic('x');
+		exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				exitPrj_actionPerformed(e);
 			}
 		});
-		fileMenu.add(exitPrj);
+		projectMenu.add(exitMenuItem);
 
-		// Adding Prj Menu to MenuBar
-		menuBar.add(fileMenu);
+		// Adding project menu to menubar
+		menuBar.add(projectMenu);
 	}
 
 	/**

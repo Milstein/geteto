@@ -71,7 +71,7 @@ private Collection classList; // list of class to class instrument
             InvalidStackArgument {
         HashSet inst = new HashSet();
 
-		Map mp = super.instrument(typeOfCFG);
+		Map mp = super.instrument();
 
         if (classList != null) {
             inst.addAll(classList);

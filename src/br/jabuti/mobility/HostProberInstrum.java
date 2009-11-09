@@ -183,7 +183,7 @@ public class HostProberInstrum {
             Map mp = null;
 
             try {
-                mp = dpi.instrument( project.getCFGOption() );
+                mp = dpi.instrument();
                 
 				JavaClass jv = (JavaClass) mp.get(baseClass);
 				if ( jv == null )
