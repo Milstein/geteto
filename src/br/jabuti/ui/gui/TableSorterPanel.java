@@ -136,11 +136,8 @@ public class TableSorterPanel extends JScrollPane {
 			// Setting the size of the columns that contain only a check box.
 			int fixed = 0;
 
-			if (JabutiGUI.isTestCasePanel()) {
-				if (JabutiGUI.isCoverage())
-					fixed = 2;
-				else
-					fixed = 2;
+			if (JabutiGUI.isTestCaseCoveragePanel()) {
+				fixed = 2;
 			} else if (JabutiGUI.isRequirementsPanel()) {
 				fixed = 3;
 			}
@@ -249,7 +246,7 @@ class MyTable extends JTable {
 
 		c.setBackground(new JButton().getBackground());
 
-		if (JabutiGUI.isSlice() && JabutiGUI.isTestCasePanel()) {
+		if (JabutiGUI.isTestCaseSlicePanel()) {
 			if (vColIndex == 0) { // sucess column
 				if (TableSorterPanel.isSuccess(rowIndex))
 					c.setBackground(Color.green);
@@ -257,7 +254,7 @@ class MyTable extends JTable {
 				if (TableSorterPanel.isFail(rowIndex))
 					c.setBackground(Color.red);
 			}
-		} else if (JabutiGUI.isCoverage() && JabutiGUI.isRequirementsPanel()) {
+		} else if (JabutiGUI.isTestCaseCoveragePanel() && JabutiGUI.isRequirementsPanel()) {
 			if (vColIndex == 2) { // infeasible column
 				if (TableSorterPanel.isAnError(rowIndex)) {
 					c.setBackground(Color.red);
@@ -356,106 +353,76 @@ class JTableComponentModel extends AbstractTableModel {
 
 			__rows[row][col] = value;
 
-			if (JabutiGUI.isTestCasePanel()) {
-				if (JabutiGUI.isCoverage()) {
-					JButton button = (JButton) __rows[row][2];
+			if (JabutiGUI.isTestCaseCoveragePanel()) {
+				JButton button = (JButton) __rows[row][2];
+				String name = button.getText();
 
-					String name = button.getText();
-
-					if (col == 0) { // Check if the active is selected
-						if (((Boolean) value).booleanValue()) {
-							// System.out.println("Test Case: " + name + " is
-							// enabled");
-							TestSet.activateTestCase(JabutiGUI.getProject(),
-									name);
-						} else {
-							// System.out.println("Test Case: " + name + " is
-							// disabled");
-							TestSet.desactivateTestCase(JabutiGUI.getProject(),
-									name);
-						}
-					} else if (col == 1) { // Check if the fail is selected
-						if (((Boolean) value).booleanValue()) {
-							// System.out.println("Test Case: " + name + " is
-							// deleted");
-							TestSet.toDeleteTestCase(JabutiGUI.getProject(),
-									name);
-						} else {
-							// System.out.println("Test Case: " + name + " is
-							// undeleted");
-							TestSet.undeleteTestCase(JabutiGUI.getProject(),
-									name);
-						}
+				if (col == 0) { // Check if the active is selected
+					if (((Boolean) value).booleanValue()) {
+						TestSet.activateTestCase(JabutiGUI.getProject(), name);
+					} else {
+						TestSet.desactivateTestCase(JabutiGUI.getProject(), name);
 					}
-					if (col == 0 || col == 1) {
-						JabutiGUI.getProject().coverageChanges();
-						JabutiGUI.mainWindow().setUpdateLabelImage(
-								JabutiGUI.mainWindow().getSemaforoRedImage());
+				} else if (col == 1) { // Check if the fail is selected
+					if (((Boolean) value).booleanValue()) {
+						TestSet.toDeleteTestCase(JabutiGUI.getProject(), name);
+					} else {
+						TestSet.undeleteTestCase(JabutiGUI.getProject(), name);
 					}
-				} else if (JabutiGUI.isSlice()) {
-					JButton button = (JButton) __rows[row][2];
+				}
+				if (col == 0 || col == 1) {
+					JabutiGUI.getProject().coverageChanges();
+					JabutiGUI.mainWindow().setUpdateLabelImage(JabutiGUI.mainWindow().getSemaforoRedImage());
+				}
+			} else if (JabutiGUI.isTestCaseSlicePanel()) {
+				JButton button = (JButton) __rows[row][2];
+				String name = button.getText();
 
-					String name = button.getText();
-
-					if (col == 0) { // Check if the success is selected
-						if (!((Boolean) value).booleanValue()) {
-							TestSet.removeFromSuccessSet(
-									JabutiGUI.getProject(), name);
+				if (col == 0) { // Check if the success is selected
+					if (!((Boolean) value).booleanValue()) {
+						TestSet.removeFromSuccessSet(JabutiGUI.getProject(), name);
+					} else {
+						if (TestSet.getSuccessSet().size() == 2) {
+							JOptionPane.showMessageDialog(
+								null,
+								"At most two success test cases can be selected! ",
+								"Warning",
+								JOptionPane.WARNING_MESSAGE);
+							__rows[row][col] = new Boolean(false);
 						} else {
-							if (TestSet.getSuccessSet().size() == 2) {
-								JOptionPane
-										.showMessageDialog(
-												null,
-												"At most two success test cases can be selected! ",
-												"Warning",
-												JOptionPane.WARNING_MESSAGE);
-								__rows[row][col] = new Boolean(false);
-							} else {
-								TestSet.addToSuccessSet(JabutiGUI.getProject(),
-										name);
-								__rows[row][col + 1] = new Boolean(false); // Disable
-																			// the
-																			// fail
-																			// check
-																			// box
-							}
-						}
-					} else if (col == 1) { // Check if the fail is selected
-						if (!((Boolean) value).booleanValue()) {
-							TestSet.removeFromFailSet(JabutiGUI.getProject(),
-									name);
-						} else {
-							if (TestSet.getFailSet().size() == 2) {
-								JOptionPane
-										.showMessageDialog(
-												null,
-												"No more than two failed test cases can be selected! ",
-												"Warning",
-												JOptionPane.WARNING_MESSAGE);
-								__rows[row][col] = new Boolean(false);
-							} else {
-								TestSet.addToFailSet(JabutiGUI.getProject(),
-										name);
-								__rows[row][col - 1] = new Boolean(false); // Disable
-																			// the
-																			// fail
-																			// check
-																			// box
-							}
+							TestSet.addToSuccessSet(JabutiGUI.getProject(), name);
+							// Disable the fail check box
+							__rows[row][col + 1] = new Boolean(false); 
 						}
 					}
-					if (col == 0 || col == 1) {
-						JabutiGUI.getProject().coverageChanges();
-						JabutiGUI.mainWindow().setUpdateLabelImage(
-								JabutiGUI.mainWindow().getSemaforoRedImage());
+				} else if (col == 1) { // Check if the fail is selected
+					if (!((Boolean) value).booleanValue()) {
+						TestSet.removeFromFailSet(JabutiGUI.getProject(), name);
+					} else {
+						if (TestSet.getFailSet().size() == 2) {
+							JOptionPane
+								.showMessageDialog(
+								null,
+								"No more than two failed test cases can be selected! ",
+								"Warning",
+								JOptionPane.WARNING_MESSAGE);
+							__rows[row][col] = new Boolean(false);
+						} else {
+							TestSet.addToFailSet(JabutiGUI.getProject(), name);
+							// Disable the fail check box
+							__rows[row][col - 1] = new Boolean(false); 
+						}
 					}
+				}
+				if (col == 0 || col == 1) {
+					JabutiGUI.getProject().coverageChanges();
+					JabutiGUI.mainWindow().setUpdateLabelImage(
+							JabutiGUI.mainWindow().getSemaforoRedImage());
 				}
 			} else if (JabutiGUI.isRequirementsPanel()) {
 				JButton button = (JButton) __rows[row][3];
 				String name = button.getText();
-
 				Criterion criterion = (Criterion) obj;
-
 				// Getting the testing requirement
 				Requirement req = criterion.getRequirementByLabel(name);
 				boolean newV = oldV;
@@ -463,29 +430,22 @@ class JTableComponentModel extends AbstractTableModel {
 					if (!((Boolean) value).booleanValue()) {
 						// Desactivating the testing requirement
 						newV = criterion.setInactive(req);
-
 						__rows[row][col] = new Boolean(!newV);
-
 						newV = !newV;
 					} else {
-						System.out.println(name + "Activated");
 						// Activating the testing requirement
 						newV = criterion.setActive(req);
-
 						__rows[row][col] = new Boolean(newV);
 					}
 				} else if (col == 2) { // Feasible
 					if (((Boolean) value).booleanValue()) {
 						// Setting as infeasible
 						newV = criterion.setInfeasible(req);
-
 						__rows[row][col] = new Boolean(newV);
 					} else {
 						// Setting as feasible
 						newV = criterion.setFeasible(req);
-
 						__rows[row][col] = new Boolean(!newV);
-
 						newV = !newV;
 					}
 				}
@@ -495,7 +455,6 @@ class JTableComponentModel extends AbstractTableModel {
 							JabutiGUI.mainWindow().getSemaforoRedImage());
 				}
 			}
-
 			fireTableCellUpdated(row, col);
 		}
 	}
@@ -507,11 +466,10 @@ class JTableComponentModel extends AbstractTableModel {
 		int min = 0;
 		int max = 0;
 
-		if (JabutiGUI.isTestCasePanel()) {
-			if (JabutiGUI.isCoverage())
-				max = 2;
-			else if (JabutiGUI.isSlice())
-				max = 2;
+		if (JabutiGUI.isTestCaseCoveragePanel()) {
+			max = 2;
+		} else if (JabutiGUI.isTestCaseSlicePanel()) {
+			max = 2;
 		} else if (JabutiGUI.isRequirementsPanel()) {
 			min = 1;
 			max = 3;

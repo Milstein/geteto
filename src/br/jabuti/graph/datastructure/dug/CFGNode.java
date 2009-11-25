@@ -22,6 +22,8 @@ package br.jabuti.graph.datastructure.dug;
 import java.util.*;
 
 import br.jabuti.graph.datastructure.GraphNode;
+import br.jabuti.graph.datastructure.ig.InstructionGraph;
+import br.jabuti.graph.datastructure.ig.InstructionNode;
 import br.jabuti.util.*;
 import org.aspectj.apache.bcel.generic.IINC;
 import org.aspectj.apache.bcel.generic.Instruction;

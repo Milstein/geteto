@@ -24,6 +24,8 @@ import br.jabuti.verifier.*;
 import org.aspectj.apache.bcel.classfile.*;
 import java.util.*;
 
+import br.jabuti.graph.datastructure.ig.InvalidInstructionException;
+import br.jabuti.graph.datastructure.ig.InvalidStackArgument;
 import br.jabuti.lookup.*;
 import br.jabuti.lookup.java.bytecode.Program;
 import br.jabuti.probe.desktop.DefaultProbeInsert;

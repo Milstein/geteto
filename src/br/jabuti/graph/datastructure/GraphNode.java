@@ -50,16 +50,16 @@ abstract public class GraphNode  implements Comparator, java.io.Serializable
 {
 		
     /** Set of nodes to which there exist a primary edge */		
-    protected Vector next = new Vector(); 
+    protected Set<GraphNode> next = new HashSet<GraphNode>(); 
 
     /** Set of nodes to which there exist a secondary edge */		
-    protected Vector secNext = new Vector();
+    protected Set<GraphNode> secNext = new HashSet<GraphNode>();
 
     /** Set of nodes from which there exist a primary edge */		
-    protected Vector arriving = new Vector();
+    protected Set<GraphNode> arriving = new HashSet<GraphNode>();
 
     /** Set of nodes from which there exist a secondary edge */		
-    protected Vector secArriving = new Vector();
+    protected Set<GraphNode> secArriving = new HashSet<GraphNode>();
 
     /** Each node has a number, this is it. It is initialized 
      with -1 */
@@ -80,19 +80,21 @@ abstract public class GraphNode  implements Comparator, java.io.Serializable
         super();
     }
 	
-    /** Creates froma an existing node */
+    /** Creates from an existing node */
     public GraphNode(GraphNode x) {
         super();
         addPrimNext(x.next);
         addSecNext(x.secNext);
-        for (int i = 0; i < x.arriving.size(); i++) {
-            GraphNode gn = (GraphNode) x.arriving.elementAt(i);
-
+      
+        Iterator<GraphNode> i = x.arriving.iterator();
+        while (i.hasNext()) {
+            GraphNode gn = i.next();
             gn.addPrimNext(this);
         }
-        for (int i = 0; i < x.secArriving.size(); i++) {
-            GraphNode gn = (GraphNode) x.secArriving.elementAt(i);
-
+        
+        i = x.secArriving.iterator();
+        while (i.hasNext()) {
+            GraphNode gn = i.next();
             gn.addSecNext(this);
         }
 		
@@ -108,18 +110,18 @@ abstract public class GraphNode  implements Comparator, java.io.Serializable
         String str = "\n\nNODE: " + getLabel();
 
         str += "\nChildren: ";
-        Vector v = getPrimNext();
-
-        for (int i = 0; i < v.size(); i++) {
-            GraphNode nx = (GraphNode) v.elementAt(i);
-
+        Set<GraphNode> nodes = getPrimNext();
+        Iterator<GraphNode> i = nodes.iterator();
+        while (i.hasNext()) {
+        	GraphNode nx = i.next();
             str += " " + nx.getLabel();
         }
+        
         str += "\nSec Children: ";
-        v = getSecNext();
-        for (int i = 0; i < v.size(); i++) {
-            GraphNode nx = (GraphNode) v.elementAt(i);
-
+        nodes = getSecNext();
+        i = nodes.iterator();
+        while (i.hasNext()) {
+            GraphNode nx = i.next();
             str += " " + nx.getLabel();
         }
         return str;
@@ -148,10 +150,8 @@ abstract public class GraphNode  implements Comparator, java.io.Serializable
      @param x The set of destination nodes
 
      */
-    public void addPrimNext(Vector x) {
-        for (int i = 0; i < x.size(); i++) {
-            addPrimNext((GraphNode) x.elementAt(i));
-        }
+    public void addPrimNext(Set<GraphNode> x) {
+    	next.addAll(x);
     }
 
     /**
@@ -177,10 +177,8 @@ abstract public class GraphNode  implements Comparator, java.io.Serializable
      @param x The set of destination nodes
 
      */
-    public void addSecNext(Vector x) {
-        for (int i = 0; i < x.size(); i++) {
-            addSecNext((GraphNode) x.elementAt(i));
-        }
+    public void addSecNext(Set<GraphNode> x) {
+    	secNext.addAll(x);
     }
 
     /**
@@ -214,7 +212,7 @@ abstract public class GraphNode  implements Comparator, java.io.Serializable
      @return The set o nodes for which there is a primary edge from this
      node.
      */
-    public Vector getPrimNext() {
+    public Set<GraphNode> getPrimNext() {
         return next;
     }
 	
@@ -225,7 +223,7 @@ abstract public class GraphNode  implements Comparator, java.io.Serializable
      @return The set o nodes for which there is a secondary edge from this
      node.
      */
-    public Vector getSecNext() {
+    public Set<GraphNode> getSecNext() {
         return secNext;
     }
 
@@ -236,7 +234,7 @@ abstract public class GraphNode  implements Comparator, java.io.Serializable
      @return The set o nodes from which there is a primary edge to this
      node.
      */
-    public Vector getPrimArriving() {
+    public Set<GraphNode> getPrimArriving() {
         return arriving;
     }
 
@@ -247,7 +245,7 @@ abstract public class GraphNode  implements Comparator, java.io.Serializable
      @return The set o nodes from which there is a secondary edge to this
      node.
      */
-    public Vector getSecArriving() {
+    public Set<GraphNode> getSecArriving() {
         return secArriving;
     }
 
@@ -360,10 +358,5 @@ abstract public class GraphNode  implements Comparator, java.io.Serializable
         }
         return s;
     }
-
-	public Vector getNext()
-	{
-		return next;
-	}
 }
 

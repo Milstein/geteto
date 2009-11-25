@@ -931,7 +931,6 @@ public class HTMLGen {
 		
 		// Method and Total Coverage
 		tab = new String[][] { 
-			{"Tool", JabutiGUI.mainWindow().getActiveToolName() },
 			{"Active Test Cases", 
 				TestSet.getNumberOfActiveTestCases() + 
 				" of " + 

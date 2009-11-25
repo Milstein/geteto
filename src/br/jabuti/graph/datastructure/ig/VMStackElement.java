@@ -17,10 +17,11 @@
 */
 
 
-package br.jabuti.verifier;
+package br.jabuti.graph.datastructure.ig;
 
 
 import org.aspectj.apache.bcel.generic.*;
+
 
 
 /** <p>This class represents one element store in the "execution"

@@ -1,8 +1,6 @@
 package br.jabuti.graph.datastructure;
 
-import java.util.HashSet;
 import java.util.Set;
-import java.util.Vector;
 
 import br.jabuti.graph.datastructure.reducetree.RoundRobinExecutor;
 
@@ -140,7 +138,7 @@ public interface Graph
 	 * @param useSecondaryEdges Indicates whether or no to consider secondary edges two.
 	 * @return The set of nodes for which the node of interest has an edge (or a secondary edge).
 	 */
-	Vector getLeavingNodes(GraphNode node, boolean useSecondaryEdges);
+	Set<GraphNode> getLeavingNodes(GraphNode node, boolean useSecondaryEdges);
 
 	/**
 	 * Returns the set of nodes for which there exist primary edges from a given node.
@@ -148,7 +146,7 @@ public interface Graph
 	 * @param node The source node.
 	 * @return The set of primary nodes for which the node of interest has an edge.
 	 */
-	Vector getLeavingNodesByPrimaryEdge(GraphNode node);
+	Set<GraphNode> getLeavingNodesByPrimaryEdge(GraphNode node);
 
 	/**
 	 * Returns the set of nodes for which there exist secondary edges from a given node.
@@ -156,7 +154,7 @@ public interface Graph
 	 * @param node The source node.
 	 * @return The set of secondary nodes for which the node of interest has an edge.
 	 */
-	Vector getLeavingNodesBySecondaryEdge(GraphNode node);
+	Set<GraphNode> getLeavingNodesBySecondaryEdge(GraphNode node);
 
 	/**
 	 * Returns the set of nodes for which there exist edges to a given node.
@@ -165,7 +163,7 @@ public interface Graph
 	 * @param useSecondaryEdges Indicates whether or no to consider secondary edges two.
 	 * @return The set of nodes from which the node of interest has an edge (or a secondary edge).
 	 */
-	Vector getArrivingNodes(GraphNode node, boolean useSecondaryEdges);
+	Set<GraphNode> getArrivingNodes(GraphNode node, boolean useSecondaryEdges);
 
 	/**
 	 * Returns the set of primary nodes for which there exist edges to a given node.
@@ -173,7 +171,7 @@ public interface Graph
 	 * @param node The destination node.
 	 * @return The set of nodes from which the node of interest has a primary edge.
 	 */
-	Vector getArrivingNodesByPrimaryEdge(GraphNode node);
+	Set<GraphNode> getArrivingNodesByPrimaryEdge(GraphNode node);
 
 	/**
 	 * Returns the set of secondary nodes for which there exist edges to a given node.
@@ -181,7 +179,7 @@ public interface Graph
 	 * @param node The destination node.
 	 * @return The set of nodes from which the node of interest has a secondary edge.
 	 */
-	Vector getArrivingNodesBySecondaryEdge(GraphNode node);
+	Set<GraphNode> getArrivingNodesBySecondaryEdge(GraphNode node);
 
 	/**
 	 * Removes a node from the graph. Deals with all the details of such operation as removing edges

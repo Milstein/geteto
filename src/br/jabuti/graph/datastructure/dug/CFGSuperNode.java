@@ -20,6 +20,7 @@
 package br.jabuti.graph.datastructure.dug;
 
 
+import br.jabuti.graph.datastructure.ig.InstructionNode;
 import br.jabuti.verifier.*;
 import org.aspectj.apache.bcel.generic.*;
 

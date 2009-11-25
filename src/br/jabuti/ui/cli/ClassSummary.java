@@ -32,6 +32,8 @@ import br.jabuti.graph.datastructure.GraphCallNode;
 import br.jabuti.graph.datastructure.GraphNode;
 import br.jabuti.graph.datastructure.dug.CFG;
 import br.jabuti.graph.datastructure.dug.CFGNode;
+import br.jabuti.graph.datastructure.ig.InvalidInstructionException;
+import br.jabuti.graph.datastructure.ig.InvalidStackArgument;
 import br.jabuti.graph.datastructure.reducetree.DominatorTree;
 import br.jabuti.graph.datastructure.reducetree.DominatorTreeNode;
 import br.jabuti.graph.datastructure.reducetree.RRDominator;

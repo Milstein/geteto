@@ -18,11 +18,11 @@ import br.jabuti.TestConfiguration;
 import br.jabuti.criteria.AbstractCriterion;
 import br.jabuti.graph.datastructure.dug.CFG;
 import br.jabuti.graph.datastructure.dug.CFGNode;
+import br.jabuti.graph.datastructure.ig.InvalidInstructionException;
+import br.jabuti.graph.datastructure.ig.InvalidStackArgument;
 import br.jabuti.graph.datastructure.reducetree.RRDominator;
 import br.jabuti.graph.datastructure.reducetree.RRLiveDefs;
 import br.jabuti.util.Debug;
-import br.jabuti.verifier.InvalidInstructionException;
-import br.jabuti.verifier.InvalidStackArgument;
 
 public class CFGTest
 {

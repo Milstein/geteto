@@ -14,26 +14,22 @@
 
     You should have received a copy of the GNU Lesser General Public License
     along with Jabuti.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
+ */
 
 package br.jabuti.graph.datastructure.reducetree;
 
-
-import java.util.*;
-
 import br.jabuti.graph.datastructure.GraphNode;
 
+import java.util.Set;
 
-public interface RoundRobinExecutor {
-	
-    public Object calcNewSet(GraphNode theNode, 
-            Vector primary, 
-            Vector secondary);
+public interface RoundRobinExecutor
+{
 
-    public boolean compareEQ(GraphNode theNode, Object theNewSet);
+	public Object calcNewSet(GraphNode theNode, Set<GraphNode> primary, Set<GraphNode> secondary);
 
-    public void setNewSet(GraphNode theNode, Object theNewSet);	
-	
-    public void init(GraphNode theNode, Vector primary, Vector secondary);
+	public boolean compareEQ(GraphNode theNode, Object theNewSet);
+
+	public void setNewSet(GraphNode theNode, Object theNewSet);
+
+	public void init(GraphNode theNode, Set<GraphNode> primary, Set<GraphNode> secondary);
 }

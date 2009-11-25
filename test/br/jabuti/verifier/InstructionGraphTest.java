@@ -14,6 +14,8 @@ import org.aspectj.apache.bcel.generic.ConstantPoolGen;
 import org.aspectj.apache.bcel.generic.MethodGen;
 import org.junit.Before;
 
+import br.jabuti.graph.datastructure.ig.InstructionGraph;
+
 public class InstructionGraphTest
 {
 

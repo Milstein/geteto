@@ -498,12 +498,9 @@ class SourcePanel extends JPanel {
             int row = tp.getStyledDocument().getDefaultRootElement().getElementIndex(tp.getCaretPosition());
             int end = tp.getStyledDocument().getDefaultRootElement().getElementIndex(tp.getDocument().getLength());
 
-            String specificTool = parent.getActiveToolName();
-	
             String criterion = parent.getActiveCriterionName();
 	
-            ssp.setContent(ToolConstants.toolName + ": " + specificTool, 
-                    "File: " + className, "Line: " + (row + 1) + " of " + (end + 1), 
+            ssp.setContent("File: " + className, "Line: " + (row + 1) + " of " + (end + 1), 
                     "Coverage: " + criterion, "Highlighting: All Priorized");
             ssp.setVisible(true);
         } else {

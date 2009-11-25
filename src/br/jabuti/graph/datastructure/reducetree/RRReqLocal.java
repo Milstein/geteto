@@ -23,7 +23,8 @@ package br.jabuti.graph.datastructure.reducetree;
 import java.util.*;
 
 import br.jabuti.graph.datastructure.GraphNode;
-import br.jabuti.verifier.InstructionNode;
+import br.jabuti.graph.datastructure.ig.InstructionNode;
+
 import org.aspectj.apache.bcel.generic.*;
 
 

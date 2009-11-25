@@ -411,13 +411,12 @@ public abstract class AbstractCriterion implements Criterion {
 
 		for (; i < pat.length; i++) {
 			newPat[i] = gn.getLabel();
-			Vector nx = graph.getLeavingNodes(gn, true);
-
-			for (int k = 0; k < nx.size(); k++) {
-				GraphNode gnx = (GraphNode) nx.elementAt(k);
-
-				if (i < pat.length - 1
-						&& ("" + gnx.getNumber()).equals(pat[i + 1])) {
+			Set<GraphNode> nx = graph.getLeavingNodes(gn, true);
+			Iterator<GraphNode> i = nx.iterator();
+			while (i.hasNext()) {
+				GraphNode gnx = i.next();
+				// Fix: this one is expecting a sequence, not a set
+				if (i < pat.length - 1 && ("" + gnx.getNumber()).equals(pat[i + 1])) {
 					gn = gnx;
 					break;
 				}

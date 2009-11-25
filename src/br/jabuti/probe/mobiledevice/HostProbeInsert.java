@@ -34,11 +34,11 @@ import org.aspectj.apache.bcel.generic.ClassGen;
 import org.aspectj.apache.bcel.generic.ConstantPoolGen;
 import org.aspectj.apache.bcel.generic.MethodGen;
 
+import br.jabuti.graph.datastructure.ig.InvalidInstructionException;
+import br.jabuti.graph.datastructure.ig.InvalidStackArgument;
 import br.jabuti.lookup.java.bytecode.Program;
 import br.jabuti.probe.desktop.DefaultProbeInsert;
 import br.jabuti.probe.mobiledevice.mobile.MuAgent;
-import br.jabuti.verifier.InvalidInstructionException;
-import br.jabuti.verifier.InvalidStackArgument;
 
 
 /** This class is designed to insert probes on each 

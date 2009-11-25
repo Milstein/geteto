@@ -17,11 +17,11 @@ import org.aspectj.apache.bcel.generic.MethodGen;
 import org.junit.Before;
 import org.junit.Test;
 
+import br.jabuti.graph.datastructure.ig.InvalidInstructionException;
+import br.jabuti.graph.datastructure.ig.InvalidStackArgument;
 import br.jabuti.graph.datastructure.reducetree.RRDominator;
 import br.jabuti.graph.datastructure.reducetree.RRLiveDefs;
 import br.jabuti.util.Debug;
-import br.jabuti.verifier.InvalidInstructionException;
-import br.jabuti.verifier.InvalidStackArgument;
 
 public class CFGTest
 {

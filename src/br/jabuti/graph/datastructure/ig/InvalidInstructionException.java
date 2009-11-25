@@ -17,17 +17,17 @@
 */
 
 
-package br.jabuti.verifier;
+package br.jabuti.graph.datastructure.ig;
 
 
-public class InvalidStackArgument extends Exception {
+public class InvalidInstructionException extends Exception {
 	
     /**
 	 * Added to jdk1.5.0_04 compiler
 	 */
-	private static final long serialVersionUID = -5398971498917432041L;
+	private static final long serialVersionUID = 6065700412574190130L;
 
-	public InvalidStackArgument(String x) {
+	public InvalidInstructionException(String x) {
         super(x);
     }
 }

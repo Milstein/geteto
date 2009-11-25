@@ -33,10 +33,10 @@ import org.aspectj.apache.bcel.generic.MethodGen;
 import org.aspectj.apache.bcel.generic.RET;
 
 import br.jabuti.graph.datastructure.ListGraph;
-import br.jabuti.verifier.InstructionGraph;
-import br.jabuti.verifier.InstructionNode;
-import br.jabuti.verifier.InvalidInstructionException;
-import br.jabuti.verifier.InvalidStackArgument;
+import br.jabuti.graph.datastructure.ig.InstructionGraph;
+import br.jabuti.graph.datastructure.ig.InstructionNode;
+import br.jabuti.graph.datastructure.ig.InvalidInstructionException;
+import br.jabuti.graph.datastructure.ig.InvalidStackArgument;
 
 /**
  * This class extends {@link ListGraph} and implements a Program Graph where each node is a block of

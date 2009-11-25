@@ -82,7 +82,7 @@ public class WeightColor {
         int colors[] = new int[] {0};
         int inc = 0;
 		
-        if (JabutiGUI.isCoverage()) {
+        if (JabutiGUI.isTestCaseCoveragePanel()) {
             if (JabutiGUI.isAllPriorized()) {
                 if ( JabutiGUI.isAllPrimaryNodes() || JabutiGUI.isAllSecondaryNodes() ) {
         
@@ -105,7 +105,7 @@ public class WeightColor {
                 }
                 WeightColor.colorButtonTable = computeColors( weightSet );
             }
-        } else if ( JabutiGUI.isSlice() ) {
+        } else if ( JabutiGUI.isTestCaseSlicePanel() ) {
             WeightColor.colorButtonTable = computeColorsFailSuccess(TestSet.getFailSet(), TestSet.getSuccessSet());
             if ((TestSet.getFailSet().size() < 1)
                     || (TestSet.getFailSet().size() > 2)) {
@@ -159,7 +159,7 @@ public class WeightColor {
 	
             int c = ToolConstants.COLOR_0;
 
-            if ((JabutiGUI.isSlice()) && (colorButtonTable.size() > 0)) {
+            if ((JabutiGUI.isTestCaseSlicePanel()) && (colorButtonTable.size() > 0)) {
                 
                 failSets = new Vector();
                 successSets = new Vector();
@@ -211,13 +211,13 @@ public class WeightColor {
             for (int x = 0; x < fdt.length; x++) {
                 GraphNode gn = fdt[x];
 
-                if ((JabutiGUI.isCoverage()) && (colorButtonTable.size() > 0)) {
+                if ((JabutiGUI.isTestCaseCoveragePanel()) && (colorButtonTable.size() > 0)) {
                	
                     Integer wgt = ((Integer) gn.getUserData(ToolConstants.LABEL_WEIGHT));
                     
                     c = getColorByWeight(labels, wgt);
 	
-                } else if ((JabutiGUI.isSlice())
+                } else if ((JabutiGUI.isTestCaseSlicePanel())
                         && (colorButtonTable.size() > 0)) {
                     
                     int weight = 0;

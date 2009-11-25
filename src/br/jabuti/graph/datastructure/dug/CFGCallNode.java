@@ -24,6 +24,7 @@ import java.util.*;
 import org.aspectj.apache.bcel.generic.*;
 
 import br.jabuti.graph.datastructure.GraphCallNode;
+import br.jabuti.graph.datastructure.ig.InstructionNode;
 import br.jabuti.verifier.*;
 
 

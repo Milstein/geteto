@@ -17,11 +17,12 @@
 */
 
 
-package br.jabuti.verifier;
+package br.jabuti.graph.datastructure.ig;
 
 
 import org.aspectj.apache.bcel.generic.*;
 import br.jabuti.util.*;
+
 import java.util.*;
 
 import br.jabuti.graph.datastructure.GraphNode;

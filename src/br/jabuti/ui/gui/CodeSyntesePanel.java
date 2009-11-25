@@ -49,10 +49,10 @@ class CodeSyntesePanel extends JPanel {
         field3 = new JTextField();
         field4 = new JTextField();
         field5 = new JTextField();				
-        setContent(l1, l2, l3, l4, l5);
+        setContent(l2, l3, l4, l5);
     }
 	
-    public void setContent(String l1, String l2, String l3, String l4, String l5) {
+    public void setContent(String l2, String l3, String l4, String l5) {
         this.removeAll();
 		
         setBorder(BorderFactory.createEtchedBorder());
@@ -66,8 +66,6 @@ class CodeSyntesePanel extends JPanel {
 	
         constrains.weightx = 2.0;
         constrains.gridwidth = 1;
-        constrains.insets = new Insets(20, 10, 10, 10);
-        makelabel(field1, l1, layout, constrains);
         constrains.insets = new Insets(20, 10, 10, 10);			
         makelabel(field2, l2, layout, constrains);
         makelabel(field3, l3, layout, constrains);
