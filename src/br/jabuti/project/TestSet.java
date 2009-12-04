@@ -113,7 +113,7 @@ public class TestSet {
 				// dtr = new DefaultTraceReader(traceFile);
 				dtr = new HostTraceReader(traceFile);
 
-				Hashtable trace = (Hashtable) dtr.getPaths();
+				Hashtable<ProbedNode,String[][]> trace = dtr.getPaths();
 
 				int cont = 1;
 
@@ -127,7 +127,8 @@ public class TestSet {
 					tc.addTestCaseFromTRC(prj, trace);
 					newTCs.add(tc);
 
-					trace = (Hashtable) dtr.getPaths();
+					trace = dtr.getPaths();
+
 					cont++;
 				}
 
@@ -160,7 +161,7 @@ public class TestSet {
 			try {
 				dtr = new HostTraceReader(traceFile);
 
-				Hashtable trace = (Hashtable) dtr.getPaths();
+				Hashtable<ProbedNode,String[][]> trace = dtr.getPaths();
 
 				int cont = 1;
 

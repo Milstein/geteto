@@ -40,7 +40,6 @@ import java.util.ListIterator;
 public class DefaultProber  {
     static public final String delimiter = "**********************";
     static public final String READER_CLASS = "class br.jabuti.probe.DefaultTraceReader";
-    static protected Hashtable threadsAndProbs = new Hashtable();
     
  // usado para modo batch
     static protected Hashtable<String,PrintStream> classesAndFiles = new Hashtable<String,PrintStream>(); 
@@ -54,7 +53,7 @@ public class DefaultProber  {
         // Gets the name of the file where the execution will be dumped
         fp = null;
         String fileProber = System.getProperty("DEFAULT_PROBER");
-        String fileBatch = System.getProperty("BATCH_MODE");
+        String fileBatch = ( System.getProperty("BATCH_MODE") != null )? System.getProperty("BATCH_MODE"): System.getenv("BATCH_MODE");
         
         if (fileBatch != null)
         {
@@ -133,20 +132,11 @@ public class DefaultProber  {
         if (fp == null) {
             return;
         }
-        Enumeration en = threadsAndProbs.keys();
-        if ( ! en.hasMoreElements() ) // se lista esta vazia...
-        	return;
-        while (en.hasMoreElements()) {
-            ProbedNode tr = (ProbedNode) en.nextElement();
-            if (! isBatch) // nao eh modo batch, operacao normal
-            	dumpNodes(fp, tr, (ArrayList) threadsAndProbs.get(tr));
-            else
-            	dumpBatchNodes(tr, (ArrayList) threadsAndProbs.get(tr));
-        }
         if ( ! isBatch )
         {
             // write a delimiter 
-            fp.println(delimiter);
+//            fp.println(delimiter);
+        	fp.println(delimiter);
             fp.flush(); // Inseri um flush para descarregar o buffer.
         }
         else 
@@ -155,12 +145,12 @@ public class DefaultProber  {
         	{
         		PrintStream ps = classesAndFiles.get(s);
                 // write a delimiter 
-                ps.println(delimiter);
+//                ps.println(delimiter);
+            	ps.println(delimiter);
                 ps.flush(); // Inseri um flush para descarregar o buffer.
         	}
         }
         
-        threadsAndProbs = new Hashtable();
     }
 
 	/** This method registers the execution of a given node */
@@ -177,62 +167,57 @@ public class DefaultProber  {
         						o.getClass().getName() + System.identityHashCode(o);
         ProbedNode pb = new ProbedNode(tr.toString(), s,
                 clazz, metodo, "");
-        ArrayList probedNodes;
-
-        if (threadsAndProbs.containsKey(pb)) {
-            probedNodes = (ArrayList) threadsAndProbs.get(pb);
-        } else {
-            probedNodes = new ArrayList();
-            threadsAndProbs.put(pb, probedNodes);
-        }
-        probedNodes.add(nest + ":" + n);
-        //System.out.println("Probed: " + threadsAndProbs.size());
+        
+        // Faz o dump imediatamente, sem esperar o final do caso de teste
+        try {
+			dumpNow(pb, nest, n);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        
     }
 	
-    /** This method registers the execution of a given node 
+    private static void dumpNow(ProbedNode pb, long nest, Object n) throws IOException {
+    	if (! isBatch )
+    	{
+    		dumpNodes(fp, pb, nest, n);
+    	}
+    	else
+    	{
+    		dumpBatchNodes(pb,nest,n);
+    	}
+
+	}
+
+	/** This method registers the execution of a given node 
      of an static method */
     static public void probe(String clazz, int metodo, long nest, Object n) {
         probe(null, clazz, metodo, nest, n);
     }
 	
-    synchronized static void dumpNodes(PrintStream fp, ProbedNode pbdNode, ArrayList probedNodes) {
+    synchronized static void dumpNodes(PrintStream fp, ProbedNode pbdNode, long nest, Object n) {
         if (stdout) // dump in a text mode.
         {
-            fp.println("Number of probe sequences: " + threadsAndProbs.size());
+
             fp.println();
             fp.println("-------------------------------");
-            fp.println(pbdNode);
+            fp.println(pbdNode + " " + nest +":" + n);
             fp.println("-------------------------------");
-            ListIterator li = probedNodes.listIterator();
-
-            while (li.hasNext()) {
-                Object o = li.next();
-
-                fp.println(o);
-            }
         } else // dump in a binary mode
         {
             try {
-            	fp.println(READER_CLASS);
-            	fp.println(tcName); // nome do caso de teste
-                fp.println(pbdNode.threadCode);
-                fp.println(pbdNode.objectCode);
-                fp.println(pbdNode.clazz);
-                fp.println(pbdNode.metodo);
-                ListIterator li = probedNodes.listIterator();
-
-                while (li.hasNext()) {
-                    Object o = li.next();
-
-                    fp.println(o);
-                }
-                fp.println("-1");
+            	fp.print(tcName+":"); // nome do caso de teste
+                fp.print(pbdNode.threadCode+":");
+                fp.print(pbdNode.objectCode+":");
+                fp.print(pbdNode.clazz+":");
+                fp.print(pbdNode.metodo+":");
+                fp.println(nest+":"+n);
             } catch (Exception e) {}
         }
     }
 
 
-    private static void dumpBatchNodes(ProbedNode tr, ArrayList arrayList) throws IOException {
+    private static void dumpBatchNodes(ProbedNode tr, long nest, Object n) throws IOException {
     	String className = tr.clazz;
     	PrintStream fp = (PrintStream) classesAndFiles.get(className);
     	if (fp == null)
@@ -243,7 +228,7 @@ public class DefaultProber  {
             fp = new PrintStream(fos);
             classesAndFiles.put(className, fp);
     	}
-    	dumpNodes(fp, tr, arrayList);
+    	dumpNodes(fp, tr, nest, n);
 	}
 
     

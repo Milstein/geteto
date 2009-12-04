@@ -33,7 +33,7 @@ public class DefaultTraceReader implements Serializable, TraceReader {
 	 * Added to jdk1.5.0_04 compiler
 	 */
 	private static final long serialVersionUID = -782971586725069021L;
-	protected Hashtable paths;
+	protected Hashtable<ProbedNode, String[][]> paths;
     protected File fp;
     protected BufferedReader br;
     protected String tcName;
@@ -52,143 +52,136 @@ public class DefaultTraceReader implements Serializable, TraceReader {
         if (br == null) {
             return 0;
         }
-        paths = new Hashtable();
+        paths = new Hashtable<ProbedNode, String[][]>();
         int k = 0;
 
-		Object v[] = null;
-        do {
+        ProbedNode lastNode = null;
+        String lastTcName = null;
+        String lastNest = null;
+        ArrayList<String> caminho = null; 
+        ArrayList<String[]> curMeth = null; 
+        
+        do { // Le cada uma das linhas do arquivo de trace
         	try 
         	{
-		       	String tipo = br.readLine();
-		       	if (tipo.equals(DefaultProber.delimiter)) {
-       	           break;
+		       	String registro = br.readLine();
+		       	if (registro == null || registro.equals(DefaultProber.delimiter)) {
+       	           break; // termina se chegou no fim do arquivo ou se achou o delimitador
     		   	}
-		       	System.out.println("Tipo " + tipo);
-		       	tcName = br.readLine(); // le o nome do caso de teste
-		       	if ( tipo.equals(this.getClass().toString() ) )
-		       	{	
-        			v = readOnePath();
-                }
-               	if ( v != null) paths.put(v[0], v[1]);
+		       	tcName = getNameFromRegistro(registro); // le o nome do caso de teste
+		       	ProbedNode pdn = getNodeFromRegistro(registro); // le dados sobre o no executado
+		       	String nest = getNestFromRegister(registro);
+		       	String noh = getNoFromRegistro(registro);
+		       	if ( ! tcName.equals(lastTcName) || ! pdn.equals(lastNode) )
+		       	{ // precisa criar uma nova entrada na hashtable pois o registro é
+		       	  // de um novo metodo
+		       		if (lastNode != null )
+		       		{
+	       				curMeth.add(caminho.toArray(new String[0]));
+		       			paths.put(lastNode, curMeth.toArray(new String[curMeth.size()][]));
+		       		}
+		       		curMeth = new ArrayList<String[]>();
+		       		lastNest = null;
+		       		lastTcName = tcName;
+		       		lastNode = pdn;
+		       	}
+	       		if ( ! nest.equals(lastNest) )
+	       		{ // novo caminho no metodo corrente
+	       			if (lastNest != null )
+	       			{
+	       				curMeth.add(caminho.toArray(new String[0]));
+	       			}
+	       			caminho = new ArrayList<String>();
+	       			lastNest = nest;
+	       		}
+	       		caminho.add(noh);
+		       	
             } catch (Exception e) { 
                 Debug.D("FINAL TRACE: (" + k + ") " + e + ""); 
                 paths = null;
                 return 0;
             }
-        } while ( v != null );
+        } while ( true );
 		
-        Enumeration en = paths.keys();
-
-        while (en.hasMoreElements()) {
-            ProbedNode pdn = (ProbedNode) en.nextElement();
-            ArrayList arl = (ArrayList) paths.get(pdn);
-            ArrayList v2 = new ArrayList();
-
-            getSinglePath(v2, arl); 
-            paths.put(pdn, v2.toArray(new String[v2.size()][]));
+        if ( lastNest != null )
+        {
+        	curMeth.add(caminho.toArray(new String[0]));
+        	paths.put(lastNode, curMeth.toArray(new String[curMeth.size()][]));
         }
+        
         return paths.size();
     }
     
-    protected Object[] readOnePath() throws Exception
-    {
-       	String thrd = br.readLine();
-        String obj = br.readLine();
-        String claz = br.readLine();
-        String meth = br.readLine();
-
-        ProbedNode pdn = new ProbedNode(thrd, obj, claz,
-                       Integer.parseInt(meth), "");
-
-        ArrayList arl = new ArrayList();
+    protected String getNoFromRegistro(String registro) {
+		// Nó aparece como último campo no registro
+		int k = registro.lastIndexOf(':');
 		
-        String nodeNumber = br.readLine();
-
-        while (!nodeNumber.equals("-1")) {
-                   arl.add(nodeNumber);
-                   nodeNumber = br.readLine();
-        }
-        Object[] v = new Object[]  {pdn, arl};
-        return v;
-    }
-    
-    protected void getSinglePath(ArrayList v, ArrayList arl) 
-    {
-    	String[] art = (String[]) arl.toArray(new String[0]);
-    	Arrays.sort(art, new NodeNameComparator());
-    	for (int j = 0; j < art.length; )
-    	{
-	        String s = art[j];
-	        int tp = s.indexOf(":");
-	        String s2 = s.substring(tp+1);
-	        s = s.substring(0,tp);
-	        int nest = Integer.parseInt(s);
-	        ArrayList p = new ArrayList();
-	        
-	        for ( ; j < art.length; j++)
-	        {
-	            s = art[j];
-				tp = s.indexOf(":");
-		        s2 = s.substring(tp+1);
-		        s = s.substring(0,tp);
-		        int nt = Integer.parseInt(s);
-		        if ( nt == nest )
-		        {
-		        	p.add(s2);
-		        }
-		        else
-		        {
-		        	break;
-		        }
-	        }
-	        v.add(p.toArray(new String[0]));
-    	}
+		return registro.substring(k+1);
 	}
-	
-    protected void xgetSinglePath(ArrayList v, ArrayList arl) {
-    	if (arl.size() == 0 )
-    		return;
-    		
-        String s = (String) arl.get(0);
-        int tp = s.indexOf(":");
-        String s2 = s.substring(tp+1);
-        s = s.substring(0,tp);
-        
-        int nest = Integer.parseInt(s);
+
+    protected String getNestFromRegister(String registro) {
+		// Aninhamento aparece como penultimo campo no registro (5)
+		String s = new String(registro);
+		int k = s.indexOf(':'); // 1a ocorrencia
 		
-        ArrayList p = new ArrayList();
-        p.add(s2);
-        arl.remove(0);
+		s = s.substring(k+1);
+		k = s.indexOf(':'); // 2a
+		
+		s = s.substring(k+1);
+		k = s.indexOf(':'); // 3a
 
-        while (arl.size() > 0) 
-        {
-            s = (String) arl.get(0);
-			tp = s.indexOf(":");
-	        s2 = s.substring(tp+1);
-	        s = s.substring(0,tp);
-	        
-	        int nt = Integer.parseInt(s);
-	        if ( nt == nest )
-	        { // no pertence aa mesma chamada do metodo
-	        	p.add(s2);
-	        	arl.remove(0);
-	        }
-	        else
-	        if ( nt > nest )
-	        {  // no pertence a chamada mais interna
-	        	getSinglePath(v, arl);
-	        }
-	        else
-	        {  // no pertence a chamada anterior
-	        	break;
-	        }
-        } 
-        v.add(p.toArray(new String[0]));
-    }
+		s = s.substring(k+1);
+		k = s.indexOf(':'); // 4a
+		
+		s = s.substring(k+1);
+		k = s.indexOf(':'); // 5a
 
-    public Hashtable getPaths() {
+		s = s.substring(k+1);
+		k = s.indexOf(':'); // 6a
+
+		return s.substring(0, k);
+	}
+
+    protected ProbedNode getNodeFromRegistro(String registro) {
+		int k = registro.indexOf(':'); // 1a ocorrencia
+		String s = registro.substring(k+1);
+		k = s.indexOf(':');
+		String tredi = s.substring(0, k);
+		
+		s = s.substring(k+1);
+		k = s.indexOf(':');
+		String objeto = s.substring(0, k);
+
+		s = s.substring(k+1);
+		k = s.indexOf(':');
+		String claz = s.substring(0, k);
+
+		s = s.substring(k+1);
+		k = s.indexOf(':');
+		String metodo = s.substring(0, k);
+		
+		return new ProbedNode(tredi, objeto, claz, Integer.parseInt(metodo), "");
+	}
+
+	/**
+	 * Pega o nome do caso de teste do registro lido do arquivo de trace
+	 * @param registro - string com informaçoes do arquivo de traca
+	 * @return Nome do caso de teste
+	 */
+    protected String getNameFromRegistro(String registro) {
+		// Nome aparece como primeiro campo do registro
+		int k = registro.indexOf(':');
+		
+		return registro.substring(0, k);
+	}
+
+
+    
+	
+
+    public Hashtable<ProbedNode, String[][]> getPaths() {
         readPaths();
-        return paths;
+        return (paths == null || paths.size()== 0 ) ? null : paths;
     }
 	
     public void reset() throws IOException, FileNotFoundException {
@@ -228,25 +221,4 @@ public class DefaultTraceReader implements Serializable, TraceReader {
     
 }
 
-class NodeNameComparator implements Comparator
-{
-	public boolean equals(Object o1)
-	{
-		return false;
-	}
-	
-	public int compare(Object o1, Object o2)
-	{
-        String s = o1.toString();
-        int tp = s.indexOf(":");
-        s = s.substring(0,tp);
-        int n1 = Integer.parseInt(s);
 
-        s = o2.toString();
-        tp = s.indexOf(":");
-        s = s.substring(0,tp);
-        int n2 = Integer.parseInt(s);
-        
-        return n1 - n2;
-	}
-}

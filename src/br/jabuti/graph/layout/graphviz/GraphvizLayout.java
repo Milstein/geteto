@@ -51,21 +51,33 @@ import br.jabuti.graph.layout.GraphLayout;
 import br.jabuti.graph.view.gvf.GVFNode;
 
 /**
- * <dl> <dt>Purpose: GraphViz Java API <dd>
+ * <dl>
+ * <dt>Purpose: GraphViz Java API
+ * <dd>
  * 
- * <dt>Description: <dd> With this Java class you can simply call dot from your
- * Java programs <dt>Example usage: <dd> <pre> GraphViz gv = new GraphViz();
- * gv.addln(gv.start_graph()); gv.addln("A -> B;"); gv.addln("A -> C;");
- * gv.addln(gv.end_graph()); System.out.println(gv.getDotSource());
+ * <dt>Description:
+ * <dd>With this Java class you can simply call dot from your Java programs
+ * <dt>Example usage:
+ * <dd>
  * 
- * File out = new File("out.gif");
- * gv.writeGraphToFile(gv.getGraph(gv.getDotSource()), out); </pre> </dd>
+ * <pre>
+ * GraphViz gv = new GraphViz();
+ * gv.addln(gv.start_graph());
+ * gv.addln(&quot;A -&gt; B;&quot;);
+ * gv.addln(&quot;A -&gt; C;&quot;);
+ * gv.addln(gv.end_graph());
+ * System.out.println(gv.getDotSource());
+ * 
+ * File out = new File(&quot;out.gif&quot;);
+ * gv.writeGraphToFile(gv.getGraph(gv.getDotSource()), out);
+ * </pre>
+ * 
+ * </dd>
  * 
  * </dl>
  * 
  * @version v0.1, 2003/12/04 (Decembre)
- * @author Laszlo Szathmary (<a
- *         href="szathml@delfin.unideb.hu">szathml@delfin.unideb.hu</a>)
+ * @author Laszlo Szathmary (<a href="szathml@delfin.unideb.hu">szathml@delfin.unideb.hu</a>)
  */
 public class GraphvizLayout implements GraphLayout
 {
@@ -86,6 +98,38 @@ public class GraphvizLayout implements GraphLayout
 	 */
 	private StringBuffer graph = new StringBuffer();
 
+	private String windowsFindDot()
+	{
+		String s = getGraphVizInstallPath();
+		if (s == null)
+			return DOT_W;
+		else
+			return s += File.separator + "bin" + File.separator + "dot.exe";
+	}
+
+	public static String getGraphVizInstallPath()
+	{
+		final String REGQUERY_UTIL = "reg query ";
+		final String REGSTR_TOKEN = "REG_EXPAND_SZ";
+		final String COMPUTER_WINDOWS_GRAPHVIZ_FOLDER = REGQUERY_UTIL
+						+ "\"HKLM\\SOFTWARE\\AT&T Research Labs\\Graphviz\" /v InstallPath";
+
+		try {
+			Process process = Runtime.getRuntime().exec(COMPUTER_WINDOWS_GRAPHVIZ_FOLDER);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(process
+							.getInputStream()));
+			process.waitFor();
+			String result = reader.readLine();
+			int p = result.indexOf(REGSTR_TOKEN);
+			if (p == -1)
+				return null;
+			else
+				return result.substring(p + REGSTR_TOKEN.length()).trim();
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	/**
 	 * Constructor: creates a new GraphViz object that will contain a graph.
 	 * 
@@ -98,10 +142,11 @@ public class GraphvizLayout implements GraphLayout
 			if ("LINUX".equals(s)) {
 				DOT = DOT_L;
 			} else if (s != null && s.startsWith("WINDOWS")) {
+				DOT = windowsFindDot();
 				DOT = DOT_W;
 			} else {
 				DOT = JOptionPane.showInputDialog(null, "Please enter path:",
-						"Cannot find GraphViz layouter (dot).", JOptionPane.ERROR_MESSAGE);
+								"Cannot find GraphViz layouter (dot).", JOptionPane.ERROR_MESSAGE);
 
 			}
 			while (DOT != null) {
@@ -109,7 +154,8 @@ public class GraphvizLayout implements GraphLayout
 				if (f.isFile() && f.canRead())
 					break;
 				DOT = JOptionPane.showInputDialog(null, "Please enter path:",
-						"Cannot find GraphViz layouter at " + DOT, JOptionPane.ERROR_MESSAGE);
+								"Cannot find GraphViz layouter at " + DOT,
+								JOptionPane.ERROR_MESSAGE);
 
 			}
 			if (DOT == null) {
@@ -139,7 +185,6 @@ public class GraphvizLayout implements GraphLayout
 		graph.append(src.getSource() + " -> " + dest.getSource() + "\n");
 	}
 
-	
 	private String getDotLayout(String dot_source)
 	{
 		File dot;
@@ -150,7 +195,8 @@ public class GraphvizLayout implements GraphLayout
 			if (dot != null) {
 				img_stream = runDotLayout(dot);
 				if (dot.delete() == false)
-					System.err.println("Warning: " + dot.getAbsolutePath() + " could not be deleted!");
+					System.err.println("Warning: " + dot.getAbsolutePath()
+									+ " could not be deleted!");
 			}
 			return img_stream;
 		} catch (Exception ioe) {
@@ -170,13 +216,10 @@ public class GraphvizLayout implements GraphLayout
 	}
 
 	/**
-	 * Writes the source of the graph in a file, and returns the written file as
-	 * a File object.
+	 * Writes the source of the graph in a file, and returns the written file as a File object.
 	 * 
-	 * @param str
-	 *            Source of the graph (in dot language).
-	 * @return The file (as a File object) that contains the source of the
-	 *         graph.
+	 * @param str Source of the graph (in dot language).
+	 * @return The file (as a File object) that contains the source of the graph.
 	 */
 	private File writeDotSourceToFile(String str) throws java.io.IOException
 	{
@@ -215,7 +258,7 @@ public class GraphvizLayout implements GraphLayout
 
 	public void layout(Vector vNodes, Vector vLinks)
 	{
-		
+
 		String result = getDotLayout(getDotSource());
 
 		File f = new File(result);
