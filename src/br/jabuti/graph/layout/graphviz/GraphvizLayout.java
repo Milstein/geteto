@@ -1,64 +1,49 @@
-/*  Copyright 2003  Auri Marcelo Rizzo Vicenzi, Marcio Eduardo Delamaro, 			    Jose Carlos Maldonado
-
-    This file is part of Jabuti.
-
-    Jabuti is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as
-    published by the Free Software Foundation, either version 3 of the
-    License, or (at your option) any later version.
-
-    Jabuti is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with Jabuti.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-// GraphViz.java - a simple API to call dot from Java programs
-
-/*$Id$*/
 /*
- ******************************************************************************
- *                                                                            *
- *              (c) Copyright 2003 Laszlo Szathmary                           *
- *                                                                            *
- * This program is free software; you can redistribute it and/or modify it    *
- * under the terms of the GNU Lesser General Public License as published by   *
- * the Free Software Foundation; either version 2.1 of the License, or        *
- * (at your option) any later version.                                        *
- *                                                                            *
- * This program is distributed in the hope that it will be useful, but        *
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY *
- * or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public    *
- * License for more details.                                                  *
- *                                                                            *
- * You should have received a copy of the GNU Lesser General Public License   *
- * along with this program; if not, write to the Free Software Foundation,    *
- * Inc., 675 Mass Ave, Cambridge, MA 02139, USA.                              *
- *                                                                            *
- ******************************************************************************
+This program is free software; you can redistribute it and/or modify it    
+under the terms of the GNU Lesser General Public License as published by   
+the Free Software Foundation; either version 2.1 of the License, or        
+(at your option) any later version.                                        
+                                                                             
+This program is distributed in the hope that it will be useful, but        
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public    
+License for more details.                                                  
+                                                                             
+You should have received a copy of the GNU Lesser General Public License   
+along with this program; if not, write to the Free Software Foundation,    
+Inc., 675 Mass Ave, Cambridge, MA 02139, USA.                              
+  
+Copyright (C) 2003 Laszlo Szathmary <szathml@delfin.unideb.hu>
  */
+
 package br.jabuti.graph.layout.graphviz;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.UnknownHostException;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
+
+import org.jinterop.dcom.common.IJIAuthInfo;
+import org.jinterop.dcom.common.JIDefaultAuthInfoImpl;
+import org.jinterop.dcom.common.JIException;
+import org.jinterop.winreg.IJIWinReg;
+import org.jinterop.winreg.JIPolicyHandle;
+import org.jinterop.winreg.JIWinRegFactory;
 
 import br.jabuti.graph.layout.GraphLayout;
 import br.jabuti.graph.view.gvf.GVFNode;
 
 /**
- * <dl>
- * <dt>Purpose: GraphViz Java API
- * <dd>
+ * GraphViz Java API is a simple API to call dot from Java programs.
  * 
- * <dt>Description:
- * <dd>With this Java class you can simply call dot from your Java programs
- * <dt>Example usage:
- * <dd>
+ * With this Java class you can simply call dot from your Java programs Example usage:
  * 
  * <pre>
  * GraphViz gv = new GraphViz();
@@ -71,13 +56,6 @@ import br.jabuti.graph.view.gvf.GVFNode;
  * File out = new File(&quot;out.gif&quot;);
  * gv.writeGraphToFile(gv.getGraph(gv.getDotSource()), out);
  * </pre>
- * 
- * </dd>
- * 
- * </dl>
- * 
- * @version v0.1, 2003/12/04 (Decembre)
- * @author Laszlo Szathmary (<a href="szathml@delfin.unideb.hu">szathml@delfin.unideb.hu</a>)
  */
 public class GraphvizLayout implements GraphLayout
 {
@@ -90,8 +68,10 @@ public class GraphvizLayout implements GraphLayout
 	 * Where is your dot program located? It will be called externally.
 	 */
 	private final static String DOT_W = "c:\\Arquivos de programas\\Graphviz2.22\\bin\\dot.exe";
+
 	private final static String DOT_L = "/usr/bin/dot";
-	private static String DOT = null;
+
+	private String DOT = null;
 
 	/**
 	 * The source of the graph written in dot language.
@@ -100,14 +80,50 @@ public class GraphvizLayout implements GraphLayout
 
 	private String windowsFindDot()
 	{
-		String s = getGraphVizInstallPath();
+		String s = getGraphVizPath2();
 		if (s == null)
 			return DOT_W;
 		else
 			return s += File.separator + "bin" + File.separator + "dot.exe";
 	}
 
-	public static String getGraphVizInstallPath()
+	/**
+	 * You can set the Authentication in DCOM component to "None" , this way no authentication would
+	 * be required by it. Unfortunately j-Interop does not support this. (We need security to
+	 * atleast be set to "Connect").
+	 * 
+	 * @return
+	 */
+	public String getGraphVizPath()
+	{
+		String domain = "";
+		;
+		String username = "";
+		String password = "";
+		String key = "Software\\Software\\AT&T Research Labs\\Graphviz\\";
+
+		String dir = null;
+
+		// IJIWinReg winReg = JIWinRegFactory.getSingleTon().getWinreg(hostInfo, hostInfo.getHost(), true);
+		IJIAuthInfo authInfo = new JIDefaultAuthInfoImpl(domain, username, password);
+		try {
+			IJIWinReg registry = JIWinRegFactory.getSingleTon().getWinreg(authInfo, domain, true);
+			JIPolicyHandle policyHandle1 = registry.winreg_OpenHKLM();
+			JIPolicyHandle policyHandle2 = registry.winreg_OpenKey(policyHandle1, key,
+							IJIWinReg.KEY_READ);
+			Object[] value = registry.winreg_QueryValue(policyHandle2, "InstallPath", 4096);
+			dir = (String) value[0];
+			System.out.println(dir);
+			registry.winreg_CloseKey(policyHandle2);
+			registry.winreg_CloseKey(policyHandle1);
+		} catch (JIException e) {
+		} catch (UnknownHostException JavaDoc) {
+		}
+
+		return dir;
+	}
+
+	public String getGraphVizPath2()
 	{
 		final String REGQUERY_UTIL = "reg query ";
 		final String REGSTR_TOKEN = "REG_EXPAND_SZ";
