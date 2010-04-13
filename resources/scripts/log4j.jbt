@@ -1,0 +1,41 @@
+############### CONFIGURATION FILE ###############
+
+##################################################
+# Instructions:
+# 1. Fill the fields using the absolut path
+# 2. Do use the "/" for directory names
+##################################################
+
+# ------------------------------------------------ 
+# 		    Mandatory
+# ------------------------------------------------
+
+BASE_DIR=/home/besson/Desktop/Log4J-demo
+
+# JABUTI INFO
+JABUTI_HOME="$BASE_DIR/Jabuti_1_0_3"
+
+# Original classes Directory
+ORIG_DIR="$BASE_DIR/Log4J-R791506/dist/classes"
+
+# Test Execution
+TEST_SCRIPT="$BASE_DIR/Log4J-R791506/tests"
+TEST_SCRIPT_OUT="$BASE_DIR/Log4J-R791506/tests"
+TEST_EXEC_CMD="ant -Dlog4j.jar=$INSTRUM_JAR Core"
+
+# Spago Information
+SPAGO_DIR=$BASE_DIR
+SPAGO_ID=Log4J-1.2R791506
+
+
+# -------------------------------------------------
+# 		     Optional
+# -------------------------------------------------
+
+# Original classes Jar
+# ORIG_JAR="$BASE_DIR/Log4J-R791506/dist/lib/log4j-1.2.15.jar"
+
+# Instrumented classes Jar
+# INSTRUM_JAR="$BASE_DIR/Log4J-R791506/dist/lib/log4j-1.2.15_instrum.jar"
+
+

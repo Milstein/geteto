@@ -1,0 +1,141 @@
+#!/bin/bash
+
+# ------------------------------------------------------------------------------
+# Author : Auri Vicenzi, Felipe Besson
+# Date: 04.01.2009
+# ------------------------------------------------------------------------------
+# Function : Instrument the classes
+# ------------------------------------------------------------------------------
+# version 1.0 : JaBUTi - Instrumenter
+# ------------------------------------------------------------------------------
+
+# Variables 
+
+msg_usage="
+  Usage : $(basename "$0") -cfg script_name
+
+  OPTIONS :
+      -cfg           Configuration file
+      -h, --help     Show this message and exit
+  "
+
+# Functions
+
+#############################################################
+# Verify if JABUTI_HOME is defined correctly
+#############################################################
+jabutiHome(){
+if [ ! -d "$JABUTI_HOME" ]
+then
+  echo "JABUTI_HOME"
+  echo "$JABUTI_HOME: not such file or directory "
+  exit 0
+fi
+}
+ 
+
+#############################################################
+# Verify if a jar file with the original classes is informed
+#############################################################
+jarFile(){
+if [ -z "$ORIG_JAR" ] 
+then
+  cd "$ORIG_DIR"
+    PACKAGES=$(ls -d */)
+    jar -cf classes.jar $PACKAGES
+    
+   ORIG_JAR="$ORIG_DIR/classes.jar" 
+   echo "The classes of $ORIG_DIR were packaged in classes.jar file"
+fi
+}
+
+
+############################################################# 
+# Instrument jar file with classes
+#############################################################
+instrument(){
+echo "Instrumenting $ORIG_JAR file"
+
+if [ -z "$INSTRUM_JAR" ]
+then
+   INSTRUM_JAR="$ORIG_DIR/classes-instrum.jar"
+fi
+
+java -Xmx512M -cp $JABUTI_HOME/build/classes:$JABUTI_HOME/lib/bcel-5.2.jar:$ORIG_DIR:. br.jabuti.probe.ProberInstrum -jar $ORIG_JAR -o $INSTRUM_JAR
+}
+
+
+############################################################# 
+# Instrument jar file with classes
+#############################################################
+extractInstrum(){
+cd "$ORIG_DIR/"
+jar -xf $INSTRUM_JAR
+}
+
+
+############################################################# 
+# Cleaning the house
+#############################################################
+clean(){
+if [ -e "$ORIG_DIR/classes.jar" ]
+then
+   rm "$ORIG_DIR/classes.jar" 
+fi
+
+if [ -e "$ORIG_DIR/classes-instrum.jar" ]
+then
+   rm "$ORIG_DIR/classes-instrum.jar" 
+fi
+}
+
+
+#############################################################
+#########################  MAIN  ############################
+#############################################################
+
+
+#Collect user arguments
+
+while [ -n "$1" ]
+do
+   case "$1" in
+
+   -h | --help)
+	echo "$msg_usage"
+        exit 0
+   ;;
+
+   -cfg) if [ -e "$2" ]
+          then
+	   source "$2"
+          else
+	   echo "usage: -cfg"
+           echo "$2: not such file or directory"
+           exit 0 
+         fi
+    break;;
+
+   --) shift
+       break;;
+
+   *) echo "$1 is not an option"
+   exit 0;;
+   esac
+   shift
+done
+
+if [ $# -ne 2 ]
+then
+  echo "Usage : jabuti-instrument -cfg <script_name>"
+  exit 0
+fi
+
+
+
+# Call Functions
+jabutiHome
+jarFile
+instrument
+extractInstrum
+clean

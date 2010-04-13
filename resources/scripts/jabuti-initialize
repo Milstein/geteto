@@ -1,0 +1,114 @@
+#!/bin/bash
+
+# ------------------------------------------------------------------------------
+# Author : Auri Vicenzi, Felipe Besson
+# Date: 04.01.2009
+# ------------------------------------------------------------------------------
+# Function : Instrument the classes
+# ------------------------------------------------------------------------------
+# version 1.0 : JaBUTi - Instrumenter
+# ------------------------------------------------------------------------------
+
+# Variables 
+
+msg_usage="
+  Usage : $(basename "$0") -cfg script_name
+
+  OPTIONS :
+      -cfg           Configuration file
+      -h, --help     Show this message and exit
+  "
+
+# Functions
+
+#############################################################
+# Verify if JABUTI_HOME is defined correctly
+#############################################################
+jabutiHome(){
+if [ ! -d "$JABUTI_HOME" ]
+then
+  echo "JABUTI_HOME:"
+  echo "$JABUTI_HOME: not such file or directory "
+  exit 0
+fi
+}
+
+
+
+#############################################################
+# List orginal classes
+#############################################################
+listClasses(){
+if [ -d "$ORIG_DIR" ]
+then
+  cd $ORIG_DIR
+        find . -name "*.class" | sed 's/\//./g' | sed 's/..//' | awk '{print substr($0,1,length($0)-6)}' > $ORIG_DIR/classes.txt
+else
+  echo "Classes Directory"
+  echo "$ORIG_DIR: not such file or directory "
+  exit 0
+fi
+}
+
+ 
+############################################################# 
+# Initialize test session
+#############################################################
+initialize(){
+ cd "$ORIG_DIR/.."
+ if [ ! -e "jbt-files" ]
+ then 
+   mkdir jbt-files
+ fi
+
+ cp -R $ORIG_DIR/* jbt-files 
+}
+
+
+#############################################################
+#########################  MAIN  ############################
+#############################################################
+
+
+#Collect user arguments
+
+while [ -n "$1" ]
+do
+   case "$1" in
+
+   -h | --help)
+	echo "$msg_usage"
+        exit 0
+   ;;
+
+   -cfg) if [ -e "$2" ]
+          then
+	   source "$2"
+          else
+	   echo "usage: -cfg"
+           echo "$2: not such file or directory"
+           exit 0 
+         fi
+    break;;
+
+   --) shift
+       break;;
+
+   *) echo "$1 is not an option"
+   exit 0;;
+   esac
+   shift
+done
+
+if [ $# -ne 2 ]
+then
+  echo "Usage : jabuti-initialize -cfg <script_name>"
+  exit 0
+fi
+
+
+
+# Call Functions
+jabutiHome
+listClasses
+initialize
