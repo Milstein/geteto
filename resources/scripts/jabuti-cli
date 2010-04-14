@@ -11,10 +11,10 @@ Usage: $(basename "$0") -cfg <project configuration> <action>\n
 \rOptions:\n
 \t-cfg           Set the configuration file (project name.cfg).\n
 \t<action>       Select the action to be executed. The valid actions are:\n
-\t\tinitialize - Initialize the test session.\n
 \t\tinstrument - Instrument the classes.\n
 \t\texecute    - Executes the test cases.\n
 \t\treport     - Generates reports with coverage.\n
+\t\tclean      - Removed packages and trace files created by JaBUTi.\n
 \t-h, --help     Show this message and exit\n
 "
 	echo -e $msg_usage
@@ -30,9 +30,15 @@ jabutiHome() {
 		exit 1
 	fi
 
+	echo "JaBUTi setup"
 	export JABUTI_HOME=$JABUTI_HOME
 	export BATCH_MODE=""
-	export CLASSPATH=.:$JABUTI_HOME/build/classes:$JABUTI_HOME/lib/bcel-5.2.jar
+	export CLASSPATH=.:$JABUTI_HOME/bin:$JABUTI_HOME/lib/bcel-5.2.jar
+	JAVA_VM_OPTIONS="-Xmx512M"
+	mkdir -p $JABUTI_TRACE_OUTPUT_DIR
+	if [ ! -d $JABUTI_TRACE_OUTPUT_DIR ]; then
+		echo "Could not create output directory for trace files"
+	fi
 }
 
 
@@ -49,35 +55,28 @@ listClasses() {
 	fi
 
 	pushd $PROJECT_ORIG_DIR
-        find . -name "*.class" | sed 's/\//./g' | sed 's/..//' | awk '{print substr($0,1,length($0)-6)}' > $PROJECT_ORIG_DIR/classes.txt
+        find . -name "*.class" | sed 's/\//./g' | sed 's/..//' | awk '{print substr($0,1,length($0)-6)}' > $JABUTI_TRACE_OUTPUT_DIR/classes.txt
 	popd
 }
 
  
-############################################################# 
-# Initialize test session
-#############################################################
-initialize() {
-	pushd "$PROJECT_ORIG_DIR/.."
-	if [ ! -e "jbt-files" ]; then
-		mkdir jbt-files
-	fi
-	cp -R $PROJECT_ORIG_DIR/* jbt-files
-	popd
-}
-
 
 #############################################################
 # Verify if a jar file with the original classes is informed
 #############################################################
 jarFile() {
-	if [ -z "$PROJECT_ORIG_JAR" ]; then
-		pushd "$PROJECT_ORIG_DIR"
-		PACKAGES=$(ls -d */)
-		jar -c0f classes.jar $PACKAGES
-		PROJECT_ORIG_JAR="$PROJECT_ORIG_DIR/classes.jar"
-		echo "The classes of $PROJECT_ORIG_DIR were packaged in classes.jar file"
-		popd
+	if [ -z $PROJECT_ORIG_JAR ]; then
+		PROJECT_ORIG_JAR=$JABUTI_TRACE_OUTPUT_DIR/classes.jar
+	fi
+
+	if [ -f $PROJECT_ORIG_JAR ]; then
+		echo "Package $PROJECT_ORIG_JAR already exists, skipping it"
+	else
+		rm -f $PROJECT_ORIG_DIR/br/jabuti/probe/DefaultProber.class
+		rm -f $PROJECT_ORIG_DIR/br/jabuti/probe/DefaultProberHook.class
+		rm -f $PROJECT_ORIG_DIR/br/jabuti/probe/ProbedNode.class
+		jar -c0f $JABUTI_TRACE_OUTPUT_DIR/classes.jar -C $PROJECT_ORIG_DIR .
+		echo "Package $PROJECT_ORIG_JAR has been created with class files from $PROJECT_ORIG_DIR"
 	fi
 }
 
@@ -87,10 +86,16 @@ jarFile() {
 #############################################################
 instrument() {
 	echo "Instrumenting $PROJECT_ORIG_JAR file"
-	if [ -z "$PROJECT_INSTRUM_JAR" ]; then
-		PROJECT_INSTRUM_JAR="$ORIG_DIR/classes-instrum.jar"
+	if [ -z $PROJECT_INSTRUM_JAR ]; then
+		PROJECT_INSTRUM_JAR=$JABUTI_TRACE_OUTPUT_DIR/classes-instrum.jar
 	fi
-	java -Xmx512M -cp $JABUTI_HOME/build/classes:$JABUTI_HOME/lib/bcel-5.2.jar:$PROJECT_ORIG_DIR:. br.jabuti.probe.ProberInstrum -jar $PROJECT_ORIG_JAR -o $PROJECT_INSTRUM_JAR
+
+	if [ -f $PROJECT_INSTRUM_JAR ]; then
+		echo "Package $PROJECT_INSTRUM_JAR already exists, skipping it"
+	else
+		java $JAVA_VM_OPTIONS -cp $JABUTI_HOME/bin:$JABUTI_HOME/lib/bcel-5.2.jar br.jabuti.probe.ProberInstrum -jar $PROJECT_ORIG_JAR -o $PROJECT_INSTRUM_JAR
+		echo "Package $PROJECT_INSTRUM_JAR has been created with instrumented class files from package $PROJECT_ORIG_JAR"
+	fi
 }
 
 
@@ -108,11 +113,11 @@ extractInstrum() {
 # Cleaning the house
 #############################################################
 clean() {
-	if [ -e "$PROJECT_ORIG_DIR/classes.jar" ]; then
-		rm "$PROJECT_ORIG_DIR/classes.jar" 
+	if [ -e $JABUTI_TRACE_OUTPUT_DIR/classes.jar ]; then
+		rm $JABUTI_TRACE_OUTPUT_DIR/classes.jar
 	fi
-	if [ -e "$PROJECT_ORIG_DIR/classes-instrum.jar" ]; then
-		rm "$PROJECT_ORIG_DIR/classes-instrum.jar" 
+	if [ -e $JABUTI_TRACE_OUTPUT_DIR/classes-instrum.jar ]; then
+		rm $JABUTI_TRACE_OUTPUT_DIR/classes-instrum.jar 
 	fi
 }
 
@@ -141,7 +146,7 @@ testSession() {
 		head -$cont classes.txt | tail -1 > current-class.txt
 
 		# Create test-session
-		ava -Xmx512M -cp $CLASSPATH br.jabuti.cmdtool.CreateProject -b `cat current-class.txt` -p `cat current-class.txt`.jbt -i current-class.txt
+		java -Xmx512M -cp $CLASSPATH br.jabuti.cmdtool.CreateProject -b `cat current-class.txt` -p `cat current-class.txt`.jbt -i current-class.txt
 
 		if [ -s "$JABUTI_TRACE_OUTPUT_DIR/`cat current-class.txt`.trc" ]; then
 			# Copying trace file
@@ -403,7 +408,6 @@ if [ $? != 0 ] ; then echo "Cannot parse command line" >&2 ; exit 1 ; fi
 set -- $args
 
 for i; do
-	echo $1
 	case "$1" in
 		-h|--help)
 			help
@@ -457,22 +461,16 @@ if [ -z $ACTION ]; then
 fi
 
 case $ACTION in
-	initialize)
-		jabutiHome
-		listClasses
-		initialize
-		;;
-
 	instrument)
 		jabutiHome
 		jarFile
 		instrument
 		extractInstrum
-		clean
 		;;
 
 	execute)
 		jabutiHome
+		listClasses
 		executeTests
 		;;
 
@@ -480,7 +478,11 @@ case $ACTION in
 		jabutiHome
 		testSession
 		spago4QFile
-	;;
+		;;
+
+	clean)
+		clean
+		;;
 
 	*)
 		echo "Invalid action $ACTION choosen, bailing out"
