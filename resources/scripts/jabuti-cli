@@ -1,0 +1,499 @@
+#!/bin/bash
+
+# ------------------------------------------------------------------------------
+# Authors: Auri Marcelo Rizzo Vicenzi, Felipe Besson, Marco Aurélio Graciotto Silva
+# version 1.1
+
+
+help() {
+	msg_usage="
+Usage: $(basename "$0") -cfg <project configuration> <action>\n
+\rOptions:\n
+\t-cfg           Set the configuration file (project name.cfg).\n
+\t<action>       Select the action to be executed. The valid actions are:\n
+\t\tinitialize - Initialize the test session.\n
+\t\tinstrument - Instrument the classes.\n
+\t\texecute    - Executes the test cases.\n
+\t\treport     - Generates reports with coverage.\n
+\t-h, --help     Show this message and exit\n
+"
+	echo -e $msg_usage
+}
+
+#############################################################
+# Verify if JABUTI_HOME is defined correctly
+#############################################################
+jabutiHome() {
+	if [ ! -d "$JABUTI_HOME" ]; then
+		echo "JABUTI_HOME"
+		echo "$JABUTI_HOME: not such file or directory "
+		exit 1
+	fi
+
+	export JABUTI_HOME=$JABUTI_HOME
+	export BATCH_MODE=""
+	export CLASSPATH=.:$JABUTI_HOME/build/classes:$JABUTI_HOME/lib/bcel-5.2.jar
+}
+
+
+
+
+#############################################################
+# List orginal classes
+#############################################################
+listClasses() {
+	if [ ! -d "$PROJECT_ORIG_DIR" ]; then
+		echo "Classes Directory"
+		echo "$PROJECT_ORIG_DIR: not such file or directory "
+		exit 1
+	fi
+
+	pushd $PROJECT_ORIG_DIR
+        find . -name "*.class" | sed 's/\//./g' | sed 's/..//' | awk '{print substr($0,1,length($0)-6)}' > $PROJECT_ORIG_DIR/classes.txt
+	popd
+}
+
+ 
+############################################################# 
+# Initialize test session
+#############################################################
+initialize() {
+	pushd "$PROJECT_ORIG_DIR/.."
+	if [ ! -e "jbt-files" ]; then
+		mkdir jbt-files
+	fi
+	cp -R $PROJECT_ORIG_DIR/* jbt-files
+	popd
+}
+
+
+#############################################################
+# Verify if a jar file with the original classes is informed
+#############################################################
+jarFile() {
+	if [ -z "$PROJECT_ORIG_JAR" ]; then
+		pushd "$PROJECT_ORIG_DIR"
+		PACKAGES=$(ls -d */)
+		jar -c0f classes.jar $PACKAGES
+		PROJECT_ORIG_JAR="$PROJECT_ORIG_DIR/classes.jar"
+		echo "The classes of $PROJECT_ORIG_DIR were packaged in classes.jar file"
+		popd
+	fi
+}
+
+
+############################################################# 
+# Instrument jar file with classes
+#############################################################
+instrument() {
+	echo "Instrumenting $PROJECT_ORIG_JAR file"
+	if [ -z "$PROJECT_INSTRUM_JAR" ]; then
+		PROJECT_INSTRUM_JAR="$ORIG_DIR/classes-instrum.jar"
+	fi
+	java -Xmx512M -cp $JABUTI_HOME/build/classes:$JABUTI_HOME/lib/bcel-5.2.jar:$PROJECT_ORIG_DIR:. br.jabuti.probe.ProberInstrum -jar $PROJECT_ORIG_JAR -o $PROJECT_INSTRUM_JAR
+}
+
+
+############################################################# 
+# Instrument jar file with classes
+#############################################################
+extractInstrum() {
+	pushd "$PROJECT_ORIG_DIR"
+	jar -xf $PROJECT_INSTRUM_JAR
+	popd
+}
+
+
+############################################################# 
+# Cleaning the house
+#############################################################
+clean() {
+	if [ -e "$PROJECT_ORIG_DIR/classes.jar" ]; then
+		rm "$PROJECT_ORIG_DIR/classes.jar" 
+	fi
+	if [ -e "$PROJECT_ORIG_DIR/classes-instrum.jar" ]; then
+		rm "$PROJECT_ORIG_DIR/classes-instrum.jar" 
+	fi
+}
+
+
+#############################################################
+# Execute tests
+#############################################################
+executeTests() {
+	pushd $TEST_SCRIPT
+	$TEST_EXEC_CMD
+	popd
+}
+
+
+
+#############################################################
+# Creating Test-session
+#############################################################
+testSession() {
+	pushd "$PROJECT_ORIG_DIR/../jbt-files"
+	local total=`wc classes.txt | awk '{print $1}'`
+	local cont=1
+
+	# Creating a test-session for each class
+	while [ $cont -le $total ]; do
+		head -$cont classes.txt | tail -1 > current-class.txt
+
+		# Create test-session
+		ava -Xmx512M -cp $CLASSPATH br.jabuti.cmdtool.CreateProject -b `cat current-class.txt` -p `cat current-class.txt`.jbt -i current-class.txt
+
+		if [ -s "$JABUTI_TRACE_OUTPUT_DIR/`cat current-class.txt`.trc" ]; then
+			# Copying trace file
+			cp "$JABUTI_TRACE_OUTPUT_DIR/"`cat current-class.txt`.trc .
+
+			# Import test cases
+			java -Xmx512M -cp $CLASSPATH br.jabuti.cmdtool.ImportTestCase -p `cat current-class.txt`.jbt
+		fi
+
+		if [ -s "`cat current-class.txt`.jbt" ]; then
+			echo "Working with class: `cat current-class.txt` "
+			# Generate report by criterion
+			java -Xmx512M -cp $CLASSPATH br.jabuti.cmdtool.JabutiReport -pr -p `cat current-class.txt`.jbt -o `cat current-class.txt`-report-by-criterion.xml
+
+			# Generate report by class
+			java -Xmx512M -cp $CLASSPATH br.jabuti.cmdtool.JabutiReport -cl -p `cat current-class.txt`.jbt -o `cat current-class.txt`-report-by-class.xml
+
+			# Generate report by method
+			java -Xmx512M -cp $CLASSPATH br.jabuti.cmdtool.JabutiReport -me -p `cat current-class.txt`.jbt -o `cat current-class.txt`-report-by-method.xml
+
+			# Generate report of metrics
+			java -cp $CLASSPATH br.jabuti.metrics.Metrics `cat current-class.txt` "." > `cat current-class.txt`-metrics.txt
+
+			# Generate full report
+			java -Xmx512M -cp $CLASSPATH br.jabuti.cmdtool.JabutiReport -all -p `cat current-class.txt`.jbt -o `cat current-class.txt`-full-report.xml
+		fi
+		let cont=cont+1
+	done
+	rm current-class.txt
+	popd
+}
+
+
+ 
+############################################################# 
+# Generate xml Spago4Q file
+#############################################################
+spago4QFile() {
+	prj="$PROJECT_SPAGO_ID"
+	if [ -s "$prj-Spago4Q.xml" ]; then
+		rm $prj-Spago4Q.xml
+	fi
+  
+	if [ -s "empty-report-by-criterion.txt" ]; then
+		rm empty-report-by-criterion.txt
+	fi
+
+	# Actual and total coverage of All-Nodes requirements criterion
+	local COVANEI=0
+	local TOTANEI=0
+	local COVANED=0
+	local TOTANED=0
+
+	# Actual and total coverage of All-Edges requirements criterion
+	local COVAEEI=0
+	local TOTAEEI=0
+	local COVAEED=0
+	local TOTAEED=0
+
+	# Actual and total coverage of All-Uses requirements criterion
+	local COVAUEI=0
+	local TOTAUEI=0
+	local COVAUED=0
+	local TOTAUED=0
+
+	# Actual and total coverage of All-Pot-Uses requirements criterion
+	local COVAPUEI=0
+	local TOTAPUEI=0
+	local COVAPUED=0
+	local TOTAPUED=0
+
+	local total=`wc classes.txt | awk '{print $1}'`
+	local cont=1
+	local contMissing=0
+
+	echo Analyzing $total testing reports
+
+	# Creating test-sessions
+	while [ $cont -le $total ]; do
+		head -$cont classes.txt | tail -1 > current-class.txt
+		if [ -s `cat current-class.txt`-report-by-criterion.xml ]; then
+			echo -n .
+
+			# All-Nodes-ei
+			grep "All-Nodes-ei covered" `cat current-class.txt`-report-by-criterion.xml > tmp.txt
+			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$2)}' tmp.txt`
+			let COVANEI=COVANEI+tmp
+			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$6)}' tmp.txt`
+			let TOTANEI=TOTANEI+tmp
+
+			# All-Nodes-ed
+			grep "All-Nodes-ed covered" `cat current-class.txt`-report-by-criterion.xml > tmp.txt
+			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$2)}' tmp.txt`
+			let COVANED=COVANED+tmp
+			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$6)}' tmp.txt`
+			let TOTANED=TOTANED+tmp
+
+			# All-Edges-ei
+			grep "All-Edges-ei covered" `cat current-class.txt`-report-by-criterion.xml > tmp.txt
+			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$2)}' tmp.txt`
+			let COVAEEI=COVAEEI+tmp
+			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$6)}' tmp.txt`
+			let TOTAEEI=TOTAEEI+tmp
+
+			# All-Edges-ed
+			grep "All-Edges-ed covered" `cat current-class.txt`-report-by-criterion.xml > tmp.txt
+			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$2)}' tmp.txt`
+			let COVAEED=COVAEED+tmp
+			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$6)}' tmp.txt`
+			let TOTAEED=TOTAEED+tmp
+
+			# All-Uses-ei
+			grep "All-Uses-ei covered" `cat current-class.txt`-report-by-criterion.xml > tmp.txt
+			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$2)}' tmp.txt`
+			let COVAUEI=COVAUEI+tmp
+			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$6)}' tmp.txt`
+			let TOTAUEI=TOTAUEI+tmp
+
+			# All-Uses-ed
+			grep "All-Uses-ed covered" `cat current-class.txt`-report-by-criterion.xml > tmp.txt
+			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$2)}' tmp.txt`
+			let COVAUED=COVAUED+tmp
+			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$6)}' tmp.txt`
+			let TOTAUED=TOTAUED+tmp
+
+			# All-Pot-Uses-ei
+			grep "All-Pot-Uses-ei covered" `cat current-class.txt`-report-by-criterion.xml > tmp.txt
+			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$2)}' tmp.txt`
+			let COVAPUEI=COVAPUEI+tmp
+			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$6)}' tmp.txt`
+			let TOTAPUEI=TOTAPUEI+tmp
+
+			# All-Pot-Uses-ed
+			grep "All-Pot-Uses-ed covered" `cat current-class.txt`-report-by-criterion.xml > tmp.txt
+			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$2)}' tmp.txt`
+			let COVAPUED=COVAPUED+tmp
+			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$6)}' tmp.txt`
+			let TOTAPUED=TOTAPUED+tmp
+		else
+			echo -n X
+			echo `cat current-class.txt` >> empty-report-by-criterion.txt
+			let contMissing=contMissing+1
+		fi
+		let cont=cont+1
+	done
+
+	echo -e "\nMissing report of $contMissing out of $total classes"
+	let total=total-contMissing
+
+	echo "Computaded data with respect to $total classes"
+	echo "Covered All-Nodes-ei: $COVANEI"
+	echo "Total   All-Nodes-ei: $TOTANEI"
+	COVANEI=`echo $COVANEI $TOTANEI | awk '{if ($2 > 0)printf("%5.2f",$1*100/$2);else print "0.00"}'`
+	echo "Porcentagem All-Nodes-ei: $COVANEI" 
+
+	echo ""
+	echo "Covered All-Nodes-ed: $COVANED"
+	echo "Total   All-Nodes-ed: $TOTANED"
+	COVANED=`echo $COVANED $TOTANED | awk '{if ($2 > 0)printf("%5.2f",$1*100/$2);else print "0.00"}'`
+	echo "Porcentagem All-Nodes-ed: $COVANED" 
+
+	echo ""
+	echo "Covered All-Edges-ei: $COVAEEI"
+	echo "Total   All-Edges-ei: $TOTAEEI"
+	COVAEEI=`echo $COVAEEI $TOTAEEI | awk '{if ($2 > 0)printf("%5.2f",$1*100/$2);else print "0.00"}'`
+	echo "Porcentagem All-Edged-ei: $COVAEEI" 
+
+	echo ""
+	echo "Covered All-Edges-ed: $COVAEED"
+	echo "Total   All-Edges-ed: $TOTAEED"
+	COVAEED=`echo $COVAEED $TOTAEED | awk '{if ($2 > 0)printf("%5.2f",$1*100/$2);else print "0.00"}'`
+	echo "Porcentagem All-Edges-ed: $COVAEED" 
+
+	echo ""
+	echo "Covered All-Uses-ei: $COVAUEI"
+	echo "Total   All-Uses-ei: $TOTAUEI"
+	COVAUEI=`echo $COVAUEI $TOTAUEI | awk '{if ($2 > 0)printf("%5.2f",$1*100/$2);else print "0.00"}'`
+	echo "Porcentagem All-Uses-ei: $COVAUEI" 
+
+	echo ""
+	echo "Covered All-Uses-ed: $COVAUED"
+	echo "Total   All-Uses-ed: $TOTAUED"
+	COVAUED=`echo $COVAUED $TOTAUED | awk '{if ($2 > 0)printf("%5.2f",$1*100/$2);else print "0.00"}'`
+	echo "Porcentagem All-Uses-ed: $COVAUED" 
+
+	echo ""
+	echo "Covered All-Pot-Uses-ei: $COVAPUEI"
+	echo "Total   All-PotUses-ei: $TOTAPUEI"
+	COVAPUEI=`echo $COVAPUEI $TOTAPUEI | awk '{if ($2 > 0)printf("%5.2f",$1*100/$2);else print "0.00"}'`
+	echo "Porcentagem All-Pot-Uses-ei: $COVAPUEI" 
+
+	echo ""
+	echo "Covered All-Pot-Uses-ed: $COVAPUED"
+	echo "Total   All-pot-Uses-ed: $TOTAPUED"
+	COVAPUED=`echo $COVAPUED $TOTAPUED | awk '{if ($2 > 0)printf("%5.2f",$1*100/$2);else print "0.00"}'`
+	echo "Porcentagem All-Pot-Uses-ed: $COVAPUED" 
+
+
+	echo "<GenericItems>" > $prj-Spago4Q.xml
+	echo "   <GenericItem>" >> $prj-Spago4Q.xml
+	echo "      <resource>$prj</resource>" >> $prj-Spago4Q.xml
+	echo "      <metric>All-Nodes-ei</metric>" >> $prj-Spago4Q.xml 
+	echo "      <value>$COVANEI</value>" >> $prj-Spago4Q.xml
+	echo "   </GenericItem>" >> $prj-Spago4Q.xml
+	echo "   <GenericItem>" >> $prj-Spago4Q.xml
+	echo "      <resource>$prj</resource>" >> $prj-Spago4Q.xml
+	echo "      <metric>All-Nodes-ed</metric>" >> $prj-Spago4Q.xml
+	echo "      <value>$COVANED</value>" >> $prj-Spago4Q.xml
+	echo "   </GenericItem>" >> $prj-Spago4Q.xml
+	echo "   <GenericItem>"  >> $prj-Spago4Q.xml
+	echo "      <resource>$prj</resource>" >> $prj-Spago4Q.xml
+	echo "      <metric>All-Edges-ei</metric>" >> $prj-Spago4Q.xml
+	echo "      <value>$COVAEEI</value>" >> $prj-Spago4Q.xml
+	echo "   </GenericItem>" >> $prj-Spago4Q.xml  
+	echo "   <GenericItem>" >> $prj-Spago4Q.xml
+	echo "      <resource>$prj</resource>" >> $prj-Spago4Q.xml
+	echo "      <metric>All-Edges-ed</metric>" >> $prj-Spago4Q.xml
+	echo "      <value>$COVAEED</value>" >> $prj-Spago4Q.xml
+	echo "   </GenericItem>" >> $prj-Spago4Q.xml
+	echo "   <GenericItem>" >> $prj-Spago4Q.xml
+	echo "      <resource>$prj</resource>"  >> $prj-Spago4Q.xml
+	echo "      <metric>All-Uses-ei</metric>"  >> $prj-Spago4Q.xml
+	echo "      <value>$COVAUEI</value>" >> $prj-Spago4Q.xml
+	echo "   </GenericItem>" >> $prj-Spago4Q.xml  
+	echo "   <GenericItem>" >> $prj-Spago4Q.xml
+	echo "      <resource>$prj</resource>" >> $prj-Spago4Q.xml
+	echo "      <metric>All-Uses-ed</metric>" >> $prj-Spago4Q.xml
+	echo "      <value>$COVAUED</value>" >> $prj-Spago4Q.xml
+	echo "   </GenericItem>" >> $prj-Spago4Q.xml  
+	echo "   <GenericItem>" >> $prj-Spago4Q.xml
+	echo "      <resource>$prj</resource>" >> $prj-Spago4Q.xml
+	echo "      <metric>All-Pot-Uses-ei</metric>" >> $prj-Spago4Q.xml
+	echo "      <value>$COVAPUEI</value>" >> $prj-Spago4Q.xml
+	echo "   </GenericItem>" >> $prj-Spago4Q.xml  
+	echo "   <GenericItem>" >> $prj-Spago4Q.xml
+	echo "      <resource>$prj</resource>" >> $prj-Spago4Q.xml
+	echo "      <metric>All-Pot-Uses-ed</metric>" >> $prj-Spago4Q.xml
+	echo "      <value>$COVAPUED</value>" >> $prj-Spago4Q.xml
+	echo "   </GenericItem>" >> $prj-Spago4Q.xml  
+	echo "</GenericItems>" >> $prj-Spago4Q.xml
+	echo ""
+
+	cp "$prj-Spago4Q.xml" "$SPAGO_HOME"
+}
+
+
+
+
+
+#
+#  Main function
+#
+ACTION=""
+CONFIG=""
+
+# Collect user arguments using getopt
+args=`getopt -a --unquoted --options :hc:a: --long :help,cfg:,action: -n 'jabuti-cli' -- "$@"`
+if [ $? != 0 ] ; then echo "Cannot parse command line" >&2 ; exit 1 ; fi
+set -- $args
+
+for i; do
+	echo $1
+	case "$1" in
+		-h|--help)
+			help
+			exit 0
+			;;
+
+		-c|--cfg)
+			CONFIG=$2
+			shift 2
+			;;
+
+		-a|--action)
+			ACTION=$2
+			shift 2
+			;;
+
+		--)
+			break
+			;;
+			
+		*)
+			help
+			exit 1
+			;;
+	esac
+done
+
+
+if [ -z $CONFIG ]; then
+	echo "Configuration file not set, bailing out"
+	exit 1
+fi
+
+if [ ! -e $CONFIG ]; then
+	echo "Cannot read project configuration $CONFIG"
+	exit 1
+fi
+
+source $CONFIG
+if [ $? -ne 0 ]; then
+	echo "Invalid project configuration $CONFIG"
+	exit 1
+fi
+
+
+
+
+if [ -z $ACTION ]; then
+	echo "No action was choosen, bailing out"
+	exit 1
+fi
+
+case $ACTION in
+	initialize)
+		jabutiHome
+		listClasses
+		initialize
+		;;
+
+	instrument)
+		jabutiHome
+		jarFile
+		instrument
+		extractInstrum
+		clean
+		;;
+
+	execute)
+		jabutiHome
+		executeTests
+		;;
+
+	report)
+		jabutiHome
+		testSession
+		spago4QFile
+	;;
+
+	*)
+		echo "Invalid action $ACTION choosen, bailing out"
+		exit 1;
+esac
+
+
+
+
+
+
+
+
+
+
+
