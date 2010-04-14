@@ -31,10 +31,13 @@ jabutiHome() {
 	fi
 
 	echo "JaBUTi setup"
-	export JABUTI_HOME=$JABUTI_HOME
-	export BATCH_MODE=""
-	export CLASSPATH=.:$JABUTI_HOME/bin:$JABUTI_HOME/lib/bcel-5.2.jar
+	JABUTI_HOME=$JABUTI_HOME
+	BATCH_MODE=$JABUTI_TRACE_OUTPUT_DIR/
+	PROBER_CLASSPATH=$JABUTI_HOME/build/classes
+	JABUTI_CLASSPATH=$JABUTI_HOME/build/classes:$JABUTI_HOME/lib/bcel-5.2.jar:.
 	JAVA_VM_OPTIONS="-Xmx512M"
+	export BATCH_MODE
+	export CLASSPATH=$PROBER_CLASSPATH
 	mkdir -p $JABUTI_TRACE_OUTPUT_DIR
 	if [ ! -d $JABUTI_TRACE_OUTPUT_DIR ]; then
 		echo "Could not create output directory for trace files"
@@ -42,24 +45,6 @@ jabutiHome() {
 }
 
 
-
-
-#############################################################
-# List orginal classes
-#############################################################
-listClasses() {
-	if [ ! -d "$PROJECT_ORIG_DIR" ]; then
-		echo "Classes Directory"
-		echo "$PROJECT_ORIG_DIR: not such file or directory "
-		exit 1
-	fi
-
-	pushd $PROJECT_ORIG_DIR
-        find . -name "*.class" | sed 's/\//./g' | sed 's/..//' | awk '{print substr($0,1,length($0)-6)}' > $JABUTI_TRACE_OUTPUT_DIR/classes.txt
-	popd
-}
-
- 
 
 #############################################################
 # Verify if a jar file with the original classes is informed
@@ -72,9 +57,6 @@ jarFile() {
 	if [ -f $PROJECT_ORIG_JAR ]; then
 		echo "Package $PROJECT_ORIG_JAR already exists, skipping it"
 	else
-		rm -f $PROJECT_ORIG_DIR/br/jabuti/probe/DefaultProber.class
-		rm -f $PROJECT_ORIG_DIR/br/jabuti/probe/DefaultProberHook.class
-		rm -f $PROJECT_ORIG_DIR/br/jabuti/probe/ProbedNode.class
 		jar -c0f $JABUTI_TRACE_OUTPUT_DIR/classes.jar -C $PROJECT_ORIG_DIR .
 		echo "Package $PROJECT_ORIG_JAR has been created with class files from $PROJECT_ORIG_DIR"
 	fi
@@ -93,89 +75,81 @@ instrument() {
 	if [ -f $PROJECT_INSTRUM_JAR ]; then
 		echo "Package $PROJECT_INSTRUM_JAR already exists, skipping it"
 	else
-		java $JAVA_VM_OPTIONS -cp $JABUTI_HOME/bin:$JABUTI_HOME/lib/bcel-5.2.jar br.jabuti.probe.ProberInstrum -jar $PROJECT_ORIG_JAR -o $PROJECT_INSTRUM_JAR
+		java $JAVA_VM_OPTIONS -cp $JABUTI_CLASSPATH br.jabuti.probe.ProberInstrum -jar $PROJECT_ORIG_JAR -o $PROJECT_INSTRUM_JAR
 		echo "Package $PROJECT_INSTRUM_JAR has been created with instrumented class files from package $PROJECT_ORIG_JAR"
 	fi
 }
 
-
-############################################################# 
-# Instrument jar file with classes
-#############################################################
-extractInstrum() {
-	pushd "$PROJECT_ORIG_DIR"
-	jar -xf $PROJECT_INSTRUM_JAR
-	popd
-}
-
-
-############################################################# 
-# Cleaning the house
-#############################################################
-clean() {
-	if [ -e $JABUTI_TRACE_OUTPUT_DIR/classes.jar ]; then
-		rm $JABUTI_TRACE_OUTPUT_DIR/classes.jar
-	fi
-	if [ -e $JABUTI_TRACE_OUTPUT_DIR/classes-instrum.jar ]; then
-		rm $JABUTI_TRACE_OUTPUT_DIR/classes-instrum.jar 
-	fi
-}
 
 
 #############################################################
 # Execute tests
 #############################################################
 executeTests() {
-	pushd $TEST_SCRIPT
-	$TEST_EXEC_CMD
+	pushd $PROJECT_TEST_DIR
+	$PROJECT_TEST_EXEC_CMD
 	popd
 }
 
+
+#############################################################
+# List orginal classes
+#############################################################
+listClasses() {
+	if [ ! -d $PROJECT_ORIG_DIR ]; then
+		echo "Classes Directory"
+		echo "$PROJECT_ORIG_DIR: not such file or directory "
+		exit 1
+	fi
+
+	pushd $PROJECT_ORIG_DIR
+        find . -name "*.class" | sed 's/\//./g' | sed 's/..//' | awk '{print substr($0,1,length($0)-6)}' > $JABUTI_TRACE_OUTPUT_DIR/classes.txt
+	popd
+}
 
 
 #############################################################
 # Creating Test-session
 #############################################################
 testSession() {
-	pushd "$PROJECT_ORIG_DIR/../jbt-files"
-	local total=`wc classes.txt | awk '{print $1}'`
+	pushd $PROJECT_ORIG_DIR
+
+	local total=`wc $JABUTI_TRACE_OUTPUT_DIR/classes.txt | awk '{print $1}'`
 	local cont=1
 
 	# Creating a test-session for each class
 	while [ $cont -le $total ]; do
-		head -$cont classes.txt | tail -1 > current-class.txt
+		local current_class=`head -$cont $JABUTI_TRACE_OUTPUT_DIR/classes.txt | tail -1`
+		echo $current_class > $current_class.txt
+		echo "Creating report for $current_class"
 
 		# Create test-session
-		java -Xmx512M -cp $CLASSPATH br.jabuti.cmdtool.CreateProject -b `cat current-class.txt` -p `cat current-class.txt`.jbt -i current-class.txt
-
-		if [ -s "$JABUTI_TRACE_OUTPUT_DIR/`cat current-class.txt`.trc" ]; then
-			# Copying trace file
-			cp "$JABUTI_TRACE_OUTPUT_DIR/"`cat current-class.txt`.trc .
-
-			# Import test cases
-			java -Xmx512M -cp $CLASSPATH br.jabuti.cmdtool.ImportTestCase -p `cat current-class.txt`.jbt
+		rm -f $current_class.jbt
+		java $JAVA_VM_OPTIONS -cp $JABUTI_CLASSPATH br.jabuti.cmdtool.CreateProject -b $current_class -p $current_class.jbt -i $current_class.txt
+		if [ -s "$JABUTI_TRACE_OUTPUT_DIR/$current_class.trc" ]; then
+			cp $JABUTI_TRACE_OUTPUT_DIR/$current_class.trc .
+			java $JAVA_VM_OPTIONS -cp $JABUTI_CLASSPATH br.jabuti.cmdtool.ImportTestCase -p $current_class.jbt
 		fi
 
-		if [ -s "`cat current-class.txt`.jbt" ]; then
-			echo "Working with class: `cat current-class.txt` "
+		if [ -s "$current_class.jbt" ]; then
+			echo "Working with class: $current_class"
 			# Generate report by criterion
-			java -Xmx512M -cp $CLASSPATH br.jabuti.cmdtool.JabutiReport -pr -p `cat current-class.txt`.jbt -o `cat current-class.txt`-report-by-criterion.xml
+			java $JAVA_VM_OPTIONS -cp $JABUTI_CLASSPATH br.jabuti.cmdtool.JabutiReport -pr -p $current_class.jbt -o $JABUTI_TRACE_OUTPUT_DIR/$current_class-report-by-criterion.xml
 
 			# Generate report by class
-			java -Xmx512M -cp $CLASSPATH br.jabuti.cmdtool.JabutiReport -cl -p `cat current-class.txt`.jbt -o `cat current-class.txt`-report-by-class.xml
+			java $JAVA_VM_OPTIONS -cp $JABUTI_CLASSPATH br.jabuti.cmdtool.JabutiReport -cl -p $current_class.jbt -o $JABUTI_TRACE_OUTPUT_DIR/$current_class-report-by-class.xml
 
 			# Generate report by method
-			java -Xmx512M -cp $CLASSPATH br.jabuti.cmdtool.JabutiReport -me -p `cat current-class.txt`.jbt -o `cat current-class.txt`-report-by-method.xml
+			java $JAVA_VM_OPTIONS -cp $JABUTI_CLASSPATH br.jabuti.cmdtool.JabutiReport -me -p $current_class.jbt -o $JABUTI_TRACE_OUTPUT_DIR/$current_class-report-by-method.xml
 
 			# Generate report of metrics
-			java -cp $CLASSPATH br.jabuti.metrics.Metrics `cat current-class.txt` "." > `cat current-class.txt`-metrics.txt
+			java $JAVA_VM_OPTIONS -cp $JABUTI_CLASSPATH br.jabuti.metrics.Metrics $current_class $PROJECT_ORIG_DIR > $JABUTI_TRACE_OUTPUT_DIR/$current_class-report-metrics.txt
 
 			# Generate full report
-			java -Xmx512M -cp $CLASSPATH br.jabuti.cmdtool.JabutiReport -all -p `cat current-class.txt`.jbt -o `cat current-class.txt`-full-report.xml
+			java $JAVA_VM_OPTIONS -cp $JABUTI_CLASSPATH br.jabuti.cmdtool.JabutiReport -all -p $current_class.jbt -o $JABUTI_TRACE_OUTPUT_DIR/$current_class-report-full.xml
 		fi
 		let cont=cont+1
 	done
-	rm current-class.txt
 	popd
 }
 
@@ -218,7 +192,7 @@ spago4QFile() {
 	local COVAPUED=0
 	local TOTAPUED=0
 
-	local total=`wc classes.txt | awk '{print $1}'`
+	local total=`wc $JABUTI_TRACE_OUTPUT_DIR/classes.txt | awk '{print $1}'`
 	local cont=1
 	local contMissing=0
 
@@ -226,68 +200,68 @@ spago4QFile() {
 
 	# Creating test-sessions
 	while [ $cont -le $total ]; do
-		head -$cont classes.txt | tail -1 > current-class.txt
-		if [ -s `cat current-class.txt`-report-by-criterion.xml ]; then
+		local current_class=`head -$cont $JABUTI_TRACE_OUTPUT_DIR/classes.txt | tail -1`
+		if [ -s $JABUTI_TRACE_OUTPUT_DIR/$current_class-report-by-criterion.xml ]; then
 			echo -n .
 
 			# All-Nodes-ei
-			grep "All-Nodes-ei covered" `cat current-class.txt`-report-by-criterion.xml > tmp.txt
+			grep "All-Nodes-ei covered" $JABUTI_TRACE_OUTPUT_DIR/$current_class-report-by-criterion.xml > tmp.txt
 			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$2)}' tmp.txt`
 			let COVANEI=COVANEI+tmp
 			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$6)}' tmp.txt`
 			let TOTANEI=TOTANEI+tmp
 
 			# All-Nodes-ed
-			grep "All-Nodes-ed covered" `cat current-class.txt`-report-by-criterion.xml > tmp.txt
+			grep "All-Nodes-ed covered" $JABUTI_TRACE_OUTPUT_DIR/$current_class-report-by-criterion.xml > tmp.txt
 			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$2)}' tmp.txt`
 			let COVANED=COVANED+tmp
 			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$6)}' tmp.txt`
 			let TOTANED=TOTANED+tmp
 
 			# All-Edges-ei
-			grep "All-Edges-ei covered" `cat current-class.txt`-report-by-criterion.xml > tmp.txt
+			grep "All-Edges-ei covered" $JABUTI_TRACE_OUTPUT_DIR/$current_class-report-by-criterion.xml > tmp.txt
 			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$2)}' tmp.txt`
 			let COVAEEI=COVAEEI+tmp
 			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$6)}' tmp.txt`
 			let TOTAEEI=TOTAEEI+tmp
 
 			# All-Edges-ed
-			grep "All-Edges-ed covered" `cat current-class.txt`-report-by-criterion.xml > tmp.txt
+			grep "All-Edges-ed covered" $JABUTI_TRACE_OUTPUT_DIR/$current_class-report-by-criterion.xml > tmp.txt
 			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$2)}' tmp.txt`
 			let COVAEED=COVAEED+tmp
 			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$6)}' tmp.txt`
 			let TOTAEED=TOTAEED+tmp
 
 			# All-Uses-ei
-			grep "All-Uses-ei covered" `cat current-class.txt`-report-by-criterion.xml > tmp.txt
+			grep "All-Uses-ei covered" $JABUTI_TRACE_OUTPUT_DIR/$current_class-report-by-criterion.xml > tmp.txt
 			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$2)}' tmp.txt`
 			let COVAUEI=COVAUEI+tmp
 			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$6)}' tmp.txt`
 			let TOTAUEI=TOTAUEI+tmp
 
 			# All-Uses-ed
-			grep "All-Uses-ed covered" `cat current-class.txt`-report-by-criterion.xml > tmp.txt
+			grep "All-Uses-ed covered" $JABUTI_TRACE_OUTPUT_DIR/$current_class-report-by-criterion.xml > tmp.txt
 			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$2)}' tmp.txt`
 			let COVAUED=COVAUED+tmp
 			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$6)}' tmp.txt`
 			let TOTAUED=TOTAUED+tmp
 
 			# All-Pot-Uses-ei
-			grep "All-Pot-Uses-ei covered" `cat current-class.txt`-report-by-criterion.xml > tmp.txt
+			grep "All-Pot-Uses-ei covered" $JABUTI_TRACE_OUTPUT_DIR/$current_class-report-by-criterion.xml > tmp.txt
 			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$2)}' tmp.txt`
 			let COVAPUEI=COVAPUEI+tmp
 			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$6)}' tmp.txt`
 			let TOTAPUEI=TOTAPUEI+tmp
 
 			# All-Pot-Uses-ed
-			grep "All-Pot-Uses-ed covered" `cat current-class.txt`-report-by-criterion.xml > tmp.txt
+			grep "All-Pot-Uses-ed covered" $JABUTI_TRACE_OUTPUT_DIR/$current_class-report-by-criterion.xml > tmp.txt
 			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$2)}' tmp.txt`
 			let COVAPUED=COVAPUED+tmp
 			tmp=`awk 'BEGIN{FS="\""};{printf("%d",$6)}' tmp.txt`
 			let TOTAPUED=TOTAPUED+tmp
 		else
 			echo -n X
-			echo `cat current-class.txt` >> empty-report-by-criterion.txt
+			echo $current_class >> empty-report-by-criterion.txt
 			let contMissing=contMissing+1
 		fi
 		let cont=cont+1
@@ -393,6 +367,18 @@ spago4QFile() {
 }
 
 
+############################################################# 
+# Cleaning the house
+#############################################################
+clean() {
+	if [ -e $JABUTI_TRACE_OUTPUT_DIR/classes.jar ]; then
+		rm $JABUTI_TRACE_OUTPUT_DIR/classes.jar
+	fi
+	if [ -e $JABUTI_TRACE_OUTPUT_DIR/classes-instrum.jar ]; then
+		rm $JABUTI_TRACE_OUTPUT_DIR/classes-instrum.jar 
+	fi
+}
+
 
 
 
@@ -465,17 +451,16 @@ case $ACTION in
 		jabutiHome
 		jarFile
 		instrument
-		extractInstrum
 		;;
 
 	execute)
 		jabutiHome
-		listClasses
 		executeTests
 		;;
 
 	report)
 		jabutiHome
+		listClasses
 		testSession
 		spago4QFile
 		;;
