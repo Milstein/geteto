@@ -33,8 +33,8 @@ jabutiHome() {
 	echo "JaBUTi setup"
 	JABUTI_HOME=$JABUTI_HOME
 	BATCH_MODE=$JABUTI_TRACE_OUTPUT_DIR/
-	PROBER_CLASSPATH=$JABUTI_HOME/build/classes
-	JABUTI_CLASSPATH=$JABUTI_HOME/build/classes:$JABUTI_HOME/lib/bcel-5.2.jar:.
+	PROBER_CLASSPATH=$JABUTI_HOME/Jabuti-bin.jar
+	JABUTI_CLASSPATH=$JABUTI_HOME/Jabuti-bin.jar:$JABUTI_HOME/lib/bcel-5.2.jar:.
 	JAVA_VM_OPTIONS="-Xmx512M"
 	export BATCH_MODE
 	export CLASSPATH=$PROBER_CLASSPATH
@@ -390,7 +390,7 @@ CONFIG=""
 
 # Collect user arguments using getopt
 args=`getopt -a --unquoted --options :hc:a: --long :help,cfg:,action: -n 'jabuti-cli' -- "$@"`
-if [ $? != 0 ] ; then echo "Cannot parse command line" >&2 ; exit 1 ; fi
+if [ $? != 0 ] ; then echo "Cannot parse command line" >&2 ; help; exit 1 ; fi
 set -- $args
 
 for i; do
@@ -424,17 +424,20 @@ done
 
 if [ -z $CONFIG ]; then
 	echo "Configuration file not set, bailing out"
+	help
 	exit 1
 fi
 
 if [ ! -e $CONFIG ]; then
 	echo "Cannot read project configuration $CONFIG"
+	help
 	exit 1
 fi
 
 source $CONFIG
 if [ $? -ne 0 ]; then
 	echo "Invalid project configuration $CONFIG"
+	help
 	exit 1
 fi
 
@@ -443,6 +446,7 @@ fi
 
 if [ -z $ACTION ]; then
 	echo "No action was choosen, bailing out"
+	help
 	exit 1
 fi
 
@@ -471,6 +475,7 @@ case $ACTION in
 
 	*)
 		echo "Invalid action $ACTION choosen, bailing out"
+		help
 		exit 1;
 esac
 
