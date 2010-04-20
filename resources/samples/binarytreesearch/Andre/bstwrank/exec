@@ -1,1 +1,0 @@
-java -cp "/mnt/aurimrv/jabuti/lib/junit.jar:/mnt/aurimrv/jabuti:." binarytreesearch.tcase
