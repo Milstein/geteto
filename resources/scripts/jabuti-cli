@@ -270,7 +270,7 @@ spago4QFile() {
 	echo -e "\nMissing report of $contMissing out of $total classes"
 	let total=total-contMissing
 
-	echo "Computaded data with respect to $total classes"
+	echo "Computed data with respect to $total classes"
 	echo "Covered All-Nodes-ei: $COVANEI"
 	echo "Total   All-Nodes-ei: $TOTANEI"
 	COVANEI=`echo $COVANEI $TOTANEI | awk '{if ($2 > 0)printf("%5.2f",$1*100/$2);else print "0.00"}'`
