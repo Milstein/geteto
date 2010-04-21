@@ -1,6 +1,7 @@
 TODO
-
 - Fix the script to import test cases from JUnit
 - Fix the script to update the coverage after a new .trc has been generated
-
-
+- Review the probe mechanism. Writing (updating) trace files is slow, but
+it's only an append operation! Review the classes ProbedNode, DefaultProber
+and DefaultProberHook.
+- Check if the 'newcmdtool', from JaBUTi-Scalability, is of some use.
