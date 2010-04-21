@@ -22,8 +22,8 @@ package br.jabuti.project;
 import java.util.*;
 import java.io.*;
 
-import br.jabuti.mobility.*;
 import br.jabuti.probe.desktop.*;
+import br.jabuti.probe.mobiledevice.HostTraceReader;
 import br.jabuti.util.*;
 
 import br.jabuti.criteria.*;

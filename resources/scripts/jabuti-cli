@@ -35,7 +35,7 @@ jabutiHome() {
 	BATCH_MODE=$JABUTI_TRACE_OUTPUT_DIR/
 	PROBER_CLASSPATH=$JABUTI_HOME/Jabuti-bin.jar
 	JABUTI_CLASSPATH=$JABUTI_HOME/Jabuti-bin.jar:$JABUTI_HOME/lib/bcel-5.2.jar:.
-	JAVA_VM_OPTIONS="-Xmx512M"
+	JAVA_VM_OPTIONS="-XX:-UseGCOverheadLimit -Xms512m -Xmx1024m -XX:MaxPermSize=256m -Djava.awt.headless=true -XX:+UseCompressedOops -server"
 	export BATCH_MODE
 	export CLASSPATH=$PROBER_CLASSPATH
 	mkdir -p $JABUTI_TRACE_OUTPUT_DIR
@@ -465,7 +465,7 @@ case $ACTION in
 	report)
 		jabutiHome
 		listClasses
-		testSession
+#		testSession
 		spago4QFile
 		;;
 

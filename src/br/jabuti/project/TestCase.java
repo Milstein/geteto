@@ -21,7 +21,7 @@ package br.jabuti.project;
 
 import java.util.*;
 
-import br.jabuti.mobility.mobile.HostProbedNode;
+import br.jabuti.probe.mobiledevice.mobile.HostProbedNode;
 import br.jabuti.ui.gui.*;
 import br.jabuti.criteria.*;
 

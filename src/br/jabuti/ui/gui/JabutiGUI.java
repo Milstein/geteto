@@ -26,6 +26,7 @@ import br.jabuti.graph.view.gvf.*;
 import br.jabuti.lookup.java.bytecode.Program;
 import br.jabuti.metrics.Metrics;
 import br.jabuti.mobility.*;
+import br.jabuti.probe.mobiledevice.HostProberServer;
 import br.jabuti.project.*;
 import br.jabuti.runner.junit.Main;
 import br.jabuti.util.*;

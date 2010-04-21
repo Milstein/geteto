@@ -261,13 +261,12 @@ public class CFGFrame extends JFrame implements ItemListener {
                 vetNodes.addElement(curNode);
             }
 
-			Vector v = null;
-			
-            // Creating the primary edges
-            v = gn.getPrimNext();
-	
-            for (int j = 0; j < v.size(); j++) {
-                GraphNode gn2 = ((GraphNode) v.elementAt(j));
+			// Creating the primary edges
+            Set<GraphNode> primNextNodes = gn.getPrimNext();
+            Iterator<GraphNode> j = primNextNodes.iterator();
+            
+            while (j.hasNext()) {
+            	GraphNode gn2 = j.next();
                 String childLabel = gn2.getLabel();
 	
                 //System.out.println("Edge added: <" + label + "," + childLabel + ">");
@@ -297,9 +296,10 @@ public class CFGFrame extends JFrame implements ItemListener {
             }
 
             // Creating the secondary edges (exception edges)
-            v = gn.getSecNext();
-            for (int j = 0; j < v.size(); j++) {
-                GraphNode gn2 = ((GraphNode) v.elementAt(j));
+            Set<GraphNode> secNextNode = gn.getSecNext();
+            j = primNextNodes.iterator();
+            while (j.hasNext()) {
+                GraphNode gn2 = j.next();
                 String childLabel = gn2.getLabel();
 
                 //System.out.println("Edge added: <" + label + "," + childLabel + ">");

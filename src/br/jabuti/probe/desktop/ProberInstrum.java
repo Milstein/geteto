@@ -178,8 +178,6 @@ public class ProberInstrum {
 					System.exit(0);
 				}
 
-				System.out.println("Avoiding packages: " + toAvoid);
-				
 				Program program = new Program(new ZipFile(jarFile), true,
 						toAvoid);
 				String[] classes = program.getClasses();
