@@ -116,10 +116,10 @@ public class ReduceGraph extends ListGraph {
             GraphNode inNodes[] = rn.getOriginalNodes();
 
             for (int j = 0; j < inNodes.length; j++) {
-                Vector v = g.getLeavingNodes(inNodes[j], sec);
-
-                for (int k = 0; k < v.size(); k++) {
-                    GraphNode gnex = (GraphNode) v.elementAt(k);
+                Set<GraphNode> v = g.getLeavingNodes(inNodes[j], sec);
+                Iterator<GraphNode> k = v.iterator();
+                while (k.hasNext()) {
+                    GraphNode gnex = (GraphNode) k.next();
                     ReduceNode rdNex = rd.getReduceNodeOf(gnex);
 
                     if (rdNex != rn) {

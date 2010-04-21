@@ -37,15 +37,14 @@ public class RRDominator implements RoundRobinExecutor {
     public RRDominator() {}
 	
     public Object calcNewSet(GraphNode theNode, 
-            Vector primary, 
-            Vector secondary) {
+    				Set<GraphNode> primary, 
+    				Set<GraphNode> secondary) {
         HashSet s1 = null;
-        int ip = 0, is = 0;
+        GraphNode ip = null, is =  null;
 
         // Inicializa o conjunto s1
         if (primary.size() > 0 && theNode != entryNode ) {
-            GraphNode gn = (GraphNode) primary.elementAt(0);
-
+        	GraphNode gn = (GraphNode) primary.iterator().next();
 			if ( gn.getUserData(label) == null)
 			{
 				System.out.println("Null data: " + gn);
@@ -55,38 +54,53 @@ public class RRDominator implements RoundRobinExecutor {
             	s1 = new HashSet(s1);
             else
             	s1 = new HashSet(1);
-            ip++;
+            ip = gn;
         } else
         if (secondary.size() > 0 && theNode != entryNode ) {
-            GraphNode gn = (GraphNode) secondary.elementAt(0);
+            GraphNode gn = (GraphNode) secondary.iterator().next();
 
 			s1 = (HashSet) gn.getUserData(label);
             if ( s1 != null)
             	s1 = new HashSet(s1);
             else
             	s1 = new HashSet(1);
-            is++;
+            is = gn;
         } else {
             s1 = new HashSet(1);
         }
 			
         // Faz a interseccao de todos os dominadores
         // dos antecessores.
-        for (int i = ip; i < primary.size(); i++) {
-            GraphNode gn = (GraphNode) primary.elementAt(i);
-            HashSet s2 = (HashSet) gn.getUserData(label);
-
-            if (s2 != null) {
-                s1.retainAll(s2);
-            }
+        Iterator<GraphNode> i = primary.iterator();
+        boolean start = false;
+        while (i.hasNext()) {
+        	GraphNode gn = i.next();
+        	if (gn.equals(ip)) {
+        		start = true;
+        		continue;
+        	}
+        	if (start) {
+        		HashSet s2 = (HashSet) gn.getUserData(label);
+        		if (s2 != null) {
+        			s1.retainAll(s2);
+        		}
+        	}
         }
-        for (int i = is; i < secondary.size(); i++) {
-            GraphNode gn = (GraphNode) secondary.elementAt(i);
-            HashSet s2 = (HashSet) gn.getUserData(label);
-
-            if (s2 != null) {
-                s1.retainAll(s2);
-            }
+        
+        start = false;
+        i = secondary.iterator();
+        while (i.hasNext()) {
+            GraphNode gn = i.next();
+        	if (gn.equals(is)) {
+        		start = true;
+        		continue;
+        	}
+        	if (start) {
+        		HashSet s2 = (HashSet) gn.getUserData(label);
+        		if (s2 != null) {
+        			s1.retainAll(s2);
+        		}
+        	}
         }
         s1.add(theNode);
         return s1;
@@ -112,8 +126,8 @@ public class RRDominator implements RoundRobinExecutor {
      * seus predecessores, primarios ou secundários.
      */
     public void init(GraphNode theNode,
-            Vector primary, 
-            Vector secondary) {
+    				Set<GraphNode> primary, 
+    				Set<GraphNode> secondary) {
             	
         //System.out.println("Iniciando: " + theNode);
         //System.out.println("PRIMARY: " + primary);
@@ -134,42 +148,46 @@ public class RRDominator implements RoundRobinExecutor {
         }
 
         HashSet s1 = null;
-			
-        for (int i = 0; primary != null && i < primary.size(); i++) {
-            GraphNode gn = (GraphNode) primary.elementAt(i);
+        if (primary != null) {
+        	Iterator<GraphNode> i = primary.iterator();
+        	while (i.hasNext()) {
+        		GraphNode gn = i.next();
 
-            // se o no nao foi inicializado ainda, entao nao eh levado
-            // em consideracao para inicializar o noh corrente
-            if (!auxInit.contains(gn)) {
-                continue;
-            }
-            HashSet s2 = (HashSet) gn.getUserData(label);
-
-            if (s2 != null) {
-                if (s1 == null) {
-                    s1 = new HashSet(s2.size());
-                    s1.addAll(s2);
-                } else {
-                    s1.retainAll(s2);
-                }
-            }
+	            // se o no nao foi inicializado ainda, entao nao eh levado
+	            // em consideracao para inicializar o noh corrente
+	            if (!auxInit.contains(gn)) {
+	                continue;
+	            }
+	            HashSet s2 = (HashSet) gn.getUserData(label);
+	
+	            if (s2 != null) {
+	                if (s1 == null) {
+	                    s1 = new HashSet(s2.size());
+	                    s1.addAll(s2);
+	                } else {
+	                    s1.retainAll(s2);
+	                }
+	            }
+        	}
         }
-        for (int i = 0; secondary != null && i < secondary.size(); i++) {
-            GraphNode gn = (GraphNode) secondary.elementAt(i);
-
-            if (!auxInit.contains(gn)) {
-                continue;
-            }
-            HashSet s2 = (HashSet) gn.getUserData(label);
-
-            if (s2 != null) {
-                if (s1 == null) {
-                    s1 = new HashSet(s2.size());
-                    s1.addAll(s2);
-                } else {
-                    s1.retainAll(s2);
-                }
-            }
+        
+        if (secondary != null) {
+        	Iterator<GraphNode> i = secondary.iterator();
+        	while (i.hasNext()) {
+        		GraphNode gn = i.next();
+	            if (!auxInit.contains(gn)) {
+	                continue;
+	            }
+	            HashSet s2 = (HashSet) gn.getUserData(label);
+	            if (s2 != null) {
+	                if (s1 == null) {
+	                    s1 = new HashSet(s2.size());
+	                    s1.addAll(s2);
+	                } else {
+	                    s1.retainAll(s2);
+	                }
+	            }
+        	}
         }
         // se nenhum dominador foi identificado, adiciona
         // conjunto vazio

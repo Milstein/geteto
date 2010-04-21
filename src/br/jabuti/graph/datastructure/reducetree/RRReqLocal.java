@@ -41,26 +41,27 @@ public class RRReqLocal implements RoundRobinExecutor {
 				
     // Just to satisfy all the implementations 
     // required by RoundRobinExecutor
-    public void init(GraphNode x, Vector primary, Vector secondary) {
+    public void init(GraphNode x, Set<GraphNode> primary, Set<GraphNode> secondary) {
         this.init(x);
     }
 				
     public Object calcNewSet(GraphNode theNode, 
-            Vector primary, 
-            Vector secondary) {
+    				Set<GraphNode> primary, 
+    				Set<GraphNode> secondary) {
         BitSet req = new BitSet(); // the new set
-        Vector nx = primary;
+        Set<GraphNode> nx = primary;
         InstructionNode theInstNode = (InstructionNode) theNode;
-
-        for (int i = 0; i < nx.size(); i++) {
-            InstructionNode in = (InstructionNode) nx.elementAt(i);
+        Iterator<GraphNode> i = nx.iterator();
+        while (i.hasNext()) {
+            InstructionNode in = (InstructionNode) i.next();
             BitSet bs = (BitSet) in.getUserData(label);
 
             req.or(bs);
         }
         nx = secondary;
-        for (int i = 0; i < nx.size(); i++) {
-            InstructionNode in = (InstructionNode) nx.elementAt(i);
+        i = nx.iterator();
+        while (i.hasNext()) {
+            InstructionNode in = (InstructionNode) i.next();
             BitSet bs = (BitSet) in.getUserData(label);
 
             req.or(bs);

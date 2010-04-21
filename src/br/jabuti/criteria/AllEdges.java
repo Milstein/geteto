@@ -67,29 +67,20 @@ public class AllEdges extends AbstractCriterion {
             GraphNode gn = fdt[i];
             String nodeLabel = gn.getLabel();
 
-            Vector v = gn.getSecNext();
-
-            for (int j = 0; j < v.size(); j++) 
-            {
-                Edge ed = new Edge(nodeLabel, 
-                        ((GraphNode) v.elementAt(j)).getLabel());
-
+            Set<GraphNode> v = gn.getSecNext();
+            Iterator<GraphNode> j = v.iterator();
+            while (j.hasNext()) {
+            	Edge ed = new Edge(nodeLabel, j.next().getLabel());
                 sec.add(ed);
             }
 			
             v = gn.getPrimNext();
-
-            for (int j = 0; j < v.size(); j++) 
-            {
-                Edge ed = new Edge(nodeLabel, 
-                        ((GraphNode) v.elementAt(j)).getLabel());
-
-				if ( secNodes.required.containsKey(nodeLabel) )
-				{
+            j = v.iterator();
+            while (j.hasNext()) {
+                Edge ed = new Edge(nodeLabel, j.next().getLabel());
+				if ( secNodes.required.containsKey(nodeLabel) )	{
                 	sec.add(ed);
-                }
-                else
-                {
+                } else {
                 	prim.add(ed);
                 }
             }

@@ -41,27 +41,34 @@ public class RRLiveDefs implements RoundRobinExecutor {
 	
     public RRLiveDefs(int w) { which = w;}
 	
+    public void init(GraphNode theNode,
+    	            Set<GraphNode> primary, 
+    	            Set<GraphNode> secondary) {
+    	        theNode.setUserData(label, dummySet);
+    	    }
+
+    
     public Object calcNewSet(GraphNode theNode, 
-            Vector primary, 
-            Vector secondary) {
+    				Set<GraphNode> primary, 
+    				Set<GraphNode> secondary) {
         HashSet s1 = new HashSet();
 			
 		if ( which == ALL || which == PRIMARY)
 		{
-        	for (int i = 0; i < primary.size(); i++) {
-        	    GraphNode gn = (GraphNode) primary.elementAt(i);
+			Iterator<GraphNode> i = primary.iterator();
+			while (i.hasNext()) {
+        	    GraphNode gn = i.next();
         	    HashSet s2 = computeBottom(gn);
-
         	    s1.addAll(s2);
         	}
     	}
     	
 		if ( which == ALL || which == SECONDARY)
 		{
-	        for (int i = 0; i < secondary.size(); i++) {
-	            GraphNode gn = (GraphNode) secondary.elementAt(i);
+			Iterator<GraphNode> i = secondary.iterator();
+			while (i.hasNext()) {
+	            GraphNode gn = i.next();
 	            HashSet s2 = computeBottom(gn);
-	
 	            s1.addAll(s2);
 	        }
 	     }

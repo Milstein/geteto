@@ -1357,14 +1357,14 @@ public class InstructionNode extends GraphNode {
             str += in.next() + " ";
         }
         str += "\nSuccessors:\n";
-        Vector nx = getPrimNext();
+        Set<GraphNode> nx = getPrimNext();
 
         if (nx.size() == 0) {
             str += "\tNONE\n";
         }
-        for (int i = 0; i < nx.size(); i++) {
-            InstructionNode suc = (InstructionNode) nx.elementAt(i);
-
+        Iterator<GraphNode> i = nx.iterator();
+        while (i.hasNext()) {
+            InstructionNode suc = (InstructionNode) i.next();
             str += "\t" + suc.hashCode() + " " + suc.ih + "\n";
         }
         str += "Previous:\n";
@@ -1372,9 +1372,9 @@ public class InstructionNode extends GraphNode {
         if (nx.size() == 0) {
             str += "\tNONE\n";
         }
-        for (int i = 0; i < nx.size(); i++) {
-            InstructionNode suc = (InstructionNode) nx.elementAt(i);
-
+        i = nx.iterator();
+        while (i.hasNext()) {
+            InstructionNode suc = (InstructionNode) i.next();
             str += "\t" + suc.hashCode() + " " + suc.ih + "\n";
         }
         if (err != null) {
@@ -1385,11 +1385,11 @@ public class InstructionNode extends GraphNode {
         }
         str += "STACK:\n" + theStack + // "\nNEXT:\n" + nextStack +
                 "\nLOCALS:\n";
-        for (int i = 0; i < localVars.size(); i++) {
-            if (localVars.get(i) == null) {
+        for (int j = 0; j < localVars.size(); j++) {
+            if (localVars.get(j) == null) {
                 str += "\t<empty>\n";
             } else {		
-                str += "\t" + localVars.get(i).getSignature() + "\n";
+                str += "\t" + localVars.get(j).getSignature() + "\n";
             }
         }
         return str;

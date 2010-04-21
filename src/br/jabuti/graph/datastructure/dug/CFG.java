@@ -20,6 +20,8 @@ package br.jabuti.graph.datastructure.dug;
 
 import java.util.Collections;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.Vector;
 
 import org.aspectj.apache.bcel.generic.ClassGen;
@@ -32,6 +34,7 @@ import org.aspectj.apache.bcel.generic.JsrInstruction;
 import org.aspectj.apache.bcel.generic.MethodGen;
 import org.aspectj.apache.bcel.generic.RET;
 
+import br.jabuti.graph.datastructure.GraphNode;
 import br.jabuti.graph.datastructure.ListGraph;
 import br.jabuti.graph.datastructure.ig.InstructionGraph;
 import br.jabuti.graph.datastructure.ig.InstructionNode;
@@ -179,8 +182,8 @@ public class CFG extends ListGraph
 			currNode.add(x);
 			htable.put(x, currNode);
 
-			Vector nx = ig.getLeavingNodesByPrimaryEdge(x);
-			Vector nxex = ig.getLeavingNodesBySecondaryEdge(x);
+			Set<GraphNode> nx = ig.getLeavingNodesByPrimaryEdge(x);
+			Set<GraphNode> nxex = ig.getLeavingNodesBySecondaryEdge(x);
 
 			// se instrucao eh JSR ou RET, entao divide
 			ins = x.ih.getInstruction();
@@ -217,32 +220,34 @@ public class CFG extends ListGraph
 
 			// se numero de sucessores > 1, entao divide
 			spl |= nx.size() != 1;
-			int k = 0;
-
-			while (k < nx.size() && !spl) {
+			
+			Iterator<GraphNode> i = nx.iterator(); 
+			while (i.hasNext() && !spl) {
+				GraphNode node = i.next();
 
 				// se algum sucessor tem mais de 1 predecessor, seja
 				// normal ou atraves de excessao, divide
-				InstructionNode in = (InstructionNode) nx.elementAt(k++);
-				Vector ar = ig.getArrivingNodes(in, true);
+				InstructionNode in = (InstructionNode) node;
+				Set<GraphNode> ar = ig.getArrivingNodes(in, true);
 
 				spl = ar.size() > 1;
 
 				// ou se o sucessor tem um numero diferente de tratadores
 				// de excessao, tbem divide
-				Vector q = ig.getLeavingNodesBySecondaryEdge(in);
+				Set<GraphNode> q = ig.getLeavingNodesBySecondaryEdge(in);
 
 				spl |= nxex.size() != q.size();
 
 				// ou se o sucessor nao tem os mesmos tratadores
 				// de excessao, tbem divide
-				for (int i = 0; (!spl) && i < q.size(); i++) {
-					spl |= !nxex.contains(q.elementAt(i));
+				Iterator<GraphNode> j = q.iterator();
+				while (j.hasNext() && !spl) {
+					spl |= !nxex.contains(j.next());
 				}
 			}
 			if (!spl) { // nao divide, inclui o sucessor de x no bloco
 				// corrente
-				x = (InstructionNode) nx.elementAt(0);
+				x = (InstructionNode) nx.iterator().next();
 			} else {
 				if (isSuperCall) {
 					CFGNode cNode = new CFGSuperNode(currNode, x, cp);
@@ -271,13 +276,15 @@ public class CFG extends ListGraph
 					}
 					currNode = cNode;
 				}
-				for (int i = 0; i < nx.size(); i++) {
-					addPrimaryEdge(currNode, newNodeTo((InstructionNode) nx.elementAt(i), clazz, cp,
-									ig));
+				
+				Iterator<GraphNode> j = nx.iterator();
+				while (j.hasNext()) {
+					addPrimaryEdge(currNode, newNodeTo((InstructionNode) j.next(), clazz, cp, ig));
 				}
-				for (int i = 0; i < nxex.size(); i++) {
-					addSecondaryEdge(currNode, newNodeTo((InstructionNode) nxex.elementAt(i), clazz, cp,
-									ig));
+				
+				j = nxex.iterator();
+				while (j.hasNext()) {
+					addSecondaryEdge(currNode, newNodeTo((InstructionNode) j.next(), clazz, cp, ig));
 				}
 			}
 		} while (!spl);

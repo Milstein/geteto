@@ -75,7 +75,7 @@ public class AllUses extends AbstractCriterion {
 
 			// pega o numero de arestas primarias saindo
 			// se for <= 1, nao considera os usos locais
-            Vector nextG = graph.getLeavingNodes(g, false);
+            Set<GraphNode> nextG = graph.getLeavingNodes(g, false);
 			int contNext = nextG.size();
 
 			// primeiro trata dos usos locais
@@ -84,12 +84,13 @@ public class AllUses extends AbstractCriterion {
             {
             	String useVarName = (String) useIt.next();
 				
-				Vector v = g.getPrimNext();
-	            for (int j = 0; j < v.size(); j++) {
+				Set<GraphNode> v = g.getPrimNext();
+				Iterator<GraphNode> j = v.iterator();
+				while (j.hasNext()) {
 	                    DefUse assoc = new DefUse(useVarName, 
 	                            g.getLabel(),
 	                            g.getLabel(), 
-	                            ((GraphNode) v.elementAt(j)).getLabel()
+	                            j.next().getLabel()
 	                         );
 	                    if ( ! isSec )
 	                    	required.put(assoc, new Integer(0));
@@ -159,7 +160,7 @@ public class AllUses extends AbstractCriterion {
             		boolean isSecDef = 
             		         secNodes.required.containsKey(defNode.getLabel());
             		
-	                Vector v = graph.getLeavingNodes(g, false);
+	                Set<GraphNode> v = graph.getLeavingNodes(g, false);
 					
 					// se numero de sucesores <= 1 entao existe uma 
 					// associa��o defini��o / uso no noh (computacional)
@@ -181,11 +182,12 @@ public class AllUses extends AbstractCriterion {
 	                }
 	
 	                v = g.getPrimNext();
-	                for (int j = 0; j < v.size(); j++) {
+	                Iterator<GraphNode> j = v.iterator();
+	                while (j.hasNext()) {
 	                    DefUse assoc = new DefUse(useVarName, 
 	                            defNode.getLabel(),
 	                            g.getLabel(), 
-	                            ((GraphNode) v.elementAt(j)).getLabel()
+	                            j.next().getLabel()
 	                         );
 	                	if ( ! isSec && ! isSecDef ) 
 	                		required.put(assoc, new Integer(0));

@@ -74,7 +74,7 @@ public class AllPotUses extends AbstractCriterion {
             }
 
 			// pega o numero de arestas primarias saindo
-            Vector nextG = graph.getLeavingNodes(g, false);
+            Set<GraphNode> nextG = graph.getLeavingNodes(g, false);
 			int contNext = nextG.size();
 			
 			// se for uso predicativo, inclui as definicoes no
@@ -125,12 +125,13 @@ public class AllPotUses extends AbstractCriterion {
 	                continue;
 	            }
 				// senao, associa a def-uso a cada aresta primaria saindo
-	            Vector v = g.getPrimNext();
-	            for (int j = 0; j < v.size(); j++) {
+	            Set<GraphNode> v = g.getPrimNext();
+	            Iterator<GraphNode> j = v.iterator();
+	            while (j.hasNext()) {
 	                DefUse assoc = new DefUse(defVarName, 
 	                        defNode.getLabel(),
 	                        g.getLabel(), 
-	                        ((GraphNode) v.elementAt(j)).getLabel()
+	                        j.next().getLabel()
 	                     );
 	            	if ( ! isSec && ! isSecDef ) 
 	            		required.put(assoc, new Integer(0));

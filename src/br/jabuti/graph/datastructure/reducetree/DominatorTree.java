@@ -90,13 +90,12 @@ public class DominatorTree extends ReduceGraph {
             DominatorTreeNode rn = (DominatorTreeNode) elementAt(j);
             GraphNode gn = rn.getOriginalNode();
             ReduceNode rnOther = g.getReduceNodeOf(gn);
-            Vector next = rnOther.getPrimNext();
-
-            for (int i = 0; i < next.size(); i++) {
-                DominatorTreeNode rnNextOther = (DominatorTreeNode) next.elementAt(i);
+            Set<GraphNode> next = rnOther.getPrimNext();
+            Iterator<GraphNode> i = next.iterator();
+            while (i.hasNext()) {
+                DominatorTreeNode rnNextOther = (DominatorTreeNode) i.next();
                 GraphNode gnOther = rnNextOther.getOriginalNode();
                 ReduceNode rnNext = getReduceNodeOf(gnOther);
-
                 addPrimaryEdge(rn, rnNext); 
             }
         }
@@ -129,11 +128,10 @@ public class DominatorTree extends ReduceGraph {
         int k = rn.getOriginalNodes().length;
 
         hs.add(rn);
-        Vector ar = rn.getPrimArriving();
-
-        for (int i = 0; i < ar.size(); i++) {
-            DominatorTreeNode dtn = (DominatorTreeNode) ar.elementAt(i);
-
+        Set<GraphNode> ar = rn.getPrimArriving();
+        Iterator<GraphNode> i = ar.iterator();
+        while (i.hasNext()) {
+            DominatorTreeNode dtn = (DominatorTreeNode) i.next();
             k += getWeigth(dtn, hs);
         }
         return k;
@@ -177,12 +175,11 @@ public class DominatorTree extends ReduceGraph {
             GraphNode inNodes[] = rn.getOriginalNodes();
 
             for (int j = 0; j < inNodes.length; j++) {
-                Vector v = g.getLeavingNodes(inNodes[j], sec);
-
-                for (int k = 0; k < v.size(); k++) {
-                    GraphNode gnex = (GraphNode) v.elementAt(k);
+                Set<GraphNode> v = g.getLeavingNodes(inNodes[j], sec);
+                Iterator<GraphNode> k = v.iterator();
+                while (k.hasNext()) {
+                    GraphNode gnex = (GraphNode) k.next();
                     ReduceNode rdNex = rd.getReduceNodeOf(gnex);
-
                     if (rdNex != rn) {
                         rd.addPrimaryEdge(rn, rdNex);
                     }

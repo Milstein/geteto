@@ -14,18 +14,28 @@
 
     You should have received a copy of the GNU Lesser General Public License
     along with Jabuti.  If not, see <http://www.gnu.org/licenses/>.
- */
+*/
+
 
 package br.jabuti.graph.datastructure.ig;
 
+
+import java.io.PrintStream;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
+import org.aspectj.apache.bcel.classfile.ClassParser;
+import org.aspectj.apache.bcel.classfile.JavaClass;
+import org.aspectj.apache.bcel.classfile.Method;
 import org.aspectj.apache.bcel.generic.CodeExceptionGen;
 import org.aspectj.apache.bcel.generic.ConstantPoolGen;
 import org.aspectj.apache.bcel.generic.InstructionHandle;
@@ -34,7 +44,9 @@ import org.aspectj.apache.bcel.generic.JsrInstruction;
 import org.aspectj.apache.bcel.generic.MethodGen;
 import org.aspectj.apache.bcel.generic.RET;
 import org.aspectj.apache.bcel.generic.Type;
-import org.omg.CORBA.DynAnyPackage.Invalid;
+
+import prefuse.data.Graph;
+
 
 import br.jabuti.graph.datastructure.GraphNode;
 import br.jabuti.graph.datastructure.ListGraph;
@@ -43,25 +55,25 @@ import br.jabuti.graph.datastructure.reducetree.RRReqLocal;
 import br.jabuti.graph.datastructure.reducetree.RoundRobinExecutor;
 import br.jabuti.util.InstructCtrl;
 
-/**
- * <p>
- * This class represents a program graph where each node is a single instruction of the JVM
- * bytecode. Besides building the graph, this class has methods to collect information for the
- * instructions. The information collected is described in the {@link InstructionNode} class and
- * include all the stack and local variable configurations when the instruction is reached, which
- * instructions filled the stack spots, etc <br>
+
+/** <p> This class represents a program graph where each node is 
+ * a single instruction of the JVM bytecode. Besides building
+ * the graph, this class has methods to collect information for
+ * the instructions. The information collected is described 
+ * in the {@link InstructionNode} class and include all 
+ * the stack and local variable configurations when the instruction
+ * is reached, which instructions filled the stack spots, etc <br></p>
+ * 
+ * <p>A few features about the graph. First, the exception handlers,
+ * i.e, the first {@link InstructionNode} of an exeception handler
+ * is linked to all the instructions inside its hadled block. This
+ * linking is done using the "secondary edge" of the graph (See the
+ * {@link Graph} class for explanation). 
  * </p>
  * 
  * <p>
- * A few features about the graph. First, the exception handlers, i.e, the first
- * {@link InstructionNode} of an exeception handler is linked to all the instructions inside its
- * hadled block. This linking is done using the "secondary edge" of the graph (See the
- * {@link ListGraph} class for explanation).
- * </p>
- * 
- * <p>
- * The code of a in-method subroutine is replicated for each invocation. So, for example, the
- * following code
+ * The code of a in-method subroutine is replicated for each invocation.
+ * So, for example, the following code 
  * 
  * <PRE>
  *     NOP
@@ -75,7 +87,6 @@ import br.jabuti.util.InstructCtrl;
  * </PRE>
  * 
  * would be represented by the following graph:<BR>
- * 
  * <PRE>
  *                           NODE       |     NEXT
  *                          ------------+-----------
@@ -88,22 +99,21 @@ import br.jabuti.util.InstructCtrl;
  *                          (7) RET     |  (3)
  *                          (8) NOP     |  (9)
  *                          (9) RET     |  (5)
- * </PRE>
- * 
- * <BR>
- * I think this is the best solution because it avoids many problems to calculated stack a local
- * variable configurations. In addition, at the end we probably want to relate an instruction node
- * to a point in the source code and it is always possible to related several instruction nodes to
- * the same source piece.<BR>
+ *  </PRE><BR>
+ * I think this is the best solution because it avoids meny problems
+ * to calculated stack a local variable configurations. In addition, 
+ * at the end we probably wnat to relate an instruction node to a 
+ * point in the source code and it is always possible to related 
+ * several instruction nodes to the same source piece.<BR>
  * Anyway, if you do not like this approach, the class has the method
- * {@link InstructionGraph#mergeJSR} that, after the graph is built, will join the nodes that
- * correspond to the same instruction (like nodes 7 - 9 and 6 - 8 above) and fix the pointers to
- * reflect this change.
+ * {@link InstructionGraph#mergeJSR} that, after the graph is built,
+ * will join the nodes that correspond to the same instruction (like
+ * nodes 7 - 9 and 6 - 8 above) and fix the pointers to reflect this change.
  * </p>
  * 
- * <p>
- * All the instructions of the method will be in the graph. Even the unreachable ones. And it is not
- * uncommon to find unreachable code in Java classes. For example, in the code bellow, instruction
+ * <p> All the instructions of the method will be in the graph. Even
+ * the unreachable ones. And it is not uncommon to find unreachable
+ * code in Java classes. For example, in the code bellow, instruction
  * is unreacheable
  * 
  * <PRE>
@@ -116,537 +126,651 @@ import br.jabuti.util.InstructCtrl;
  * 5       ALOAD 10
  * 6       ATHROW
  * </PRE>
- * 
  * </p>
  * 
- * <p>
- * The graph has a single entry node: the first instruction of the method. The exit node is node
- * identified (since in reality several exit nodes may be present due to throw intructions).
+ * <p> The graph has a single entry node: the first instruction of
+ * the method. The exit node is node identified (since in reality
+ * several exit nodes may be present due to throw intructions).
  * </p>
  * 
- * @see ListGraph
+ * @see Graph
  * @see InstructionNode
  */
-public class InstructionGraph extends ListGraph
-{
+public class InstructionGraph extends ListGraph {
+	
+    /**
+	 * Added to jdk1.5.0_04 compiler
+	 */
 	private static final long serialVersionUID = -6272077012414454220L;
 
-	private static final Type EXCEPTION_TYPE = Type.getReturnType("()Ljava.lang.Exception;");
+	static private final Type EXCEPTION_TYPE = Type.getReturnType("()Ljava.lang.Exception;");
 
-	/**
-	 * The method that this graph represents.
-	 */
-	private MethodGen method;
+    /** The list of instructions that form the method */	
+    InstructionList il;
 
-	// Organize the instructions, so that it's thereafter easy to find a given instruction.
-	private Map<InstructionHandle, InstructionNode> verify = new HashMap<InstructionHandle, InstructionNode>(); 
-
-	private Map<InstructionHandle, InstructionHandle> jumpsAndEntries = new HashMap<InstructionHandle, InstructionHandle>();
-
+    /** The method that will be "transformed"in a Graph */
+    MethodGen meth;
 	
-	/**
-	 * Constructor that creates a graph from a method code.
-	 * 
-	 * @param method The method for which the graph will be created
-	 */
-	public InstructionGraph(MethodGen method)
-	{
-		this.method = method;
-		analyseMethod();
-	}
+    /** <P>Constructor that creates a graph from a method code<br></p>
 
-	@Override
-	public synchronized boolean add(Object node)
-	{
-		InstructionHandle ih = (InstructionHandle) node;
-		InstructionNode in = new InstructionNode(ih);
-		verify.put(ih, in);
-		return super.add(in);
-	}
+     @param mg The method for wich the graph will be created
+     */
+    public InstructionGraph(MethodGen mg) {
+        meth = mg;
+        il = mg.getInstructionList();
+        if (il == null) {
+            return;
+        } // no code (abstract or native method)
+		
+        // cria os nos do grafo e 
+        // coloca uma instrucao em cada no do grafo
+				
+        Hashtable verify = new Hashtable(); // serve para achar o no do grafo
+        // dada uma certa instrucao.
+        InstructionHandle ih = null;
 
-	/**
-	 * Analyse the method, extract the instruction nodes and build the graph.
-	 */
-	private void analyseMethod()
-	{
-		//  Instructions that form the method
-		InstructionList il = method.getInstructionList();
-		if (il == null) {
-			return; 
-		} 
-	
-		Iterator<InstructionHandle> ihi = il.iterator();
-		while (ihi.hasNext()) {
-			InstructionHandle ih = ihi.next();
-			add(ih);
-		}
-		
-		findEdges();
-	}
-	
-	private void findEdges()
-	{
-		CodeExceptionGen[] ceg = method.getExceptionHandlers();
+        for (ih = il.getStart(); ih != null; ih = ih.getNext()) {
+            InstructionNode in = new InstructionNode(ih);
 
-		// Find the primary and secondary edges for each instruction node
-		Iterator<InstructionNode> ini = verify.values().iterator();
-		while (ini.hasNext()) {
-			// Include edges from each node to its exception handlers
-			InstructionNode in = ini.next();
-			for (CodeExceptionGen c : ceg) {
-				int init = c.getStartPC().getPosition();
-				int end = c.getEndPC().getPosition();
-				if (in.ih.getPosition() >= init && in.ih.getPosition() <= end) {
-					addSecondaryEdge(in, verify.get(c.getHandlerPC()));
-				}
-			}
+            add(in);
+            verify.put(ih, in);
+        }
 
-			// Find the primary edges
-			InstructionHandle[] nx = InstructCtrl.nextToExec(in.ih);
-			if (in.ih.getInstruction() instanceof JsrInstruction) {
-				// Coloca o proximo fisico como proximo no grafo
-				InstructionHandle nih = in.ih.getNext();
-				addPrimaryEdge(in, (GraphNode) verify.get(nih));
-				// mapeamento JSR -- Entrada
-				jumpsAndEntries.put(in.ih, nx[0]);
-			} else {
-				for (int j = 0; j < nx.length; j++) {
-					addPrimaryEdge(in, verify.get(nx[j]));
-				}
-			}
-		}
-	}
-	
-	private void findDominators()
-	{
-		CodeExceptionGen[] ceg = method.getExceptionHandlers();
-		int lastsize = 0;
-		int cursize = 0;
-		int cont;
-		
-		Set<InstructionNode> entryNodes = new HashSet<InstructionNode>();
-		InstructionList il = method.getInstructionList();
-		entryNodes.add(verify.get(il.getStart()));
-		Iterator<InstructionNode> ini = entryNodes.iterator();
-		
-		// Calculate the dominant instruction nodes
-		Map<InstructionNode, Set> dominantEntries = new HashMap();
-		while (ini.hasNext()) {
-			InstructionNode entr = ini.next();
-			setEntryNode(entr);
+        HashMap jumpsAndEntries = new HashMap();
+        CodeExceptionGen[] ceg = meth.getExceptionHandlers();
 
-			// Calcula os dominators
-			RRDominator rrd = new RRDominator("Dominator");
-			roundRobinAlgorithm(rrd, true);
-			Set edm = new HashSet();
-			dominantEntries.put(entr, edm);
-			for (int j = 0; j < size(); j++) {
-				InstructionNode in = (InstructionNode) elementAt(j);
-				Set dom = (HashSet) in.getUserData("Dominator");
-				if (dom != null && dom.contains(entr)) {
-					edm.add(in);
-					if (in.ih.getInstruction() instanceof JsrInstruction) {
-						entryNodes.add(verify.get(jumpsAndEntries.get(in.ih)));
-					}
-				}
-			}
-		}
-		
-		
-		Iterator<InstructionNode> eini = entryNodes.iterator();
-		InstructionNode entryNode = eini.next();
+        // acerta os edges principais e secundarios de cada no
+        for (int i = 0; i < size(); i++) {
+            // include edges from each node to its exception handlers
+            InstructionNode vf = (InstructionNode) elementAt(i);
 
-		
-		Set<InstructionNode> dominantsForEntryNode = dominantEntries.get(entryNode);
-		Iterator<InstructionNode> idfen = dominantsForEntryNode.iterator();
-		while (idfen.hasNext()) {
-			InstructionNode isJmp = idfen.next();
-			if (! (isJmp.ih.getInstruction() instanceof JsrInstruction)) {
-				continue;
-			}
+            for (int j = 0; j < ceg.length; j++) {
+                int init, fim;
+
+                init = ceg[j].getStartPC().getPosition();
+                fim = ceg[j].getEndPC().getPosition();
+                if (vf.ih.getPosition() >= init && vf.ih.getPosition() <= fim) {
+                    addSecondaryEdge(vf, (InstructionNode) verify.get(ceg[j].getHandlerPC()));
+                }
+            }
 			
-			InstructionNode retTarget = (InstructionNode) getLeavingNodesByPrimaryEdge(isJmp).elementAt(0);
+            // depois acerta os edges principais.
+            InstructionHandle[] nx = InstructCtrl.nextToExec(vf.ih);
 
-				removePrimaryEdge(isJmp, retTarget);
-				InstructionNode retNode = null;
+            if (vf.ih.getInstruction() instanceof JsrInstruction) {
+                // Coloca o proximo fisico como proximo no grafo
+                InstructionHandle nih = (InstructionHandle) vf.ih.getNext();
 
-				cont++;
-				// achou JSR. deve duplicar o seu destino
-				// entr eh o no destino do JSP
-				InstructionHandle ihEntr = (InstructionHandle) jumpsAndEntries.get(isJmp.ih);
-				InstructionNode entr = (InstructionNode) verify.get(ihEntr);
-				// entrSet eh o conjunto de nos dominados pelo no de entrada
-				HashSet entrSet = (HashSet) dominantEntries.get(entr);
-				Iterator in = entrSet.iterator();
-				Hashtable auxVerify = new Hashtable();
+                addPrimaryEdge(vf, (GraphNode) verify.get(nih));
+                // mapeamento JSR -- Entrada
+                jumpsAndEntries.put(vf.ih, nx[0]);
+            } else {
+                for (int j = 0; j < nx.length; j++) {
+                    addPrimaryEdge(vf, (GraphNode) verify.get(nx[j]));
+                }
+            }
+        }
+		
+        int lastsize = 0, cursize = 0;
+        int cont;
+        Vector ventry = new Vector();
 
-				while (in.hasNext()) { // duplica cada elemento no conjunto
-					InstructionNode inSet = (InstructionNode) in.next();
-					InstructionNode newNode = new InstructionNode(inSet.ih);
+        ventry.add(verify.get(il.getStart()));
+        Hashtable entriesDom = new Hashtable();
 
-					// insere no grapho
-					add(newNode);
+        // aqui calcula os nos dominados por cada entrada;
+        do {
+            cont = 0;
+            lastsize = cursize;
+            cursize = ventry.size();
+            for (int i = lastsize; i < cursize; i++) {
+                InstructionNode entr = (InstructionNode) ventry.elementAt(i);
 
-					// seta qual eh o jsr correspondente
-					newNode.setDomEntry(isJmp);
+                setEntryNode(entr);
+                // Calcula os dominators
+                RRDominator rrd = new RRDominator("Dominator");
 
-					aux.add(newNode);
-					auxVerify.put(inSet, newNode);
-					if (newNode.ih.getInstruction() instanceof RET) {
-						retNode = newNode;
-					}
-				}
+                roundRobinAlgorithm(rrd, true);
+                HashSet edm = new HashSet();
 
-				// agora precisa fazer as ligacoes
-				in = entrSet.iterator();
-				while (in.hasNext()) {
-					InstructionNode inSet = (InstructionNode) in.next();
-					InstructionNode newNode = (InstructionNode) auxVerify.get(inSet);
-					GraphNode[] nx = (GraphNode[]) getLeavingNodesByPrimaryEdge(inSet).toArray(
-									new GraphNode[0]);
+                entriesDom.put(entr, edm);
+                for (int j = 0; j < size(); j++) {
+                    InstructionNode in = (InstructionNode) elementAt(j);
+                    HashSet dom = (HashSet) in.getUserData("Dominator");
 
-					for (int j = 0; j < nx.length; j++) {
-						InstructionNode nxin = (InstructionNode) auxVerify.get(nx[j]);
+                    if (dom != null && dom.contains(entr)) {
+                        edm.add(in);
+                        if (in.ih.getInstruction() instanceof JsrInstruction) {
+                            ventry.add(verify.get(jumpsAndEntries.get(in.ih)));
+                            cont++;
+                        }
+                    }
+                }
+            }
+			
+        } while (cont > 0);
+			
+        InstructionNode[] entries = 
+                (InstructionNode[]) ventry.toArray(new InstructionNode[0]);
 
-						addPrimaryEdge(newNode, nxin);
-					}
-					nx = (GraphNode[]) getLeavingNodesBySecondaryEdge(inSet).toArray(
-									new GraphNode[0]);
-					for (int j = 0; j < nx.length; j++) {
-						InstructionNode nxin = (InstructionNode) auxVerify.get(nx[j]);
+        Vector aux = new Vector();
 
-						// se nxin eh null significa que o no nao estah no mesmo
-						// conjunto. Para corrigir isso no final eh feito
-						// tratamento especial (ver *** )
-						if (nxin != null) {
-							addSecondaryEdge(newNode, nxin);
-						}
-					}
-				}
-				// liga agora o JSR e o RET, se existir
-				addPrimaryEdge(isJmp, (InstructionNode) auxVerify.get(entr));
-				if (retNode != null) {
-					addPrimaryEdge(retNode, retTarget);
-				}
-			}
-		} while (cont > 0);
+        aux.addAll((HashSet) entriesDom.get(entries[0]));
+        lastsize = 0;
+        cursize = 0;
 
-		// Faz interseccao com vetor aux
-		while (eini.hasNext()) {
-			InstructionNode next = eini.next();
-			HashSet edm = (HashSet) dominantEntries.get(next);
-			Iterator it = edm.iterator();
+        do {
+            cont = 0;
+            lastsize = cursize;
+            cursize = aux.size();
+			
+            for (int i = lastsize; i < cursize; i++) {
+                InstructionNode isJmp = (InstructionNode) aux.elementAt(i);
 
-			while (it.hasNext()) {
-				InstructionNode in = (InstructionNode) it.next();
-				removeNode(in);
-			}
-		}
+                if (!(isJmp.ih.getInstruction() instanceof JsrInstruction)) {
+                    continue;
+                }
+                InstructionNode retTarget = (InstructionNode) getArrivingNodesByPrimaryEdge(isJmp).iterator().next();
 
-		removeEntryNodes();
-		setEntryNode(entryNode);
+                removePrimaryEdge(isJmp, retTarget);
+                InstructionNode retNode = null;
 
-		// acha Depth firs tree
-		GraphNode[] dft = findDFTNodes(true);
+                cont++;
+                // achou JSR. deve duplicar o seu destino
+                // entr eh o no destino do JSP
+                InstructionHandle ihEntr = (InstructionHandle) jumpsAndEntries.get(isJmp.ih); 
+                InstructionNode entr = (InstructionNode) verify.get(ihEntr);
+                // entrSet eh o conjunto de nos dominados pelo no de entrada
+                HashSet entrSet = (HashSet) entriesDom.get(entr);
+                Iterator in = entrSet.iterator();
+                Hashtable auxVerify = new Hashtable();
 
-		for (int i = 0; i < dft.length; i++) {
-			// include edges from each node to its exception handlers
-			InstructionNode vf = (InstructionNode) dft[i];
+                while (in.hasNext()) { // duplica cada elemento no conjunto
+                    InstructionNode inSet = (InstructionNode) in.next();
+                    InstructionNode newNode = new InstructionNode(inSet.ih);
 
-			nextException: for (int j = 0; j < ceg.length; j++) {
-				int init, fim;
+                    // insere no grapho
+                    add(newNode);
 
-				init = ceg[j].getStartPC().getPosition();
-				fim = ceg[j].getEndPC().getPosition();
-				InstructionHandle handler = ceg[j].getHandlerPC();
+                    // seta qual eh o jsr correspondente
+                    newNode.setDomEntry(isJmp);     		
+	   
+                    aux.add(newNode);
+                    auxVerify.put(inSet, newNode);
+                    if (newNode.ih.getInstruction() instanceof RET) {
+                        retNode = newNode;
+                    }
+                }
+	        	
+                // agora precisa fazer as ligacoes
+                in = entrSet.iterator();
+                while (in.hasNext()) {
+                    InstructionNode inSet = (InstructionNode) in.next();
+                    InstructionNode newNode = (InstructionNode) auxVerify.get(inSet);
+                    GraphNode[] nx = 
+                            (GraphNode[]) getArrivingNodesByPrimaryEdge(inSet).toArray(new GraphNode[0]);
+        		        
+                    for (int j = 0; j < nx.length; j++) {
+                        InstructionNode nxin = (InstructionNode) auxVerify.get(nx[j]);
 
-				if (vf.ih.getPosition() >= init && vf.ih.getPosition() <= fim) {
-					Vector vnx = getLeavingNodesBySecondaryEdge(vf);
+                        addPrimaryEdge(newNode, nxin);
+                    }
+                    nx = (GraphNode[]) getArrivingNodesBySecondaryEdge(inSet).toArray(new GraphNode[0]);
+                    for (int j = 0; j < nx.length; j++) {
+                        InstructionNode nxin = (InstructionNode) auxVerify.get(nx[j]);
 
-					for (int k = 0; k < vnx.size(); k++) {
-						InstructionNode nx = (InstructionNode) vnx.elementAt(k);
+                        // se nxin eh null significa que o no nao estah no mesmo
+                        // conjunto. Para corrigir isso no final eh feito
+                        // tratamento especial (ver *** )
+                        if (nxin != null) {
+                            addSecondaryEdge(newNode, nxin);
+                        }
+                    }
+                }
+                // liga agora o JSR e o RET, se existir
+                addPrimaryEdge(isJmp, (InstructionNode) auxVerify.get(entr));
+                if (retNode != null) {
+                    addPrimaryEdge(retNode, retTarget);
+                }
+            }
+        } while (cont > 0);
+		
+        // Faz interseccao com vetor aux
+        for (int i = 1; i < entries.length; i++) {
+            HashSet edm = (HashSet) entriesDom.get(entries[i]);
+            Iterator it = edm.iterator();
 
-						if (nx.ih == handler) {
-							continue nextException;
-						}
-					}
-					// procura quem trata da interrup��o
-					for (int k = i - 1; k >= 0; k--) {
-						InstructionNode dftk = (InstructionNode) dft[k];
+            while (it.hasNext()) {
+                InstructionNode in = (InstructionNode) it.next();
 
-						if (dftk.ih.getPosition() >= init && dftk.ih.getPosition() <= fim) {
-							Vector vx = getLeavingNodesBySecondaryEdge(dft[k]);
-							InstructionNode hdl = null;
+                removeNode(in);
+            }
+        }
+        
+        // ***		
+        removeEntryNodes();
+        setEntryNode(entries[0]);
+        
+        // acha Depth firs tree
+        GraphNode[] dft = findDFTNodes(true);
 
-							for (int z1 = 0; z1 < vx.size(); z1++) {
-								hdl = (InstructionNode) vx.elementAt(z1);
-								if (hdl.ih == handler) {
-									break;
-								}
-							}
-							vf.addSecNext(hdl);
-							break;
-						}
-					}
-				}
+        for (int i = 0; i < dft.length; i++) {
+            // include edges from each node to its exception handlers
+            InstructionNode vf = (InstructionNode) dft[i];
 
-			}
-		}
-	}
+            nextException:
+            for (int j = 0; j < ceg.length; j++) {
+                int init, fim;
 
-	/**
-	 * <P>
-	 * This is the important method in this class. Once the graph has been created, it will fill the
-	 * instruction nodes with some information, as described in {@link InstructionNode}.
-	 * <p>
-	 * <p>
-	 * The algorithm is similar to that presented by Sun to compute the stack to the instruction.
-	 * There is local array where the "changed" instructions are inserted. The program removes an
-	 * instruction from it and compute for all its successors the stack and local variable
-	 * configuration. If they changed for a given successor x, then x is added to the changed array.
-	 * Exception handlers (i.e., secondary edges) are also used to get the successor set.
-	 * </p>
-	 * <p>
-	 * Initialy the entry node and all the exception handlers are inserted in the changed array. In
-	 * addition, the array is consulted using a stack policy, except for the initial insertion of
-	 * the exception handlers that are placed at the bottom of the stack. This because the handlers
-	 * are changed very often. And then pl;acing them at the bottom might avoid removing/inserting
-	 * it in the array many times
-	 * </p>
-	 * 
-	 * @param all Indicates if all the possible configurations should be computed or not. Computing
-	 *        all the configurations means that all the possible configurations that arrive at a
-	 *        struction will be store. The "not all" option means that a new configuration will be
-	 *        merged with the old one and only one is stored
-	 * 
-	 * @throws InvalidInstructionException If the method finds an node with a non valid JVM
-	 *         instruction
-	 * @throws InvalidStackArgument If e struction is reached by two configuration of the stack with
-	 *         differen sizes
-	 */
+                init = ceg[j].getStartPC().getPosition();
+                fim = ceg[j].getEndPC().getPosition();
+                InstructionHandle handler = ceg[j].getHandlerPC();
+				
+                if (vf.ih.getPosition() >= init && vf.ih.getPosition() <= fim) {
+                    Set<GraphNode> vnx = getArrivingNodesBySecondaryEdge(vf);
+                    Iterator<GraphNode> k = vnx.iterator();
+                    while (k.hasNext()) {
+                        InstructionNode nx = (InstructionNode) k.next();
+                        if (nx.ih == handler) {
+                            continue nextException;
+                        }
+                    }
+                    
+                    // procura quem trata da interrupção
+                    for (int l = vnx.size() - 1; l >= 0; l--) {
+                        InstructionNode dftk = (InstructionNode) dft[l];
+                        if (dftk.ih.getPosition() >= init && dftk.ih.getPosition() <= fim) {
+                            Set<GraphNode> vx = getArrivingNodesBySecondaryEdge(dft[l]);
+                            Iterator<GraphNode> z = vx.iterator();
+                            InstructionNode hdl = null;
+                            while (z.hasNext()) {
+                                hdl = (InstructionNode) z.next();
+                                if (hdl.ih == handler) {
+                                    break;
+                                }
+                            }
+                            vf.addSecNext(hdl);
+                            break;
+                        }
+                    }
+                }
+				
+            }
+        }
+    }	            
 
-	public void calcStack(boolean all) throws InvalidInstructionException, InvalidStackArgument
-	{
-		if (method.getInstructionList() == null) {
-			return;
-		}
-		Vector changed = new Vector();
-		ConstantPoolGen cp = method.getConstantPool();
+    /** <P>This is the important method in this class. Once the graph
+     * has been created, it will fill the instruction nodes with some
+     * information, as described in {@link InstructionNode}. <p>
+     * <p>The algorithm is similar to that presented by Sun to compute
+     * the stack to the instruction. There is local array where
+     * the "changed" instructions are inserted. The program removes an
+     * instruction from it and compute for all its successors the 
+     * stack and local variable configuration. If they changed for a
+     * given successor x, then x is added to the changed array. Exception
+     * handlers (i.e., secondary edges) are also used to get the 
+     * successor set.</p>
+     * <p>Initialy the entry node and all the exception handlers are inserted
+     * in the changed array. In addition, the array is consulted using a stack
+     * policy, except for the initial insertion of the exception handlers
+     * that are placed at the bottom of the stack. This because the handlers
+     * are changed very often. And then pl;acing them at the bottom might 
+     * avoid removing/inserting it in the array many times
+     * </p>
+     *
+     * @param all Indicates if all the possible configurations should be
+     * computed or not. Computing all the configurations means that 
+     * all the possible configurations that arrive at a struction will
+     * be store. The "not all" option means that a new configuration 
+     * will be merged with the old one and only one is stored
+     * 
+     * @throws InvalidInstructionException If the method finds an node with
+     * a non valid JVM instruction
+     * @throws InvalidStackArgument If e struction is reached by two 
+     * configuration of the stack with differen sizes
+     */
 
-		calcReqLocal();
-		// pega o tipo das variaveis locais dos argumentos
-		Type[] pars = method.getArgumentTypes();
-		int h = method.getMaxLocals();
-		VMLocal locals = new VMLocal(h);
+    public void calcStack(boolean all) 
+            throws InvalidInstructionException, InvalidStackArgument {
+        if (il == null) {
+            return;
+        }
+        Vector changed = new Vector();
+        ConstantPoolGen cp = meth.getConstantPool();
 
-		// pega a instrucao inicial
-		InstructionNode start = (InstructionNode) getFirstEntryNode();
+        calcReqLocal();		
+        // pega o tipo das variaveis locais dos argumentos
+        Type[] pars = meth.getArgumentTypes();
+        int h = meth.getMaxLocals();
+        VMLocal locals = new VMLocal(h);
+		
+        // pega a instrucao inicial
+        InstructionNode start = (InstructionNode) getEntryNodes();
 
-		// se nao eh static tem que colocar "this" em local[0]
-		int l = 0;
+        // se nao eh static tem que colocar "this" em local[0] 
+        int l = 0;
 
-		if (!method.isStatic()) {
-			String s = method.getClassName();
+        if (!meth.isStatic()) {
+            String s = meth.getClassName();
 
-			s = "()L" + s.replace('.', '/') + ";";
-			Type t = Type.getReturnType(s);
+            s = "()L" + s.replace('.', '/') + ";";
+            Type t = Type.getReturnType(s);
 
-			locals.add(t, l++);
-			start.defLocalAdd(InstructionNode.STR_LOCAL + 0);
-		}
+            locals.add(t, l++);
+            start.defLocalAdd(InstructionNode.STR_LOCAL + 0);
+        }
+		
+        // coloca or argumentos nas outras "locals"
+        for (int j = 0; j < pars.length; l += pars[j].getSize(), j++) {
+            locals.add(pars[j], l);
+            start.defLocalAdd(InstructionNode.STR_LOCAL + l);
+        }
+		
+        // calcula o stack para a instrucao inicial
+        if (all) {
+            start.initAllStack(new VMStack(meth.getMaxStack()), 
+                    locals, cp);
+        } else {
+            start.initStack(new VMStack(meth.getMaxStack()), 
+                    locals, cp);
+        }
+        changed.add(start);
+		
+        // calcula o stack e locais para cada exception handler
+        CodeExceptionGen[] ceg = meth.getExceptionHandlers();
+        Hashtable hs = new Hashtable();		
 
-		// coloca or argumentos nas outras "locals"
-		for (int j = 0; j < pars.length; l += pars[j].getSize(), j++) {
-			locals.add(pars[j], l);
-			start.defLocalAdd(InstructionNode.STR_LOCAL + l);
-		}
+        for (int i = 0; i < ceg.length; i++) {
+            Type tex = ceg[i].getCatchType();
 
-		// calcula o stack para a instrucao inicial
-		if (all) {
-			start.initAllStack(new VMStack(method.getMaxStack()), locals, cp);
-		} else {
-			start.initStack(new VMStack(method.getMaxStack()), locals, cp);
-		}
-		changed.add(start);
+            if (tex == null) {
+                tex = EXCEPTION_TYPE;
+            }
+            hs.put(ceg[i].getHandlerPC(), tex);
+        }
+		
+        locals = new VMLocal(h);
+        VMStack exst = new VMStack(meth.getMaxStack());
 
-		// calcula o stack e locais para cada exception handler
-		CodeExceptionGen[] ceg = method.getExceptionHandlers();
-		Hashtable hs = new Hashtable();
+        for (int i = 0; i < size(); i++) {
+            InstructionNode vef = (InstructionNode) elementAt(i);
+            Type tex = (Type) hs.get(vef.ih);
 
-		for (int i = 0; i < ceg.length; i++) {
-			Type tex = ceg[i].getCatchType();
+            if (tex == null) {
+                continue;
+            }
+            exst.push(new VMStackElement(tex, "", null));
 
-			if (tex == null) {
-				tex = EXCEPTION_TYPE;
-			}
-			hs.put(ceg[i].getHandlerPC(), tex);
-		}
+            if (all) {
+                vef.initAllStack(exst);
+            } else {
+                vef.initStack(exst, locals, cp);
+            }
+            changed.add(vef); // insere no fim embora "changed" seja 
+            // usado como pilha
+            exst.pop(); // esvazia a pilha p/ o proximo
+        }
 
-		locals = new VMLocal(h);
-		VMStack exst = new VMStack(method.getMaxStack());
+        while (!changed.isEmpty()) {
+            InstructionNode curr = (InstructionNode) changed.remove(0);
 
-		for (int i = 0; i < size(); i++) {
-			InstructionNode vef = (InstructionNode) elementAt(i);
-			Type tex = (Type) hs.get(vef.ih);
+            curr.setChanged(false);
+            // atualiza cada sucessor			
+            Set<GraphNode> nx = getArrivingNodesByPrimaryEdge(curr);
+            Iterator<GraphNode> i = nx.iterator();
+            while (i.hasNext()) {
+                InstructionNode fx = (InstructionNode) i.next();
+                boolean b = fx.changed();
 
-			if (tex == null) {
-				continue;
-			}
-			exst.push(new VMStackElement(tex, "", null));
+                if (all) {
+                    fx.calcAllStack(curr, cp);
+                } else {
+                    fx.calcStack(curr, cp);
+                }
+                if ((!b) && fx.changed()) {
+                    changed.insertElementAt(fx, 0);
+                } else {
+                    fx.setChanged(b);
+                }
+            }
+			
+            // atualiza cada tratador de excessoes
+            Set<GraphNode> ex = getArrivingNodesBySecondaryEdge(curr);
+            Iterator<GraphNode> j = ex.iterator();
+            while (j.hasNext()) {
+                InstructionNode exi = (InstructionNode) j.next();
+                boolean b = exi.changed();
+                if (all) {
+                    exi.calcAllLocal(curr, cp);
+                } else {
+                    exi.calcLocal(curr, cp);
+                }
 
-			if (all) {
-				vef.initAllStack(exst);
-			} else {
-				vef.initStack(exst, locals, cp);
-			}
-			changed.add(vef); // insere no fim embora "changed" seja
-			// usado como pilha
-			exst.pop(); // esvazia a pilha p/ o proximo
-		}
+                if ((!b) && exi.changed()) {
+                    changed.insertElementAt(exi, 0);
+                } else {
+                    exi.setChanged(b);
+                }
+            } 
+            curr.removeNextStackLocal();
+        }		
+        // now merge the subrotines
+        // mergeJSR();
+    }
+	
+    /**
+     <p> This method will join nodes that represent the same instruction
+     * in a single node. Such nodes are derived from im-method subroutines,
+     * i.e., pieces of code reached through a JSR instruction.<p>
+     * <p> The repeated nodes are deleted from the graph.
+     * 
+     * @throws Invalid StackArgument Should not throw...
+     */	public void mergeJSR()
+            throws InvalidStackArgument {
+        Hashtable aux = new Hashtable();
 
-		while (!changed.isEmpty()) {
-			InstructionNode curr = (InstructionNode) changed.remove(0);
+        for (int i = size() - 1; i >= 0; i--) {   // comeca do fim pois os nos podem ser deletados
+		
+            InstructionNode vf = (InstructionNode) elementAt(i);
+            InstructionHandle ih = vf.ih;
 
-			curr.setChanged(false);
-			// atualiza cada sucessor
-			Vector nx = getLeavingNodesByPrimaryEdge(curr);
+            if (!aux.containsKey(ih)) { // instrucao ainda nao esta na tabela
+                aux.put(ih, vf);
+            } else { // instrucao jah esta na tabela, faz merge
+                InstructionNode vf0 = (InstructionNode) aux.get(ih);
 
-			for (int i = 0; i < nx.size(); i++) {
-				InstructionNode fx = (InstructionNode) nx.elementAt(i);
-				boolean b = fx.changed();
+                if (vf0.isUnreacheable()) {
+                    InstructionNode t = vf;
 
-				if (all) {
-					fx.calcAllStack(curr, cp);
-				} else {
-					fx.calcStack(curr, cp);
-				}
-				if ((!b) && fx.changed()) {
-					changed.insertElementAt(fx, 0);
-				} else {
-					fx.setChanged(b);
-				}
-			}
+                    vf = vf0;
+                    vf0 = t;
+                    aux.put(ih, vf0);
+                }
+				
+                if (!(vf0.isUnreacheable() || vf.isUnreacheable())) {
+                    vf0.merge(vf.getStack(), vf.getLocals());
+                }
+				
+                // adiciona predecessores de um ao outro
+                Set<GraphNode> arr = getArrivingNodesByPrimaryEdge(vf);
+                Iterator<GraphNode> j = arr.iterator();
+                while (j.hasNext()) {
+                    InstructionNode jsr = (InstructionNode) j.next();
+                    addPrimaryEdge(jsr, vf0);
+                }
+				
+                // adiciona sucessores de um ao outro
+                arr = getArrivingNodesByPrimaryEdge(vf);
+                j = arr.iterator();
+                while (j.hasNext()) {
+                    InstructionNode jsr = (InstructionNode) j.next();
+                    addPrimaryEdge(vf0, jsr);
+                }
+                // tira o noh repetido do grafo
+                removeNode(vf);
+            }
+        }
+    }
 
-			// atualiza cada tratador de excessoes
-			Vector ex = getLeavingNodesBySecondaryEdge(curr);
+    /** <p>This method is used to calculated a set named "required
+     * locals". This set indicates which loocal variables reach a 
+     * given instruction and must be forwarded because they will be
+     * used in a successor instruction. </p>
+     * <p>The local variables are kind of dangerous if we are trying 
+     * to keep track of all possible configurations for one instruction.
+     * On the other hand, in most cases not all the variables that change
+     * from one configuration to another are really significant. Lets take 
+     * for example the code bellow</p>
+     * <pre>
+     *          1   ILOAD    10
+     *          2   NOP
+     *          3   ILOAD    5
+     *          4   ISTORE   4
+     * </pre>
+     * <p> Suppose the method uses a set of 12 variables and that in a
+     * certain point we have a configuration Y for the instruction 1 and
+     * found a different configuration can reach that same instruction.
+     * Well, if the new configuration has a different variable number 
+     * 5, this configuration should be stored because this new configuration
+     * must be passed to instruction 2, stored there and from there 
+     * passed to instruction 3, where it is an argument for the instruction.
+     * On the other hand, if the new configuration that reaches instruction
+     * 1 has a change only in local variable 4, it can be discarded, because
+     * there is no use on forwarding this new configuration to instructions
+     * 2, 3, 4 or any subsequent instruction because in instruction 4 the
+     * value on variable 4 will be overwriten.</p>
+     * The programmer does not need to call this method. It is called inside
+     * {@link InstructionGraph#calcStack}.
+     */
+    public void calcReqLocal() {
+        RoundRobinExecutor rre = new RRReqLocal(InstructionNode.reqLocalLabel);
 
-			for (int i = 0; i < ex.size(); i++) {
-				InstructionNode exi = (InstructionNode) ex.elementAt(i);
-				boolean b = exi.changed();
+        roundRobinAlgorithm(rre, false);
+    }
 
-				if (all) {
-					exi.calcAllLocal(curr, cp);
-				} else {
-					exi.calcLocal(curr, cp);
-				}
+    /** Send to a stream the information abaout each node of this graph.
+     * 
+     * @param out The {@link PrintStream} where the information should be
+     * "printed"
+     */
+    public void print(PrintStream out) {
+    	Iterator<GraphNode> i = getEntryNodes().iterator();
+    	while (i.hasNext()) {
+            InstructionNode vf = (InstructionNode) i.next();
+            out.println(i + ") " + vf);
+        } 
+    }
+	
+    /** A driver for testing the class. Creates the graph and calls
+     * {@link InstructionGraph#calcStack}. The arguments determine
+     * to which methods to apply.
+     * 
+     * @param args[0] A file name. Can be a classfile, a jar file or a 
+     * zip file. If jar or zip, the second and third arguments does not apply.
+     * In this case, the output is only the name of the classes and of the 
+     * methods in the class. The test is applyied in all the listed 
+     * methods. If this is a single class file name, the output will be
+     * the complete graph (as presented by {InstructionNode#print}) for
+     * each selected method.
+     * @param args[1] The name of a method. The test is applyed to all
+     * methods in the class that match this name.
+     * @param args[2] The signature of a method. Used to select one
+     * between several homonymous methods.
+     */
+		
+    public static void main(String args[]) throws Exception {
+        boolean all = true;
+        String filename = args[0];
+        ZipFile jf = null;
+ 		
+        if (filename.endsWith(".jar")) {
+            jf = new JarFile(filename);
+        } else
+        if (filename.endsWith(".zip")) {
+            jf = new ZipFile(filename);
+        }
+ 		
+        if (jf == null) {
+            JavaClass java_class;
 
-				if ((!b) && exi.changed()) {
-					changed.insertElementAt(exi, 0);
-				} else {
-					exi.setChanged(b);
-				}
-			}
-			curr.removeNextStackLocal();
-		}
-		// now merge the subrotines
-		// mergeJSR();
-	}
+            java_class = new ClassParser(filename).parse(); // May throw IOException
 
-	/**
-	 * <p>
-	 * This method will join nodes that represent the same instruction in a single node. Such nodes
-	 * are derived from im-method subroutines, i.e., pieces of code reached through a JSR
-	 * instruction.
-	 * <p>
-	 * <p>
-	 * The repeated nodes are deleted from the graph.
-	 * 
-	 * @throws Invalid StackArgument Should not throw...
-	 */
-	public void mergeJSR() throws InvalidStackArgument
-	{
-		Hashtable aux = new Hashtable();
+            ConstantPoolGen cp = new ConstantPoolGen(java_class.getConstantPool());
+            Method[] methods = java_class.getMethods();
 
-		for (int i = size() - 1; i >= 0; i--) { // comeca do fim pois os nos podem ser deletados
+            for (int i = 0; i < methods.length; i++) {
+                if (args.length >= 2 && (!args[1].equals(methods[i].getName()))) {
+                    continue;
+                }
+                if (args.length >= 3
+                        && (!args[2].equals(methods[i].getSignature()))) {
+                    continue;
+                }
+                System.out.println("--------------------------");						 
+                System.out.println(methods[i].getName());
+                System.out.println(methods[i].getSignature());
+                System.out.println("--------------------------");						 
+                MethodGen mg = new MethodGen(methods[i], 
+                        java_class.getClassName(),
+                        cp);
 
-			InstructionNode vf = (InstructionNode) elementAt(i);
-			InstructionHandle ih = vf.ih;
+                if (mg.getInstructionList() == null) {
+                    continue;
+                }
+                InstructionGraph g = new InstructionGraph(mg);
 
-			if (!aux.containsKey(ih)) { // instrucao ainda nao esta na tabela
-				aux.put(ih, vf);
-			} else { // instrucao jah esta na tabela, faz merge
-				InstructionNode vf0 = (InstructionNode) aux.get(ih);
+                // g.calcReqLocal();
+                g.calcStack(all);
+                g.print(System.out);
+            }
+            return;
+        }
+ 			
+        Enumeration en = jf.entries();
+        ZipEntry ze = null;
 
-				if (vf0.isUnreacheable()) {
-					InstructionNode t = vf;
+        while (en.hasMoreElements()) {
+            ze = (ZipEntry) en.nextElement();
+            if (!ze.getName().endsWith(".class")) {
+                System.out.println("Not a class file: " + ze.getName());
+                continue;
+            }
+ 				
+            System.out.println("\n\n**************************"); 
+            System.out.println(ze.getName()); 
+            System.out.println("**************************"); 
+ 		
+            JavaClass java_class;
 
-					vf = vf0;
-					vf0 = t;
-					aux.put(ih, vf0);
-				}
+            java_class = new ClassParser(jf.getInputStream(ze),
+                    ze.getName()).parse(); // May throw IOException
 
-				if (!(vf0.isUnreacheable() || vf.isUnreacheable())) {
-					vf0.merge(vf.getStack(), vf.getLocals());
-				}
+            ConstantPoolGen cp = new ConstantPoolGen(java_class.getConstantPool());
+            Method[] methods = java_class.getMethods();
 
-				// adiciona predecessores de um ao outro
-				Vector arr = getArrivingNodesByPrimaryEdge(vf);
+            for (int i = 0; i < methods.length; i++) {
+                System.out.println("Memory : " + Runtime.getRuntime().freeMemory());
+                System.out.println("--------------------------");						 
+                System.out.println(methods[i].getName());
+                System.out.println("--------------------------");						 
+                MethodGen mg = new MethodGen(methods[i], 
+                        java_class.getClassName(),
+                        cp);
 
-				for (int j = 0; j < arr.size(); j++) {
-					InstructionNode jsr = (InstructionNode) arr.elementAt(j);
+                if (mg.getInstructionList() == null) {
+                    continue;
+                }
+                InstructionGraph g = new InstructionGraph(mg);
 
-					addPrimaryEdge(jsr, vf0);
-				}
+                // g.calcReqLocal();
+                g.calcStack(all);
+                System.out.println("Memory : " + Runtime.getRuntime().freeMemory());
+                g = null;
+                System.out.println("Collecting garbage...");
+                System.out.println();
 
-				// adiciona sucessores de um ao outro
-				arr = getLeavingNodesByPrimaryEdge(vf);
-				for (int j = 0; j < arr.size(); j++) {
-					InstructionNode jsr = (InstructionNode) arr.elementAt(j);
-
-					addPrimaryEdge(vf0, jsr);
-				}
-				// tira o noh repetido do grafo
-				removeNode(vf);
-			}
-		}
-	}
-
-	/**
-	 * <p>
-	 * This method is used to calculated a set named "required locals". This set indicates which
-	 * loocal variables reach a given instruction and must be forwarded because they will be used in
-	 * a successor instruction.
-	 * </p>
-	 * <p>
-	 * The local variables are kind of dangerous if we are trying to keep track of all possible
-	 * configurations for one instruction. On the other hand, in most cases not all the variables
-	 * that change from one configuration to another are really significant. Lets take for example
-	 * the code bellow
-	 * </p>
-	 * 
-	 * <pre>
-	 *          1   ILOAD    10
-	 *          2   NOP
-	 *          3   ILOAD    5
-	 *          4   ISTORE   4
-	 * </pre>
-	 * <p>
-	 * Suppose the method uses a set of 12 variables and that in a certain point we have a
-	 * configuration Y for the instruction 1 and found a different configuration can reach that same
-	 * instruction. Well, if the new configuration has a different variable number 5, this
-	 * configuration should be stored because this new configuration must be passed to instruction
-	 * 2, stored there and from there passed to instruction 3, where it is an argument for the
-	 * instruction. On the other hand, if the new configuration that reaches instruction 1 has a
-	 * change only in local variable 4, it can be discarded, because there is no use on forwarding
-	 * this new configuration to instructions 2, 3, 4 or any subsequent instruction because in
-	 * instruction 4 the value on variable 4 will be overwriten.
-	 * </p>
-	 * The programmer does not need to call this method. It is called inside
-	 * {@link InstructionGraph#calcStack}.
-	 */
-	public void calcReqLocal()
-	{
-		RoundRobinExecutor rre = new RRReqLocal(InstructionNode.reqLocalLabel);
-		roundRobinAlgorithm(rre, false);
-	}
+            }
+        }
+    }
+ 	
 }

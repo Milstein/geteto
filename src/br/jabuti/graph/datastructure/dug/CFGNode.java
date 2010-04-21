@@ -208,21 +208,19 @@ public class CFGNode extends GraphNode
 
         if (next.size() > 0)
         {
+        	Iterator<GraphNode> i = next.iterator();
             str += "\n Children ";
-            for (int i = 0; i < next.size(); i++)
-            {
-                CFGNode n = (CFGNode) next.elementAt(i);
-
+            while (i.hasNext()) {
+                CFGNode n = (CFGNode) i.next();
                 str += n.getLabel() + " ";
             }
         }
         if (secNext.size() > 0)
         {
+        	Iterator<GraphNode> i = secNext.iterator();
             str += "\n Exception Children ";
-            for (int i = 0; i < secNext.size(); i++)
-            {
-                CFGNode n = (CFGNode) secNext.elementAt(i);
-
+            while (i.hasNext()) {
+                CFGNode n = (CFGNode) i.next();
                 str += n.getLabel() + " ";
             }
         }
