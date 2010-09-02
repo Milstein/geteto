@@ -3,8 +3,8 @@
     This file is part of Jabuti.
 
     Jabuti is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as 
-    published by the Free Software Foundation, either version 3 of the      
+    it under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation, either version 3 of the
     License, or (at your option) any later version.
 
     Jabuti is distributed in the hope that it will be useful,
@@ -34,12 +34,12 @@ package br.jabuti.project;
  *
  */
 public class Coverage {
-	
+
     /** stores the information about coverage */
     private int numberOfRequirements;
 
     private int numberOfCovered;
-	
+
     public Coverage() {
         numberOfCovered = numberOfRequirements = 0;
     }
@@ -52,13 +52,13 @@ public class Coverage {
     public Coverage( Coverage c ) {
         this( c.numberOfCovered, c.numberOfRequirements );
     }
-	
+
     /***********************************************************/
-    
+
     /* Get and Set Methods implementation                      */
-    
+
     /***********************************************************/
-	
+
     public int getNumberOfRequirements() {
         return numberOfRequirements;
     }
@@ -82,11 +82,11 @@ public class Coverage {
             return 0.0f;
         }
     }
-	
+
     public String toString() {
         return new String( getNumberOfCovered() + " of " + getNumberOfRequirements() );
     }
-    
+
     public boolean equals(Object o)
     {
     	if (! (o instanceof Coverage))
@@ -95,5 +95,10 @@ public class Coverage {
     	return cv.getNumberOfCovered() == getNumberOfCovered() &&
 		       cv.getNumberOfRequirements() == getNumberOfRequirements();
     }
-    
+
+    @Override
+	public int hashCode()
+	{
+		throw new UnsupportedOperationException();
+	}
 }

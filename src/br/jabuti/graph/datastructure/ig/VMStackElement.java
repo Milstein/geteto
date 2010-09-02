@@ -3,8 +3,8 @@
     This file is part of Jabuti.
 
     Jabuti is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as 
-    published by the Free Software Foundation, either version 3 of the      
+    it under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation, either version 3 of the
     License, or (at your option) any later version.
 
     Jabuti is distributed in the hope that it will be useful,
@@ -25,18 +25,18 @@ import org.aspectj.apache.bcel.generic.*;
 
 
 /** <p>This class represents one element store in the "execution"
- * stack of a {@link InstructionNode}. Each such element stores 
+ * stack of a {@link InstructionNode}. Each such element stores
  * a {@link Type} object and a few more information:<br></p>
- *  
+ *
  * <p>
  * <UL>
  * <LI> the {@link InstructionNode} that stored the information in the
  * stack element
  * <LI> a string representing the object being stored in this stack element
  * </UL>
- */ 
+ */
 public class VMStackElement {
-	
+
     /** Type of the element */
     public Type type;
 
@@ -47,7 +47,7 @@ public class VMStackElement {
 
     /** Representation of the element stored in this element */
     public String defuse;   // var being defined or used
-	
+
     /** Creates and initializes the object.
 
      @param t The type of the information in this element
@@ -62,11 +62,11 @@ public class VMStackElement {
 
     /** <p>The same as <br></p>
      <code> VMStackElement(x.type, x.defuse, x.producer);</code>
-     */	
+     */
     public VMStackElement(VMStackElement x) {
         this(x.type, x.defuse, x.producer);
     }
-	
+
     /** <p>Return some data on this object. Like<br></p>
      <text>
      Kind: Local     3
@@ -82,7 +82,7 @@ public class VMStackElement {
         return str + " Pushed by " + (producer == null ? null : producer.ih);
     }
 
-    /** <p>Compare this object with another one. The rules for comparison 
+    /** <p>Compare this object with another one. The rules for comparison
      are: <br></p>
      <UL>
      <LI> if the argument is not a {@link VMStackElement} object returns false;
@@ -99,7 +99,7 @@ public class VMStackElement {
 
      @param x The object to be compared
      @return true If type, producer and def/use matches
-     */ 	
+     */
     public boolean equals(Object x) {
         if (!(x instanceof VMStackElement)) {
             return false;
@@ -119,5 +119,11 @@ public class VMStackElement {
         }
         return t1 && t2 && defuse.equals(y.defuse);
     }
-				
+
+    @Override
+	public int hashCode()
+	{
+		throw new UnsupportedOperationException();
+	}
+
 }

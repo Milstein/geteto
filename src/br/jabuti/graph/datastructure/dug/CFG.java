@@ -3,8 +3,8 @@
     This file is part of Jabuti.
 
     Jabuti is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as 
-    published by the Free Software Foundation, either version 3 of the      
+    it under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation, either version 3 of the
     License, or (at your option) any later version.
 
     Jabuti is distributed in the hope that it will be useful,
@@ -22,7 +22,6 @@ import java.util.Collections;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.Vector;
 
 import org.aspectj.apache.bcel.generic.ClassGen;
 import org.aspectj.apache.bcel.generic.ConstantPoolGen;
@@ -50,11 +49,11 @@ import br.jabuti.graph.datastructure.ig.InvalidStackArgument;
  * The instructions in a block are always executed together but may not be contiguos in the JVM
  * code. It is the case of a goto instruction that will be in the same block of the target
  * instruction. If this is a problem, future versions should change this feature
- * 
+ *
  * @version: 0.00001
  * @author: Marcio Delamaro
- * 
- * 
+ *
+ *
  */
 public class CFG extends ListGraph
 {
@@ -75,7 +74,7 @@ public class CFG extends ListGraph
 
 	/**
 	 * Construct a CFG for a given method passed as argument.
-	 * 
+	 *
 	 * @param mg The method for which the CFG will be created.
 	 * @throws InvalidInstructionException If {@link CFG#createFromCode} throws this exception
 	 * @throws InvalidStackArgument If {@link CFG#createFromCode} throws this exception
@@ -90,7 +89,7 @@ public class CFG extends ListGraph
 
 	/**
 	 * This method is called by this class' constructor to create the CFG
-	 * 
+	 *
 	 * @param mg The method for which the CFG will be created.
 	 * @throws InvalidInstructionException If {@link InstructionGraph#calcStack} throws this
 	 *         exception
@@ -150,7 +149,7 @@ public class CFG extends ListGraph
 	 * predecessor (primary or secondary); 4) the successor does not share the same set of exception
 	 * handlers of the current instruction.
 	 * </p>
-	 * 
+	 *
 	 * @param x The instruction node to be inserted in a block of the CFG
 	 * @return The {@link CFGNode} where the instruction has been inserted
 	 */
@@ -190,29 +189,29 @@ public class CFG extends ListGraph
 
 			/*
 			 * boolean isSuperCall = false;
-			 * 
+			 *
 			 * // Verifica se eh uma chamada ao super... if ( ins instanceof INVOKESPECIAL ) {
 			 * INVOKESPECIAL ix = (INVOKESPECIAL) ins; String name = ix.getMethodName(cp);
-			 * 
+			 *
 			 * if (name.equals("<init>") ) { // pega a classe ao qual o metodo chamado pertence
 			 * String callCl = ix.getClassName(cp); // pega a superclasse ao qual o metodo corrente
 			 * pertence String superCl = clazz.getSuperclassName(); if ( callCl.equals(superCl) ||
 			 * callCl.equals(clazz.getClassName()) ) { isSuperCall = true; } } }
-			 * 
+			 *
 			 * O trecho acima foi substituido pela instrucao abaixo. Na construcao do
 			 * InstructionGraph, jah eh calculado se um no � um super ou nao.
 			 */
 
 			boolean isSuperCall = x.isSuper;
 
-			
+
 			/* TODO: Why the NO_CALL_NODE?
 			spl = (ins instanceof JsrInstruction) || (ins instanceof GotoInstruction)
 							|| (ins instanceof RET)
 							|| ((config & NO_CALL_NODE) == 0 && ins instanceof InvokeInstruction)
 							|| isSuperCall;
 			*/
-			
+
 			spl = (ins instanceof JsrInstruction) || (ins instanceof GotoInstruction)
 							|| (ins instanceof RET)
 							|| (ins instanceof InvokeInstruction)
@@ -220,8 +219,8 @@ public class CFG extends ListGraph
 
 			// se numero de sucessores > 1, entao divide
 			spl |= nx.size() != 1;
-			
-			Iterator<GraphNode> i = nx.iterator(); 
+
+			Iterator<GraphNode> i = nx.iterator();
 			while (i.hasNext() && !spl) {
 				GraphNode node = i.next();
 
@@ -276,12 +275,12 @@ public class CFG extends ListGraph
 					}
 					currNode = cNode;
 				}
-				
+
 				Iterator<GraphNode> j = nx.iterator();
 				while (j.hasNext()) {
 					addPrimaryEdge(currNode, newNodeTo((InstructionNode) j.next(), clazz, cp, ig));
 				}
-				
+
 				j = nxex.iterator();
 				while (j.hasNext()) {
 					addSecondaryEdge(currNode, newNodeTo((InstructionNode) j.next(), clazz, cp, ig));
@@ -316,7 +315,7 @@ public class CFG extends ListGraph
 	 * Once all the useful information has been collected and abstracted to the block level in this
 	 * object, the original instruction graph can be disposed. This may be necessary because that
 	 * graph is very demanding in terms of memory consumption.
-	 * 
+	 *
 	 */
 	public void releaseInstructionGraph()
 	{
@@ -338,4 +337,12 @@ public class CFG extends ListGraph
 			gn.computeDefUse();
 		}
 	}
+
+	@Override
+	public synchronized boolean equals(Object o)
+	{
+		return super.equals(o);
+	}
+
+
 }

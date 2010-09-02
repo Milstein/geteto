@@ -25,7 +25,7 @@ import javax.swing.*;
 
 import br.jabuti.criteria.Criterion;
 import br.jabuti.criteria.Requirement;
-import br.jabuti.metrics.Metrics;
+import br.jabuti.metrics.klass.Metrics;
 import br.jabuti.project.*;
 
 import java.awt.*;

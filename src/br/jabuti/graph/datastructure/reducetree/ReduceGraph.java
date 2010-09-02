@@ -3,8 +3,8 @@
     This file is part of Jabuti.
 
     Jabuti is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as 
-    published by the Free Software Foundation, either version 3 of the      
+    it under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation, either version 3 of the
     License, or (at your option) any later version.
 
     Jabuti is distributed in the hope that it will be useful,
@@ -30,7 +30,7 @@ import br.jabuti.graph.datastructure.GraphNode;
 
 /**
  This is a class used to construct a pre- or pos-dominator
- tree from a CFG. 
+ tree from a CFG.
 
  @version: 0.00001
  @author: Marcio Delamaro
@@ -43,14 +43,14 @@ public class ReduceGraph extends ListGraph {
 	 */
 	private static final long serialVersionUID = -8295291795947168930L;
 	Hashtable hs;
-	
+
     protected ReduceGraph() {
         super();
         hs = new Hashtable();
     }
- 	 	
+
     /** Returns the {@link ReduceNode} in this Graph that
-     *   contains the given node in the original graph 
+     *   contains the given node in the original graph
      *
      * @param gn - The {@link GraphNode} to be searched
      * @return - The node in this object where the node passed
@@ -59,8 +59,8 @@ public class ReduceGraph extends ListGraph {
     public ReduceNode getReduceNodeOf(GraphNode gn) {
         return (ReduceNode) hs.get(gn);
     }
- 
-    /** Adds the node in the graph. 
+
+    /** Adds the node in the graph.
      */
     public void add(ReduceNode rn) {
         super.add(rn);
@@ -77,12 +77,12 @@ public class ReduceGraph extends ListGraph {
         rn.add(orig);
         hs.put(orig, rn);
     }
-	
-    /** This method creates a new Graph, where each node is a 
+
+    /** This method creates a new Graph, where each node is a
      * strongly connected component of a given graph
      *
      * @param g - the graph to be reduced
-     * @param sec - if secondary edges should be used 
+     * @param sec - if secondary edges should be used
      * @return the reduced graph
      **/
 
@@ -92,11 +92,11 @@ public class ReduceGraph extends ListGraph {
         return reduce(v, g, sec);
     }
 
-    /** Given an array of sets of {@link GraphNode}'s, creates 
-     * a new {@link ReduceGraph} where each set correspond to 
+    /** Given an array of sets of {@link GraphNode}'s, creates
+     * a new {@link ReduceGraph} where each set correspond to
      * a node.
      *
-     * @param v - the array of sets. Each set corresponds to a 
+     * @param v - the array of sets. Each set corresponds to a
      * node in the new graph.
      * @param g - the graph to be reduced
      * @param sec - if secondary edges should be considered
@@ -131,5 +131,10 @@ public class ReduceGraph extends ListGraph {
         return rd;
     }
 
+	@Override
+	public synchronized boolean equals(Object o)
+	{
+		return super.equals(o);
+	}
 }
 

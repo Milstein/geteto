@@ -47,30 +47,32 @@ public abstract class AbstractMetric implements Metric
 	protected String description;
 
 	private Hashtable<String, Object> graphTable;
-	
-	protected final boolean findMethInClass(Program prog, Method m, String className, boolean rec)
+
+	protected final boolean findMethodInClass(Program prog, Method m, String className, boolean recursive)
 	{
 		RClass rc = prog.get(className);
 		if (rc == null || !(rc instanceof RClassCode)) {
 			return false;
 		}
+
 		RClassCode rcc = (RClassCode) rc;
 		JavaClass theClazz = rcc.getTheClass();
 		Method[] methods = theClazz.getMethods();
-		int i;
-		for (i = 0; i < methods.length; i++) {
+		for (int i = 0; i < methods.length; i++) {
 			if (methods[i].getName().equals(m.getName())
 					&& methods[i].getSignature().equals(m.getSignature())) {
 				return true;
 			}
 		}
-		if (rec) {
-			return findMethInClass(prog, m, rcc.getSuperClass(), rec);
+
+		if (recursive) {
+			return findMethodInClass(prog, m, rcc.getSuperClass(), recursive);
 		}
+
 		return false;
 	}
 
-	
+
 	protected final Collection<CFGNode> findDefUse(CFG gfc)
 	{
 		Set<CFGNode> v = new HashSet<CFGNode>();
@@ -82,7 +84,7 @@ public abstract class AbstractMetric implements Metric
 		}
 		return v;
 	}
-	
+
 	protected final CFG getCFG(MethodGen mg, ClassGen cg) throws InvalidInstructionException, InvalidStackArgument
 	{
 		String s = mg.getClassName() + "." + mg.getName() + mg.getSignature();
@@ -108,7 +110,7 @@ public abstract class AbstractMetric implements Metric
 		return (CFG) osg;
 	}
 
-	protected final double CC(MethodGen mg, ClassGen cg)
+	protected final double getCyclomaticComplexity(MethodGen mg, ClassGen cg)
 	{
 		int nos = 0;
 		int arcos = 0;
@@ -127,7 +129,7 @@ public abstract class AbstractMetric implements Metric
 		return (double) (arcos - nos + 1);
 	}
 
-	protected final double LOCM(MethodGen mg)
+	protected final double getLinesOfCodeMethod(MethodGen mg)
 	{
 		LineNumberGen lng[] = mg.getLineNumbers();
 		if (lng == null)
@@ -135,7 +137,7 @@ public abstract class AbstractMetric implements Metric
 		return (double) lng.length;
 	}
 
-	protected final double SIZE(MethodGen mg)
+	protected final double getNumberOfBytecodeInstructions(MethodGen mg)
 	{
 		InstructionList il = mg.getInstructionList();
 		if (il == null)

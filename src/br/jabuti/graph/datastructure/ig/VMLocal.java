@@ -3,8 +3,8 @@
     This file is part of Jabuti.
 
     Jabuti is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as 
-    published by the Free Software Foundation, either version 3 of the      
+    it under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation, either version 3 of the
     License, or (at your option) any later version.
 
     Jabuti is distributed in the hope that it will be useful,
@@ -24,19 +24,19 @@ import org.aspectj.apache.bcel.generic.*;
 
 
 /** <p>This class represents one configuration of the local
- variables. It is basicaly an array of 
+ variables. It is basicaly an array of
  {@link org.aspectj.apache.bcel.generic.Type} objects.
  */
 
-public class VMLocal {
-	
+public class VMLocal implements Cloneable {
+
     Type[] v;
-	
+
     /** Creates an empty local variable configuration. Each element
-     is initialized with <code>null</code> indicating that the 
+     is initialized with <code>null</code> indicating that the
      variables have not been initialized</p>
 
-     @param l The number of spots in the configuration, i.e., the 
+     @param l The number of spots in the configuration, i.e., the
      number of local variables
      */
     public VMLocal(int l) {
@@ -44,22 +44,22 @@ public class VMLocal {
     }
 
     /** Creates local variable configuration. Each element
-     is initialized the correspondent element in the 
+     is initialized the correspondent element in the
      argument array. The array is copied, so the original
      argument can be used as the programer wants</p>
 
-     @param x The "model" for the configuration. 
+     @param x The "model" for the configuration.
      */
     public VMLocal(Type[] x) {
         v = new Type[x.length];
         System.arraycopy(x, 0, v, 0, x.length);
     }
-	
+
     /** <p> Places a given type in a given spot </p>
 
      @param e The type to be placed in the spot
      @param l The spot to store the type
-     */ 
+     */
     public void add(Type e, int l) {
         int t = e == null ? 1 : e.getSize();
 
@@ -68,7 +68,7 @@ public class VMLocal {
         }
     }
 
-    /** Gets the type stored in a given spot 
+    /** Gets the type stored in a given spot
 
      @param i The number of the spot from where to retrieve the type
      @return The type stored in the given spot
@@ -85,23 +85,23 @@ public class VMLocal {
     public Object clone() {
         return new VMLocal(v);
     }
-	
+
     /** <p>Compares this object with another. The rules used in the comparisson
      are:<br></p>
      <p><UL>
      <LI> if the argument is not a {@link VMLocal} object return false
      <LI> if the {@link VMLocal#size} of this object is not the same of the
      arguments, return false
-     <IL> if element i in this object is null and element i in the argument 
+     <IL> if element i in this object is null and element i in the argument
      is not, return false
-     <IL> if for any the non-null element x store in spot i, the result of 
+     <IL> if for any the non-null element x store in spot i, the result of
      <code>x.equals(y.get(i))</code> is false, returns false;
      <IL> returns true otherwise
      </UL><br>
      </p>
 
      @param y The object to be compared with
-     @return true if all the elements 
+     @return true if all the elements
      in corresponding spots compare the same acording to {@link Type#equals}
      */
     public boolean equals(Object y) {
@@ -126,10 +126,16 @@ public class VMLocal {
         return true;
     }
 
-    /** Gets the number of spots in this object 
+    @Override
+	public int hashCode()
+	{
+		throw new UnsupportedOperationException();
+	}
 
-     @return The number of spots in this object 
-     */		
+	/** Gets the number of spots in this object
+
+     @return The number of spots in this object
+     */
     public int size() {
         return v.length;
     }
@@ -140,7 +146,7 @@ public class VMLocal {
 
      @return The representation of this object as a colection of
      types
-     */   	
+     */
     public String toString() {
         String str = "";
 

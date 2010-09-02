@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import br.jabuti.TestConfiguration;
 import br.jabuti.lookup.Program;
+import br.jabuti.metrics.klass.Metrics;
 
 import static org.junit.Assert.*;
 

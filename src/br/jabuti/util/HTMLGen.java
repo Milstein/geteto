@@ -29,7 +29,7 @@ import br.jabuti.project.*;
 import br.jabuti.ui.gui.*;
 
 import br.jabuti.criteria.*;
-import br.jabuti.metrics.Metrics;
+import br.jabuti.metrics.klass.Metrics;
 
 public class HTMLGen {
 	private static Document htmlDoc;

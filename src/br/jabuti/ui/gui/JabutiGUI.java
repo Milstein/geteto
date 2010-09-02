@@ -3,8 +3,8 @@
     This file is part of Jabuti.
 
     Jabuti is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as 
-    published by the Free Software Foundation, either version 3 of the      
+    it under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation, either version 3 of the
     License, or (at your option) any later version.
 
     Jabuti is distributed in the hope that it will be useful,
@@ -24,8 +24,7 @@ import javax.swing.plaf.FontUIResource;
 
 import br.jabuti.graph.view.gvf.*;
 import br.jabuti.lookup.java.bytecode.Program;
-import br.jabuti.metrics.Metrics;
-import br.jabuti.mobility.*;
+import br.jabuti.metrics.klass.Metrics;
 import br.jabuti.probe.mobiledevice.HostProberServer;
 import br.jabuti.project.*;
 import br.jabuti.runner.junit.Main;
@@ -45,16 +44,16 @@ import br.jabuti.device.ProberServer;
 /**
  * This is the main class responsible to build the JaBUTi GUI. It uses all other packages to build
  * the functionalities of the testing tool.
- * 
+ *
  * JaBUTi is a Swing application, and, as such, it has three types of threads: an initial thread, a
  * UI event dispatch thread (EDT), and worker threads.
- * 
+ *
  * Every application must have a main method that represents its starting point. This method runs on
  * an initial or startup thread. The initial thread might read program arguments and initiate a few
  * other objects, but in many Swing applications, this thread's primary purpose is to start the
  * application's graphical user interface (GUI). Once the GUI starts for most event-driven desktop
  * applications, the initial thread's work is done.
- * 
+ *
  * Swing applications have a single EDT for the UI. This thread draws GUI components, updates them,
  * and responds to user interactions by calling the application's event handlers. All event handlers
  * run on the EDT, and you should programmatically interact with your UI components and their basic
@@ -63,7 +62,7 @@ import br.jabuti.device.ProberServer;
  * threads will cause update and drawing errors in the UI. Performing long-running tasks on the EDT
  * will cause your application to become unresponsive because GUI events will accumulate in the
  * event dispatch queue.
- * 
+ *
  * Finally, worker threads should perform long-running calculations or input/output (I/O) bound
  * tasks. You should use worker threads for tasks such as communicating with databases, accessing
  * web resources, and reading or writing large files. Anything that might interfere with or delay UI
@@ -224,7 +223,7 @@ public class JabutiGUI extends JFrame
 	private JButton increaseButton;
 	private JButton decreaseButton;
 	private JPanel incDecPanel = new JPanel();
-		
+
 	// Called in Help Menu
 	private AboutDialog dialog = null;
 
@@ -305,7 +304,7 @@ public class JabutiGUI extends JFrame
 
 	private JPanel testCaseSlicePanel = new JPanel();
 
-	
+
 	private JPanel middlePanel = new JPanel();
 
 	private JPanel coverageButtonsPanel = new JPanel();
@@ -383,7 +382,7 @@ public class JabutiGUI extends JFrame
 	private ProbeCheck probeCheck = null;
 
 
-	public JabutiGUI() 
+	public JabutiGUI()
 	{
 		mainWindow = this;
 		mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -433,7 +432,7 @@ public class JabutiGUI extends JFrame
 		buildHelpMenu();
 
 		buildIncreaseDecreasePanel();
-		
+
 		buildToolBar();
 		// Adding all menu to the GUI
 		setJMenuBar(menuBar);
@@ -554,31 +553,31 @@ public class JabutiGUI extends JFrame
 		 * sliceButtonsPanel = new JPanel(); sliceButtonsPanel.setLayout( new
 		 * FlowLayout( FlowLayout.LEFT ) );
 		 * sliceButtonsPanel.setBorder(BorderFactory.createEtchedBorder());
-		 * 
+		 *
 		 * tcSuccessButton.setText( "Success All" );
 		 * tcSuccessButton.addActionListener(new java.awt.event.ActionListener() {
 		 * public void actionPerformed(ActionEvent e) {
 		 * tcSuccessButton_actionPerformed(e); } } );
-		 * 
+		 *
 		 * tcNotSuccessButton.setText( "Not Success All" );
 		 * tcNotSuccessButton.addActionListener(new
 		 * java.awt.event.ActionListener() { public void
 		 * actionPerformed(ActionEvent e) {
 		 * tcNotSuccessButton_actionPerformed(e); } } );
-		 * 
+		 *
 		 * tcFailButton.setText( "Fail All" );
 		 * tcFailButton.addActionListener(new java.awt.event.ActionListener() {
 		 * public void actionPerformed(ActionEvent e) {
 		 * tcFailButton_actionPerformed(e); } } );
-		 * 
+		 *
 		 * tcNotFailButton.setText( "Not Fail All" );
 		 * tcNotFailButton.addActionListener(new java.awt.event.ActionListener() {
 		 * public void actionPerformed(ActionEvent e) {
 		 * tcNotFailButton_actionPerformed(e); } } );
-		 * 
+		 *
 		 * sliceButtonsPanel.add( tcSuccessButton ); sliceButtonsPanel.add(
 		 * tcNotSuccessButton );
-		 * 
+		 *
 		 * sliceButtonsPanel.add( tcFailButton ); sliceButtonsPanel.add(
 		 * tcNotFailButton );
 		 */
@@ -869,7 +868,7 @@ public class JabutiGUI extends JFrame
 			getContentPane().add(testCaseSlicePanel, BorderLayout.CENTER);
 			break;
 
-			
+
 		case JabutiGUI.METRICS_PANEL:
 			updateMetricsPanel();
 			metricsPanel.setVisible(true);
@@ -967,7 +966,7 @@ public class JabutiGUI extends JFrame
 
 		projectMenu.add(saveProjectAsMenuItem);
 
-		
+
 		projectMenu.addSeparator();
 		exitMenuItem.setText("Exit");
 		exitMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_MASK));
@@ -1104,50 +1103,50 @@ public class JabutiGUI extends JFrame
 		 * if ( getProject() != null ) { int opt =
 		 * JOptionPane.showConfirmDialog(null, "The current project will be
 		 * closed. Close?", "Confirm", JOptionPane.YES_NO_OPTION);
-		 * 
+		 *
 		 * if (opt == JOptionPane.NO_OPTION) { return; } else {
 		 * closePrj_actionPerformed(ex); } }
-		 * 
+		 *
 		 * int k = openJarZipFileDialog.showOpenDialog(this);
-		 * 
+		 *
 		 * if (k != JFileChooser.APPROVE_OPTION) { return; }
-		 * 
+		 *
 		 * File theFile = openJarZipFileDialog.getSelectedFile();
-		 * 
+		 *
 		 * if (!theFile.isFile()) // verifica se existe {
 		 * JOptionPane.showMessageDialog(null, "File " + theFile.getName() + "
 		 * not found", "Error", JOptionPane.ERROR_MESSAGE); return; }
-		 * 
+		 *
 		 * String pclass = theFile.getName();
-		 * 
+		 *
 		 * if (!pclass.endsWith(".jar") || !pclass.endsWith(".zip")) {
 		 * JOptionPane.showMessageDialog(null, "A .jar or .zip file is
 		 * expected.", "Error", JOptionPane.ERROR_MESSAGE); return; } pclass =
 		 * pclass.substring(0, pclass.length() - 6); String pck =
 		 * packageTextField.getText().trim();
-		 * 
+		 *
 		 * if (pck.length() > 0) { pclass = pck + "." + pclass; }
-		 * 
+		 *
 		 * String cpath = classpathTextArea.getText().trim();
-		 * 
+		 *
 		 * if (cpath.length() <= 0) { cpath = null; }
-		 * 
+		 *
 		 * Program theProgram = null;
-		 * 
+		 *
 		 * try { jbtProject = new JabutiProject(pclass, cpath);
 		 * jbtProject.setCFGOption( (cfgOptionCheckBox.isSelected())?
 		 * CFG.NO_CALL_NODE : CFG.NONE ); theProgram = jbtProject.getProgram(); }
 		 * catch (Exception e) { JOptionPane.showMessageDialog(null, "Cannot
 		 * parser file " + pclass + "! ", "Error", JOptionPane.ERROR_MESSAGE);
 		 * return; }
-		 * 
+		 *
 		 * int status = projectManagerProperty_actionPerformed( ex );
-		 * 
+		 *
 		 * if ( status == JOptionPane.CANCEL_OPTION ) return;
-		 * 
+		 *
 		 * if ( getProject() != null ) { System.out.println(
 		 * getProject().toString() );
-		 * 
+		 *
 		 * if ( getProject().getProjectFile() != null) { // Loading the test set
 		 * file TestSet.initialize( getProject(),
 		 * getProject().getTraceFileName() ); System.out.println(
@@ -1155,9 +1154,9 @@ public class JabutiGUI extends JFrame
 		 * (probeCheck == null) { probeCheck = new ProbeCheck( mainWindow );
 		 * probeCheck.start(); } else { probeCheck.setOldSize( 0L );
 		 * probeCheck.setNewSize( 0L ); }
-		 * 
+		 *
 		 * if (cfgFrame != null) { cfgFrame.dispose(); } cfgFrame = null;
-		 * 
+		 *
 		 * enableDefaultOptions(); } updatePane();
 		 */
 	}
@@ -1661,7 +1660,7 @@ public class JabutiGUI extends JFrame
 		} catch (Exception e) {
 			ToolConstants.reportException(e, ToolConstants.STDERR);
 		}
-		
+
 		if (br.jabuti.probe.desktop.ProberInstrum.instrumentProject(prj, fileName)) {
 			JOptionPane.showMessageDialog(null, "File " + fileName + " created successfully.", "Information",
 					JOptionPane.INFORMATION_MESSAGE);
@@ -2042,11 +2041,11 @@ public class JabutiGUI extends JFrame
 	// Control-Flow Graph listener
 	/*
 	 * void viewControlFlowGraph_actionPerformed(ActionEvent ex) {
-	 * 
+	 *
 	 * if (cfgFrame == null) { cfgFrame = new CFGFrame(); } // Updating the
 	 * color table WeightColor.clearClassVariablesTable();
 	 * WeightColor.updateColorAttributes();
-	 * 
+	 *
 	 * cfgFrame.show( TheProject.getCurClassName() );
 	 * cfgFrame.setSelectedMethod( TheProject.getCurMethodName() ); }
 	 */
@@ -2737,12 +2736,12 @@ public class JabutiGUI extends JFrame
 
 		/*
 		 * testCaseByPathView.setText("Report By Test Case Path");
-		 * 
+		 *
 		 * testCaseByPathView.addActionListener(new
 		 * java.awt.event.ActionListener() { public void
 		 * actionPerformed(ActionEvent e) {
 		 * testCaseByPathView_actionPerformed(e); } } );
-		 * 
+		 *
 		 * testCaseMenu.add( testCaseByPathView );
 		 */
 
@@ -2805,7 +2804,7 @@ public class JabutiGUI extends JFrame
 								"Information", JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
-		
+
 		final Main executor = new br.jabuti.runner.junit.Main(JabutiGUI
 				.mainWindow(), true);
 		executor.addWindowListener(new WindowAdapter() {
@@ -3046,14 +3045,11 @@ public class JabutiGUI extends JFrame
 		testCaseSlicePanel = new JPanel();
 
 		if (numTC > 0) {
-			String[] columns = { "Success", "Fail", "Test Case", "JUnit Name",
-					"Host", "Total Coverage", "Percentage" };
-
+			String[] columns = { "Success", "Fail", "Test Case", "JUnit Name", "Host", "Total Coverage", "Percentage" };
 			Object[][] rows = new Object[numTC][columns.length];
 
 			// Slice tool uses the block criterion always...
 			int criterionNumber = -1;
-
 			if (JabutiGUI.isAllPrimaryNodes()) {
 				criterionNumber = Criterion.PRIMARY_NODES;
 				criterion = AbstractCriterion.getName(criterionNumber);
@@ -3066,20 +3062,23 @@ public class JabutiGUI extends JFrame
 			Arrays.sort(names);
 
 			for (int i = 0; i < names.length; i++) {
-				boolean isSuccess = false, isFail = false;
+				boolean isSuccess = false;
+				boolean isFail = false;
 
 				// Sucess test case selected
-				if (TestSet.getSuccessSet().contains((String) names[i]))
+				if (TestSet.getSuccessSet().contains((String) names[i])) {
 					isSuccess = true;
-				else
+				} else {
 					isSuccess = false;
+				}
 				rows[i][0] = JTableComponentModel.addCheckBox(isSuccess);
 
 				// Fail test set selected
-				if (TestSet.getFailSet().contains((String) names[i]))
+				if (TestSet.getFailSet().contains((String) names[i])) {
 					isFail = true;
-				else
+				} else {
 					isFail = false;
+				}
 				rows[i][1] = JTableComponentModel.addCheckBox(isFail);
 
 				// Test case name
@@ -3154,8 +3153,7 @@ public class JabutiGUI extends JFrame
 			testCaseSlicePanel.add(tablePanel, BorderLayout.CENTER);
 			testCaseSlicePanel.add(southPanel, BorderLayout.SOUTH);
 		} else {
-			JOptionPane.showMessageDialog(null, "No Test Case to be shown!",
-					"Message", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(null, "No Test Case to be shown!", "Message", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 
@@ -3524,26 +3522,26 @@ public class JabutiGUI extends JFrame
 	 */
 	/*
 	 * private void updateTestCasePathsPanel() { String criterion = null;
-	 * 
+	 *
 	 * int numTC = TestSet.getNumberOfTestCases();
-	 * 
+	 *
 	 * pathsPanel = new JPanel();
-	 * 
+	 *
 	 * if (numTC > 0) {
-	 * 
+	 *
 	 * Object[] names = TestSet.getTestCaseLabels(); Arrays.sort(names); //
 	 * Calculating the total number of rows int numRows = 0; for (int i = 0; i <
 	 * names.length; i++) { TestCase tc = TestSet.getTestCase( (String) names[i] );
-	 * 
+	 *
 	 * numRows += tc.getPathSetLabels().size(); }
-	 * 
-	 * 
+	 *
+	 *
 	 * Object[][] rows = new Object[numRows][TableSorterPanel.DEFAULT_COL_SIZE +
 	 * 4]; String[] columns = { "Test Case", "Path", "Host", "Thread Code",
 	 * "Object Code", "Coverage", "Percentage" };
-	 * 
+	 *
 	 * int criterionNumber = -1;
-	 * 
+	 *
 	 * if (JabutiGUI.isAllPrimaryNodes()) { criterionNumber =
 	 * Criterion.PRIMARY_NODES; } else if (JabutiGUI.isAllSecondaryNodes()) {
 	 * criterionNumber = Criterion.SECONDARY_NODES; } else if
@@ -3556,7 +3554,7 @@ public class JabutiGUI extends JFrame
 	 * (JabutiGUI.isAllPrimaryPotUses()) { criterionNumber =
 	 * Criterion.PRIMARY_POT_USES; } else if (JabutiGUI.isAllSecondaryPotUses()) {
 	 * criterionNumber = Criterion.SECONDARY_POT_USES; }
-	 * 
+	 *
 	 * criterion = AbstractCriterion.getName( criterionNumber ); titlePanelLabel =
 	 * criterion + " Coverage per Test Case Path"; titlePanel = new TitlePanel(
 	 * titlePanelLabel ); int count = 0; for (int i = 0; i < names.length; i++) {
@@ -3571,51 +3569,51 @@ public class JabutiGUI extends JFrame
 	 * information for each path. while( it.hasNext() ) { String thePath =
 	 * (String) it.next(); rows[count][0] = JTableComponentModel.addButton(
 	 * (String) names[i] );
-	 * 
+	 *
 	 * rows[count][1] = JTableComponentModel.addButton( thePath );
-	 * 
+	 *
 	 * rows[count][2] = JTableComponentModel.addLabel( pdn.getHost() );
-	 * 
+	 *
 	 * rows[count][3] = JTableComponentModel.addLabel( pdn.threadCode );
-	 * 
+	 *
 	 * rows[count][4] = JTableComponentModel.addLabel( pdn.objectCode );
-	 * 
+	 *
 	 * Coverage cov = tc.getTestCaseCoverageByPath(criterionNumber, pdn,
 	 * thePath);
-	 * 
+	 *
 	 * rows[count][5] = JTableComponentModel.addLabel( cov.getNumberOfCovered() + "
 	 * of " + cov.getNumberOfRequirements() );
-	 * 
+	 *
 	 * rows[count++][6] = JTableComponentModel.addProgress( (int)
 	 * cov.getPercentage() ); } } }
-	 * 
+	 *
 	 * Coverage cov = getProject().getProjectCoverage(criterionNumber);
-	 * 
+	 *
 	 * tablePanel = new TableSorterPanel( rows, columns );
-	 * 
+	 *
 	 * TotalPanel totalPanel = new TotalPanel( " TOTAL COVERAGE",
 	 * cov.getNumberOfCovered() + " of " + cov.getNumberOfRequirements(), (int)
 	 * cov.getPercentage(), 10, 10 );
-	 * 
+	 *
 	 * String specificTool = new String("");
-	 * 
+	 *
 	 * if (coverageTool.isSelected()) { specificTool = new String("Coverage"); }
 	 * else { specificTool = new String("Slice"); }
-	 * 
+	 *
 	 * syntesePanel = new SyntesePanel(ToolConstants.toolName + ": " +
 	 * specificTool, " Coverage: " + criterion, "Active Test Cases: " +
 	 * TestSet.getNumberOfActiveTestCases() + " of " +
 	 * (TestSet.getNumberOfTestCases() - TestSet.getNumberOfDeletedTestCases()) );
-	 * 
+	 *
 	 * southPanel = new JPanel();
-	 * 
+	 *
 	 * southPanel.setLayout(new BorderLayout()); southPanel.add(totalPanel,
 	 * BorderLayout.NORTH); southPanel.add(syntesePanel, BorderLayout.SOUTH);
-	 * 
+	 *
 	 * pathsPanel.setLayout(new BorderLayout());
-	 * 
+	 *
 	 * pathsPanel.add(titlePanel, BorderLayout.NORTH);
-	 * 
+	 *
 	 * pathsPanel.add(tablePanel, BorderLayout.CENTER);
 	 * pathsPanel.add(southPanel, BorderLayout.SOUTH); } else {
 	 * JOptionPane.showMessageDialog(null, "No Test Case to be shown!",
@@ -3764,11 +3762,9 @@ public class JabutiGUI extends JFrame
 		updateMenu.setText("Update");
 		updateMenu.setToolTipText("Update coverage information...");
 		updateItem.setText("Update");
-		updateItem
-				.setToolTipText("Cumulative update. Keeps the test case even without coverage improvement.");
+		updateItem.setToolTipText("Cumulative update. Keeps the test case even without coverage improvement.");
 		cutItem.setText("Update and cut");
-		cutItem
-				.setToolTipText("Non-cumulative update. Drops the test case when no coverage improvement is obtained.");
+		cutItem.setToolTipText("Non-cumulative update. Drops the test case when no coverage improvement is obtained.");
 
 		updateMenu.add(updateItem);
 		updateMenu.add(cutItem);
@@ -4008,7 +4004,7 @@ public class JabutiGUI extends JFrame
 		// Adding Help Menu to Menu Bar
 		menuBar.add(helpMenu);
 	}
-	
+
 	/*
 	 * This method is responsible to construct the Increase/Decrease Panel
 	 */
@@ -4017,22 +4013,22 @@ public class JabutiGUI extends JFrame
 		incDecPanel.setPreferredSize(new Dimension(16,32));
 		incDecPanel.setMinimumSize(new Dimension(16,32));
 		incDecPanel.setMaximumSize(new Dimension(16,32));
-		
+
 		URL url = JabutiGUI.class.getResource("plus.png");
 		increaseButton = new JButton(new ImageIcon(url));
 		increaseButton.setToolTipText("Increase GUI components font size.");
 		increaseButton.setVerticalAlignment(AbstractButton.CENTER);
 		increaseButton.setHorizontalAlignment(AbstractButton.CENTER);
-		
+
 		url = JabutiGUI.class.getResource("minus.png");
 		decreaseButton = new JButton(new ImageIcon(url));
 		decreaseButton.setToolTipText("Decrease GUI components font size.");
 		decreaseButton.setVerticalAlignment(AbstractButton.CENTER);
 		decreaseButton.setHorizontalAlignment(AbstractButton.CENTER);
-		
+
 		incDecPanel.add(increaseButton);
 		incDecPanel.add(decreaseButton);
-		
+
 		increaseButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent event) {
 				ToolConstants.sourceFontSize++;
@@ -4063,23 +4059,23 @@ public class JabutiGUI extends JFrame
 	 * public void tablePanelButtons_actionPerformed(ActionEvent e) {
 	 * System.out.println(e.getActionCommand()); String buttonText =
 	 * e.getActionCommand(); int offset = -1;
-	 * 
+	 *
 	 * if (byMethod.isSelected()) { int index =
 	 * buttonText.indexOf(JabutiGUI.CLASS_METHOD_SEPARATOR); String className =
 	 * buttonText.substring(0, index); String methodName =
 	 * buttonText.substring(index + 1, buttonText.length());
-	 * 
+	 *
 	 * System.out.println("Class Name: " + className);
 	 * System.out.println("Method Name: " + methodName);
-	 * 
+	 *
 	 * ClassFile cf = getProject().getClassFile(className); // If the selected
 	 * class is different from the // current class the current labelNodeTable
 	 * of // each method can be cleaned... if (!className.equals(
 	 * TheProject.getCurClassName() ) ) { ClassFile oldCF =
 	 * getProject().getClassFile( TheProject.getCurClassName() );
-	 * 
+	 *
 	 * oldCF.releaseLabelNodeTable();
-	 * 
+	 *
 	 * if (cfgIsVisible()) { // ERROR: Change className by currentClassName //
 	 * Consequence: it always show the last class // Test Case: create a Project
 	 * with mode that one class // go to // Visualization->CFG // Summary -> By
@@ -4087,41 +4083,41 @@ public class JabutiGUI extends JFrame
 	 * The CFG was't updated correctly. // cfgFrame.setSelectedClass(
 	 * currentClassFile ); cfgFrame.setSelectedClass(
 	 * TheProject.getCurClassName() ); } } TheProject.setCurClassName( className );
-	 * 
+	 *
 	 * ClassMethod mth = cf.getMethod(methodName);
-	 * 
+	 *
 	 * if (cfgIsVisible()) { cfgFrame.setSelectedMethod(methodName); }
-	 * 
+	 *
 	 * offset = mth.getBeginBytecodeOffset();
-	 * 
+	 *
 	 * Debug.D("POSICAO DO TOKEN: " + offset); System.out.println("POSICAO DO
 	 * TOKEN: " + offset);
-	 * 
+	 *
 	 * updatePane(JabutiGUI.BYTECODE_PANEL, offset); } else if
 	 * (byFile.isSelected()) { String className = buttonText;
-	 * 
+	 *
 	 * offset = 0;
-	 * 
+	 *
 	 * System.out.println("Class Name: " + className); // If the selected class
 	 * is different from the // current class the current labelNodeTable of //
 	 * each method can be cleaned... if (!className.equals(
 	 * TheProject.getCurClassName() ) ) { ClassFile oldCF =
 	 * getProject().getClassFile( TheProject.getCurClassName() );
-	 * 
+	 *
 	 * oldCF.releaseLabelNodeTable();
-	 * 
+	 *
 	 * if (cfgIsVisible()) { // ERROR: Change className by currentClassName //
 	 * Consequence: it always show the last class // Test Case: create a Project
 	 * with mode that one class // go to // Visualization->CFG // Summary -> By
 	 * File // Choose a different class (not the current) // The CFG was't
 	 * updated correctly. // cfgFrame.setSelectedClass( currentClassFile );
-	 * 
+	 *
 	 * cfgFrame.setSelectedClass( TheProject.getCurClassName() ); } }
 	 * TheProject.setCurClassName( className );
-	 * 
+	 *
 	 * Debug.D("POSICAO DO TOKEN: " + offset); System.out.println("POSICAO DO
 	 * TOKEN: " + offset);
-	 * 
+	 *
 	 * updatePane(JabutiGUI.BYTECODE_PANEL, offset); } }
 	 */
 
@@ -4308,7 +4304,7 @@ public class JabutiGUI extends JFrame
 	}
 
 
-	
+
 	/**
 	 * Checks if the metrics panel is active
 	 */
@@ -4431,7 +4427,7 @@ public class JabutiGUI extends JFrame
 	public ImageIcon getSemaforoRedImage() {
 		return semaforoRed;
 	}
-	
+
 	/**
 	 * Adjunst the font size of all Swing UI components
 	 * @param adjust

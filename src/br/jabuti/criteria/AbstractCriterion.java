@@ -3,8 +3,8 @@
     This file is part of Jabuti.
 
     Jabuti is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as 
-    published by the Free Software Foundation, either version 3 of the      
+    it under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation, either version 3 of the
     License, or (at your option) any later version.
 
     Jabuti is distributed in the hope that it will be useful,
@@ -21,23 +21,22 @@ package br.jabuti.criteria;
 
 import br.jabuti.graph.datastructure.Graph;
 import br.jabuti.graph.datastructure.GraphNode;
-import br.jabuti.graph.datastructure.dug.*;
 
 import java.util.*;
 
 /**
  * This class implements the interface Criterion and includes the common methods
  * for any other testing criteria.
- * 
+ *
  * This class has to be extended by a given criterion that have to provide the
  * implementation for the following abstract methods. addPath, removePath and
  * getCoveredRequirements since they are criterion dependent.
- * 
- * 
+ *
+ *
  * @version: 1.0
  * @author: Auri Vincenzi
  * @author: Marcio Delamaro
- * 
+ *
  */
 public abstract class AbstractCriterion implements Criterion {
 	static public final int PRIMARY = 1, SECONDARY = 2, ALL = 3;
@@ -46,10 +45,10 @@ public abstract class AbstractCriterion implements Criterion {
 	 * This method is used to padronize the names of the testing criteria over
 	 * the tool... It returns the name of the criterion based on the criterion
 	 * code
-	 * 
+	 *
 	 * @param id -
 	 *            a integer value corresponding to a given criterion id.
-	 * 
+	 *
 	 * @return a string corresponding to the name of the criterion if the id is
 	 *         valid or null otherwise.
 	 */
@@ -64,10 +63,10 @@ public abstract class AbstractCriterion implements Criterion {
 	 * This method is used to padronize the names of the testing criteria over
 	 * the tool... It returns the name of the criterion based on the criterion
 	 * code
-	 * 
+	 *
 	 * @param id -
 	 *            a integer value corresponding to a given criterion id.
-	 * 
+	 *
 	 * @return a string corresponding to the name of the criterion if the id is
 	 *         valid or null otherwise.
 	 */
@@ -97,7 +96,7 @@ public abstract class AbstractCriterion implements Criterion {
 	 * This constructor takes the nodes of the graph as the criterion
 	 * requirements. It uses the domination relation to discard some nodes. If a
 	 * node x dominates a node y, then x can be discarded
-	 * 
+	 *
 	 * @param g
 	 *            The graph from where the requirements are extracted
 	 */
@@ -111,7 +110,7 @@ public abstract class AbstractCriterion implements Criterion {
 
 	/**
 	 * Gets the list of requirements computed for this object.
-	 * 
+	 *
 	 * @return An array of {@link String} objects that are the requirements
 	 */
 	final public Object[] getRequirements() {
@@ -121,7 +120,7 @@ public abstract class AbstractCriterion implements Criterion {
 	/**
 	 * Gets the list of requirements computed for this object, considering only
 	 * the ones that are active and feasible.
-	 * 
+	 *
 	 * @return An array of {@link String} objects that are the requirements
 	 */
 	final public Requirement[] getPossibleRequirements() {
@@ -139,7 +138,7 @@ public abstract class AbstractCriterion implements Criterion {
 
 	/**
 	 * Get the number of paths that covered each requirement.
-	 * 
+	 *
 	 * @return An array of itegers that tells for each requirement how many
 	 *         paths in the path set have covered the requirement
 	 */
@@ -157,7 +156,7 @@ public abstract class AbstractCriterion implements Criterion {
 	/**
 	 * Add a path to the path set. To each path a label is associate so
 	 * informaton about the path can be obtained and the path can be removed.
-	 * 
+	 *
 	 * @param path
 	 *            The path to be added. The object in the array can be: an
 	 *            string representing the label of a graph node; an
@@ -185,7 +184,7 @@ public abstract class AbstractCriterion implements Criterion {
 
 	/**
 	 * Remove a given path.
-	 * 
+	 *
 	 * @param label
 	 *            The label of the path to be removed.
 	 * @return The number of requirements this label covered. If the label does
@@ -212,9 +211,9 @@ public abstract class AbstractCriterion implements Criterion {
 	/**
 	 * Disable a given path. It works like the {@link #removePath()} method,
 	 * except that it keep the test case in the pathSet.
-	 * 
+	 *
 	 * No checking is perforned do verify if the test case is already disabled.
-	 * 
+	 *
 	 * @param label
 	 *            The label of the path to be disabled.
 	 * @return The number of requirements this label covered. If the label does
@@ -237,9 +236,9 @@ public abstract class AbstractCriterion implements Criterion {
 
 	/**
 	 * Enable a given path.
-	 * 
+	 *
 	 * No checking is perforned do verify if the test case is already enabled.
-	 * 
+	 *
 	 * @param label
 	 *            The label of the path to be disabled.
 	 * @return The number of requirements this label covered. If the label does
@@ -300,7 +299,7 @@ public abstract class AbstractCriterion implements Criterion {
 
 	/**
 	 * Gets the list of covered requirements for this object.
-	 * 
+	 *
 	 * @return A Set of {@link String} objects that are the covered requirements
 	 */
 	final public HashSet getCoveredRequirements() {
@@ -321,7 +320,7 @@ public abstract class AbstractCriterion implements Criterion {
 	/**
 	 * Gets the list of covered requirements for this object, considering only
 	 * the ones that are active and feasible.
-	 * 
+	 *
 	 * @return A Set of {@link String} objects that are the covered requirements
 	 */
 	final public HashSet getPossibleCoveredRequirements() {
@@ -338,7 +337,7 @@ public abstract class AbstractCriterion implements Criterion {
 
 	/**
 	 * Gets the list of covered requirements for a single test case.
-	 * 
+	 *
 	 * @return A Set of {@link String} objects that are the covered requirements
 	 *         for the specified path.
 	 */
@@ -352,7 +351,7 @@ public abstract class AbstractCriterion implements Criterion {
 	/**
 	 * Gets the list of covered requirements for a single test case, considering
 	 * only the active and feasible ones.
-	 * 
+	 *
 	 * @return A Set of {@link String} objects that are the covered requirements
 	 *         for the specified path.
 	 */
@@ -371,7 +370,7 @@ public abstract class AbstractCriterion implements Criterion {
 	/**
 	 * Gets the list of effective test cases, i.e., the labels of test cases
 	 * which covered a given requirement.
-	 * 
+	 *
 	 * @return A list of test case labels, separeted by a blank character. If no
 	 *         test case covered the given requirement it returns an empty
 	 *         String.
@@ -434,7 +433,7 @@ public abstract class AbstractCriterion implements Criterion {
 
 	/*
 	 * Checks if a given testing requirement is covered.
-	 * 
+	 *
 	 * @return true if the requirement is covered, false if it is uncovered.
 	 */
 	final public boolean isCovered(Requirement req) {
@@ -471,7 +470,7 @@ public abstract class AbstractCriterion implements Criterion {
 
 	/*
 	 * Checks if a given testing requirement is active.
-	 * 
+	 *
 	 * @return true if the requirement is active, false if it is inactive.
 	 */
 	final public boolean isActive(Requirement req) {
@@ -514,7 +513,7 @@ public abstract class AbstractCriterion implements Criterion {
 
 	/*
 	 * Checks if a given testing requirement is feasible.
-	 * 
+	 *
 	 * @return true if the requirement is feasible, false if it is infeasible.
 	 */
 	final public boolean isFeasible(Requirement req) {
@@ -523,7 +522,7 @@ public abstract class AbstractCriterion implements Criterion {
 
 	/**
 	 * Gets a given requirement from its label.
-	 * 
+	 *
 	 * @return An object that is the requirement
 	 */
 	final public Requirement getRequirementByLabel(String label) {
@@ -538,7 +537,7 @@ public abstract class AbstractCriterion implements Criterion {
 
 	/**
 	 * Checks whether a requirements is valid or not.
-	 * 
+	 *
 	 * @return true is it is a valid requirement<BR>
 	 *         false if not.
 	 */

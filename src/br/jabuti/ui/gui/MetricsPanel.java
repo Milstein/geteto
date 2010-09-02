@@ -3,8 +3,8 @@
     This file is part of Jabuti.
 
     Jabuti is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as 
-    published by the Free Software Foundation, either version 3 of the      
+    it under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation, either version 3 of the
     License, or (at your option) any later version.
 
     Jabuti is distributed in the hope that it will be useful,
@@ -28,7 +28,7 @@ import javax.swing.table.*;
 
 import br.jabuti.lookup.*;
 import br.jabuti.lookup.java.bytecode.Program;
-import br.jabuti.metrics.Metrics;
+import br.jabuti.metrics.klass.Metrics;
 
 import br.jabuti.util.*;
 
@@ -38,7 +38,7 @@ import br.jabuti.util.*;
  *
  * @version: 1.0
  * @author: Auri Vincenzi
- * @author: Marcio Delamaro 
+ * @author: Marcio Delamaro
  */
 class SortFilterModel extends AbstractTableModel {
     /**
@@ -53,7 +53,7 @@ class SortFilterModel extends AbstractTableModel {
             rows[i] = new Row();
             rows[i].index = i;
         }
-        
+
         columnTip = new String[Metrics.metrics.length + 1];
         columnTip[0] = new String( "Instrumented Classes" );
         for( int i = 0; i < Metrics.metrics.length; i++ ) {
@@ -90,11 +90,11 @@ class SortFilterModel extends AbstractTableModel {
 
     public void addMouseMotionListener(final JTable table) {
         table.getTableHeader().addMouseMotionListener(new MouseMotionAdapter() {
-            public void mouseMoved(MouseEvent event) {  
+            public void mouseMoved(MouseEvent event) {
                 // find column of click and
                 int tableColumn
                         = table.columnAtPoint(event.getPoint());
-                  
+
                 table.getTableHeader().setToolTipText(columnTip[ tableColumn ]);
             }
         }
@@ -154,12 +154,16 @@ class SortFilterModel extends AbstractTableModel {
                 return index - otherRow.index;
             }
         }
+        public boolean equals(Object o)
+        {
+        	return compareTo(o) == 0;
+        }
     }
 
     private TableModel model;
     private int sortColumn;
     private Row[] rows;
-   
+
     String[] columnTip;
 }
 
@@ -186,22 +190,22 @@ public class MetricsPanel extends JScrollPane {
     JTable table;
 
     public MetricsPanel( Program prog, String[] classes ) {
-        super();    	
+        super();
         	// Only the instrumented classes
 	        //Metrics mt = new Metrics( prog, classes );
 	        // All classes. Project class names painted in blue
 			Metrics mt = new Metrics( prog );
-            
+
             columnNames = new String[Metrics.metrics.length + 1];
             columnNames[0] = new String("Class Name");
             for (int i = 0; i < Metrics.metrics.length; i++) {
                 columnNames[i + 1] = Metrics.metrics[i].getName().toUpperCase();
             }
-	  
+
             //String[] classNames = classes;
-            
+
             String[] classNames = prog.getCodeClasses();
-            	  
+
             cells = new Object[classNames.length][Metrics.metrics.length + 1];
             for (int i = 0; i < classNames.length; i++) {
                 cells[i][0] = classNames[i];
@@ -222,18 +226,18 @@ public class MetricsPanel extends JScrollPane {
 
         table.getTableHeader().setToolTipText("My Header");
         table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		
+
 		//Dimension dim = JabutiGUI.mainWindow().getSize();
-		//table.setPreferredScrollableViewportSize( new Dimension( dim.width * 3, (int) ( dim.height * 0.8 )) );		
-				
+		//table.setPreferredScrollableViewportSize( new Dimension( dim.width * 3, (int) ( dim.height * 0.8 )) );
+
 		// Adding the table to the current JScrollPane
 		setViewportView( table );
-        
+
         // set up double click handler for column headers
         sorter.addMouseListener(table);
         sorter.addMouseMotionListener(table);
     }
-    
+
     public static void main(String[] args) {
         JFrame frame = new JFrame();
 
@@ -242,16 +246,16 @@ public class MetricsPanel extends JScrollPane {
         	Program p = new Program(true, null, ".");
         	//String[] classes = p.getCodeClasses();
         	String[] classes = {"br.jabuti.metrics.Metrics"};
-            
+
             MetricsPanel panel = new MetricsPanel( p, classes );
             frame.getContentPane().add( new JLabel( " NORTH LABEL " ), BorderLayout.NORTH );
         	frame.getContentPane().add( panel, BorderLayout.CENTER );
-            frame.getContentPane().add( new JLabel( " SOUTH LABEL " ), BorderLayout.SOUTH );        	
+            frame.getContentPane().add( new JLabel( " SOUTH LABEL " ), BorderLayout.SOUTH );
         } catch (Exception e) {
             ToolConstants.reportException(e, ToolConstants.STDERR);
             System.exit(0);
         }
-        
+
         frame.pack();
         frame.setVisible(true);
     }

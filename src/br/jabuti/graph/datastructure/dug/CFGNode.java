@@ -50,8 +50,6 @@ import br.jabuti.verifier.*;
  */
 public class CFGNode extends GraphNode
 {
-
-
 	/**
 	 * Added to jdk1.5.0_04 compiler
 	 */

@@ -3,8 +3,8 @@
     This file is part of Jabuti.
 
     Jabuti is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as 
-    published by the Free Software Foundation, either version 3 of the      
+    it under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation, either version 3 of the
     License, or (at your option) any later version.
 
     Jabuti is distributed in the hope that it will be useful,
@@ -28,32 +28,32 @@ import org.aspectj.apache.bcel.generic.*;
  spots. The first are indicated with the value <code>null</code>.
  The second is represented with a {@link VMStackElement}<br></p>
 
- Each taken spot in the 
+ Each taken spot in the
 
  */
 
 public class VMStack {
     VMStackElement[] v;
     int topc;
-	
-    /** Creates an empty stack 
+
+    /** Creates an empty stack
 
      @param l The capacity of this stack
-     */ 
+     */
     public VMStack(int l) {
         v = new VMStackElement[l];
         topc = -1;
     }
-	
+
     /** Pushs al element in the stack. Each element may take
-     more than one spot in the stack, depending on the type 
+     more than one spot in the stack, depending on the type
      stored in the element, exactly like is done in the  VM.
      For example an element that stores a double element will take
      the two top spots in the stack
 
      @param e The element to be inserted in the top of the stack
      */
- 	
+
     public void push(VMStackElement e) {
         Type t = e.type;
 
@@ -62,11 +62,11 @@ public class VMStack {
         }
     }
 
-    /** Removes the element from the top of the stack. It may 
+    /** Removes the element from the top of the stack. It may
      required to remove more than one spot from the stack if the
      top element occupies more than one spot.
 
-     */	
+     */
     public void pop() {
         Type t = top().type;
 
@@ -74,28 +74,28 @@ public class VMStack {
             v[topc--] = null;
         }
     }
-	
+
     /** The same of calling {@link VMStack#pop} k times.
 
      @param The number of elements to remove from the top of the
      stack
-     */		
+     */
     public void pop(int k) {
         for (int i = 0; i < k; i++) {
             pop();
         }
     }
 
-    /** Removes k spots (not elements) from the top of the stack 
+    /** Removes k spots (not elements) from the top of the stack
 
      @param k The number of spots to remove from the stack
      */
-    public void pop2(int k) { 
+    public void pop2(int k) {
         while (k-- > 0) {
             v[topc--] = null;
         }
     }
-	
+
     /** Gets the elemnt in the top of the stack. Does not pop it.
 
      @return The element in the top of the stack
@@ -103,8 +103,8 @@ public class VMStack {
     public VMStackElement top() {
         return top(0);
     }
-		
-    /** Gets the kth element from the top of the stack. 
+
+    /** Gets the kth element from the top of the stack.
      <code>top(0)</code> corresponds to the top element
 
      @param k The element (from the top) that one wants to retrive
@@ -120,7 +120,7 @@ public class VMStack {
         }
         return e;
     }
-	
+
     /** Return spot (not element) k in the stack
 
      @param k The spot (from the bottom!) to be retrieved
@@ -133,7 +133,7 @@ public class VMStack {
     /** Gets the capacity of the stack (number of spots)
 
      @return The capacity (number of spots) of the stack
-     */	
+     */
     public int length() {
         return v.length;
     }
@@ -149,15 +149,15 @@ public class VMStack {
 
      */
     public void reset() {
-        pop2(size()); 
+        pop2(size());
     }
-	
+
     /** Makes a deep copy of this object, i.e., not only the
      stack itself is copied, but also the elements are re-ccreated using
      {@link VMStackElement#clone}.
 
      @return The new stack
-     */ 
+     */
     public Object clone() {
         VMStack x = new VMStack(v.length);
 
@@ -169,15 +169,15 @@ public class VMStack {
         x.topc = topc;
         return x;
     }
-	
+
     /** Answers whether the stack is empty
 
      @return true if <code>size() == 0</code>
-     */	
+     */
     public boolean empty() {
         return size() == 0;
     }
-	
+
     /** <p>Returns in the form of a string the following information:</p>
 
      <UL>
@@ -212,7 +212,7 @@ public class VMStack {
      <LI> if the <code>size()</code> of the stacks are not the same, returns false;
      <LI> if element i of this object is null and the corresponding object
      in the argument is not null return false
-     <LI> if calling {@link VMStackElement#equals} on element i of this stack 
+     <LI> if calling {@link VMStackElement#equals} on element i of this stack
      with element i of argument returns false, then return false
      <LI> return true otherwise
      </UL>
@@ -241,4 +241,10 @@ public class VMStack {
         }
         return true;
     }
+
+    @Override
+	public int hashCode()
+	{
+		throw new UnsupportedOperationException();
+	}
 }

@@ -3,8 +3,8 @@
     This file is part of Jabuti.
 
     Jabuti is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as 
-    published by the Free Software Foundation, either version 3 of the      
+    it under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation, either version 3 of the
     License, or (at your option) any later version.
 
     Jabuti is distributed in the hope that it will be useful,
@@ -21,6 +21,7 @@ package br.jabuti.project;
 
 import java.util.*;
 
+import br.jabuti.probe.desktop.ProbedNode;
 import br.jabuti.probe.mobiledevice.mobile.HostProbedNode;
 import br.jabuti.ui.gui.*;
 import br.jabuti.criteria.*;
@@ -35,7 +36,7 @@ import br.jabuti.criteria.*;
  * Every time when the trace file is read again the
  * coverage is recomputed.
  *
- * 
+ *
  * @version: 1.0
  * @author: Auri Vincenzi
  * @author: Marcio Delamaro
@@ -55,19 +56,41 @@ public class TestCase {
 
 	// The alias for this test case (used by JUnit)
 	private String alias;
-	
+
 	// The test case host name
 	private String hostName;
 
 	// Used by toString method to ident the output
 	private String prefix = new String("");
 
+	private TestCaseResult result = TestCaseResult.UNKNOWN;
 
+	private TestCaseStatus status = TestCaseStatus.ENABLED;
+
+	public TestCaseResult getResult()
+	{
+		return result;
+	}
+
+	public void setResult(TestCaseResult result)
+	{
+		this.result = result;
+	}
+
+	public TestCaseStatus getStatus()
+	{
+		return status;
+	}
+
+	public void setStatus(TestCaseStatus status)
+	{
+		this.status = status;
+	}
 
 	public TestCase(JabutiProject prj, String l, String a) {
 		label = l;
 		alias = a;
-		
+
 		hostName = null;
 
 		testCaseCoverage = new Coverage[Criterion.NUM_CRITERIA];
@@ -80,8 +103,8 @@ public class TestCase {
 	}
 
 	/*
-	 * This method is responsible to add all paths related with 
-	 * a this test case object. The paths are stored in a 
+	 * This method is responsible to add all paths related with
+	 * a this test case object. The paths are stored in a
 	 * Hashtable that indexes ProbedNode objects in Vector objects.
 	 * Each Vector object contains an array os String (String[]),
 	 * representing a path.
@@ -103,15 +126,15 @@ public class TestCase {
 	}*/
 
 	/*
-	 * This method is responsible to add all paths related with 
-	 * a this test case object. The paths are stored in a 
+	 * This method is responsible to add all paths related with
+	 * a this test case object. The paths are stored in a
 	 * Hashtable that indexes ProbedNode objects in a matrix of
 	 * String objects (String[][]), representing a path the set of
 	 * paths of such a test case.
 	 */
 	public void addTestCaseFromTRC(
 		JabutiProject prj,
-		Hashtable tab) {
+		Map<ProbedNode,String[][]> tab) {
 
 		Hashtable classes = prj.getClassFilesTable();
 		Iterator it = classes.values().iterator();
@@ -160,8 +183,8 @@ public class TestCase {
 							Object[] thePath = AbstractCriterion.changePath(
 							cm.getCFG(),
 							pathList[k]);
-														
-							for (int i = 0; i < Criterion.NUM_CRITERIA; i++) {								
+
+							for (int i = 0; i < Criterion.NUM_CRITERIA; i++) {
 								criterion = cm.getCriterion(i);
 								//System.out.println("Path: " + thePath + " Label: " + getLabel());
 								criterion.addPath( thePath,	getLabel() );
@@ -173,8 +196,8 @@ public class TestCase {
 		}
 	}
 
-	/**********************************************************    
-	 * Get and Set Methods implementation                          
+	/**********************************************************
+	 * Get and Set Methods implementation
 	 ***********************************************************/
 	/**
 	 * Returns the coverage w.r.t. all effective test
@@ -189,12 +212,12 @@ public class TestCase {
 	}
 
 	/**
-	 * Returns the coverage of a given path in a given 
+	 * Returns the coverage of a given path in a given
 	 * HostProbedNode (pdn), considering a given criterion.
 	 *
 	 * The coverage is the number of required elements covered by
 	 * the corresponding path by the total number of covered requirements
-	 * by this test case, i.e., how much of the covered requirements 
+	 * by this test case, i.e., how much of the covered requirements
 	 * of a given test case is covered by this particular path.
 	 */
 	public Coverage getTestCaseCoverageByPath(
@@ -215,7 +238,7 @@ public class TestCase {
 	/**
 	 * This method update the coverage w.r.t this this test case.
 	 * A test case can be composed by several paths... Each path has a single
-	 * name and is stored in a set (pathSet) when this test case is added 
+	 * name and is stored in a set (pathSet) when this test case is added
 	 * to a given method ({@link ClassMethod#updateClassMethodCoverage}).
 	 *
 	 */
@@ -257,7 +280,7 @@ public class TestCase {
 			for (int i = 0; i < Criterion.NUM_CRITERIA; i++) {
 				testCaseCoverage[i].setNumberOfCovered(totalCovered[i]);
 			}
-		//} 
+		//}
 		//else {
 		//	System.out.println("IGNORED TEST CASE: " + label);
 		//}
