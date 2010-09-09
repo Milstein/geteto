@@ -1,0 +1,94 @@
+#!/bin/bash
+
+# ------------------------------------------------------------------------------
+# Author : Auri Vicenzi, Felipe Besson
+# Date: 04.01.2009
+# ------------------------------------------------------------------------------
+# Function : Execute the test in instrumented classes
+# ------------------------------------------------------------------------------
+# version 1.0 : JaBUTi - Execute
+# ------------------------------------------------------------------------------
+
+# Variables 
+
+msg_usage="
+  Usage : $(basename "$0") -cfg script_name
+
+  OPTIONS :
+      -cfg           Configuration file
+      -h, --help     Show this message and exit
+  "
+
+# Functions
+
+#############################################################
+# Verify if JABUTI_HOME is defined correctly
+#############################################################
+jabutiHome(){
+if [ -s "./jabuti-release/$JABUTI" ]
+then
+  export BATCH_MODE=""
+else
+  echo "usage: JABUTI"
+  echo "$JABUTI: not such file or directory "
+  exit 0
+fi
+}
+
+
+
+#############################################################
+# Execute tests
+#############################################################
+executeTests(){
+cd $TEST_SCRIPT
+$TEST_EXEC_CMD
+}
+
+
+
+#############################################################
+#########################  MAIN  ############################
+#############################################################
+
+
+#Collect user arguments
+
+while [ -n "$1" ]
+do
+   case "$1" in
+
+   -h | --help)
+	echo "$msg_usage"
+        exit 0
+   ;;
+
+   -cfg) if [ -e "$2" ]
+          then
+	   source "$2"
+          else
+	   echo "usage: -cfg"
+           echo "$2: not such file or directory"
+           exit 0 
+         fi
+    break;;
+
+   --) shift
+       break;;
+
+   *) echo "$1 is not an option"
+   exit 0;;
+   esac
+   shift
+done
+
+if [ $# -ne 2 ]
+then
+  echo "Usage : jabuti-execute -cfg <script_name>"
+  exit 0
+fi
+
+# Call Functions
+jabutiHome
+executeTests
+echo "end"

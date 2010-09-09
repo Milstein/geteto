@@ -1,0 +1,10 @@
+SELECT FT.VALUE as value FROM FT_DIRECT_METRIC FT
+WHERE
+FT.RESOURCE = $P{ParKpiResource} 
+AND FT.METRIC = (SELECT model.kpi_model_cd
+FROM SBI_KPI_MODEL_INST model_inst, SBI_KPI_MODEL model
+WHERE model_inst.kpi_model_inst = $P{ParModelInstance}
+AND model_inst.kpi_model_id = model.kpi_model_id)
+AND (FT.BEGIN_TIME <= str_to_date($P{ParKpiDate},'%d/%m/%Y %H:%i:%s')
+AND (str_to_date($P{ParKpiDate},'%d/%m/%Y %H:%i:%s') < FT.END_TIME
+or FT.END_TIME is null));

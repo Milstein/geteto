@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 27-ago-2009 10.54.02 by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping>
+    <class name="it.eng.spago4q.metadata.QpsProjectDetail" table="QPS_PROJECT_DETAIL" >
+        <id name="prjDetailId" type="java.lang.Integer">
+            <column name="PRJ_DETAIL_ID" />
+            <generator class="native" >
+            	<param name="sequence">qps_project_detail_seq</param>
+            </generator>
+        </id>
+        <property name="code" type="string">
+            <column name="CODE" length="50" not-null="true" unique="true" />
+        </property>
+        <property name="detail" type="string">
+            <column name="DETAIL" length="65535" />
+        </property>
+    </class>
+</hibernate-mapping>

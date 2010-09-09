@@ -1,0 +1,42 @@
+<GenericItems>
+   <GenericItem>
+      <resource>Checkstyle-5.0R2505</resource>
+      <metric>All-Nodes-ei</metric>
+      <value> 0.32</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>Checkstyle-5.0R2505</resource>
+      <metric>All-Nodes-ed</metric>
+      <value> 0.00</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>Checkstyle-5.0R2505</resource>
+      <metric>All-Edges-ei</metric>
+      <value> 0.29</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>Checkstyle-5.0R2505</resource>
+      <metric>All-Edges-ed</metric>
+      <value> 0.00</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>Checkstyle-5.0R2505</resource>
+      <metric>All-Uses-ei</metric>
+      <value> 0.29</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>Checkstyle-5.0R2505</resource>
+      <metric>All-Uses-ed</metric>
+      <value> 0.00</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>Checkstyle-5.0R2505</resource>
+      <metric>All-Pot-Uses-ei</metric>
+      <value> 0.28</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>Checkstyle-5.0R2505</resource>
+      <metric>All-Pot-Uses-ed</metric>
+      <value> 0.00</value>
+   </GenericItem>
+</GenericItems>

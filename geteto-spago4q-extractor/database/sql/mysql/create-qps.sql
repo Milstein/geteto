@@ -1,0 +1,6 @@
+create table `QPS_PROJECT_DETAIL` (
+	`PRJ_DETAIL_ID` Int NOT NULL AUTO_INCREMENT,
+	`CODE` Varchar(50) NOT NULL,
+	`DETAIL` TEXT ,
+	UNIQUE (`CODE`),
+ Primary Key (`PRJ_DETAIL_ID`)) ENGINE = InnoDB;

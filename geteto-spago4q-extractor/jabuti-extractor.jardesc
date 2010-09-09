@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="WINDOWS-1252" standalone="no"?>
+<jardesc>
+    <jar path="spago4q-qualipso/jabuti-extractor.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/spago4q-qualipso/jabuti-extractor.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="true" mainClassHandleIdentifier="=spago4q-qualipso/src&lt;it.eng.spago4q.extractors.qualipso{JabutiAnalysisExtractor.java[JabutiAnalysisExtractor" manifestLocation="/spago4q-qualipso/MANIFEST.MF" manifestVersion="1.0" reuseManifest="false" saveManifest="true" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <file path="/spago4q-qualipso/sdkQPSProjectManager.wsdl"/>
+        <file path="/spago4q-qualipso/.classpath"/>
+        <file path="/spago4q-qualipso/.project"/>
+        <file path="/spago4q-qualipso/build.xml"/>
+        <file path="/spago4q-qualipso/hibernate.reveng.xml"/>
+        <javaElement handleIdentifier="=spago4q-qualipso/src"/>
+        <file path="/spago4q-qualipso/MANIFEST.MF"/>
+        <file path="/spago4q-qualipso/._.DS_Store"/>
+    </selectedElements>
+    <fatjar builder="org.eclipse.jdt.ui.plain_jar_builder" launchConfig=""/>
+</jardesc>

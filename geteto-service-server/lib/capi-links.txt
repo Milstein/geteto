@@ -1,0 +1,10 @@
+Página oficial não existe mais:
+
+http://www.graphbuilder.com/
+
+Javadoc de parte da api:
+
+http://svn.atlassian.com/svn/public/contrib/confluence/math-plugin/trunk/mesp/api/index.html
+
+
+http://forum.java.sun.com/thread.jspa?threadID=670133&messageID=3919979

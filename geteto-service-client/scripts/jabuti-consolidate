@@ -1,0 +1,379 @@
+#!/bin/bash
+
+# ------------------------------------------------------------------------------
+# Author : Auri Vicenzi, Felipe Besson
+# Date: 04.01.2009
+# ------------------------------------------------------------------------------
+# Function : Generate test-session and XML Spago file
+# ------------------------------------------------------------------------------
+# version 1.0 : JaBUTi - Consolidate
+# ------------------------------------------------------------------------------
+
+# Variables 
+
+msg_usage="
+  Usage : $(basename "$0") -cfg script_name
+
+  OPTIONS :
+      -cfg           Configuration file
+      -h, --help     Show this message and exit
+  "
+
+# Functions
+
+#############################################################
+# Verify if JABUTI_HOME is defined correctly
+#############################################################
+jabutiHome(){
+if [ -s "./jabuti-release/$JABUTI" ]
+then
+  export JABUTI_HOME="./jabuti-release/$JABUTI"
+  export BATCH_MODE=""
+  export CLASSPATH=.:$(pwd .)"/jabuti-release/$JABUTI":$(pwd .)"/lib/bcel-5.2.jar":$ORIG_DIR
+
+else
+  echo "JABUTI"
+  echo "$JABUTI: not such file or directory "
+  exit 0
+fi
+}
+
+
+
+#############################################################
+# Creating Test-session
+#############################################################
+testSession(){
+
+cd "$ORIG_DIR/../jbt-files"
+
+total=`wc classes.txt | awk '{print $1}'`
+cont=1
+
+# Creating a test-session for each class
+while [ $cont -le $total ]; do
+  head -$cont classes.txt | tail -1 > current-class.txt
+
+  # Create test-session
+  java -Xmx512M -cp $CLASSPATH br.jabuti.cmdtool.CreateProject -b `cat current-class.txt` -p `cat current-class.txt`.jbt -i current-class.txt
+
+  if [ -s "$TEST_SCRIPT_OUT/`cat current-class.txt`.trc" ]
+  then
+    # Copying trace file
+    cp "$TEST_SCRIPT_OUT/"`cat current-class.txt`.trc .
+
+    # Importing test cases
+    java -Xmx512M -cp $CLASSPATH br.jabuti.cmdtool.ImportTestCase -p `cat current-class.txt`.jbt
+  fi
+
+  if [ -s "`cat current-class.txt`.jbt" ]
+  then
+    echo ""	
+    echo "Working with class: `cat current-class.txt` "
+    # Generating report by criterion
+    java -Xmx512M -cp $CLASSPATH br.jabuti.cmdtool.JabutiReport -pr -p `cat current-class.txt`.jbt -o `cat current-class.txt`-report-by-criterion.xml
+
+    # Generating report by class
+    java -Xmx512M -cp $CLASSPATH br.jabuti.cmdtool.JabutiReport -cl -p `cat current-class.txt`.jbt -o `cat current-class.txt`-report-by-class.xml
+
+    # Generating report by method
+    java -Xmx512M -cp $CLASSPATH br.jabuti.cmdtool.JabutiReport -me -p `cat current-class.txt`.jbt -o `cat current-class.txt`-report-by-method.xml
+
+    # Generating report of metrics
+    java -cp $CLASSPATH br.jabuti.metrics.Metrics `cat current-class.txt` "." > `cat current-class.txt`-metrics.txt
+
+    # Generating full report
+    java -Xmx512M -cp $CLASSPATH br.jabuti.cmdtool.JabutiReport -all -p `cat current-class.txt`.jbt -o `cat current-class.txt`-full-report.xml
+  fi
+  let cont=cont+1
+done
+
+rm current-class.txt
+}
+
+
+ 
+############################################################# 
+# Generate xml Spago4Q file
+#############################################################
+spago4QFile(){
+  prj="$SPAGO_ID"
+
+  if [ -s "$prj-Spago4Q.xml" ]
+  then
+   rm $prj-Spago4Q.xml
+  fi
+  
+  if [ -s "empty-report-by-criterion.txt" ]
+  then
+   rm empty-report-by-criterion.txt
+  fi
+
+  # Actual and total coverage of All-Nodes requirements criterion
+  COVANEI=0
+  TOTANEI=0
+
+  COVANED=0
+  TOTANED=0
+
+ # Actual and total coverage of All-Edges requirements criterion
+  COVAEEI=0
+  TOTAEEI=0
+
+  COVAEED=0
+  TOTAEED=0
+
+ # Actual and total coverage of All-Uses requirements criterion
+  COVAUEI=0
+  TOTAUEI=0
+
+  COVAUED=0
+  TOTAUED=0
+
+ # Actual and total coverage of All-Pot-Uses requirements criterion
+  COVAPUEI=0
+  TOTAPUEI=0
+
+  COVAPUED=0
+  TOTAPUED=0
+
+  total=`wc classes.txt | awk '{print $1}'`
+  cont=1
+  contMissing=0
+
+  echo Analyzing $total testing reports
+
+  # Creating test-sessions
+  while [ $cont -le $total ]; do
+
+    head -$cont classes.txt | tail -1 > current-class.txt
+
+    if [ -s `cat current-class.txt`-report-by-criterion.xml ]
+    then
+      echo -n .
+
+      # All-Nodes-ei
+      grep "All-Nodes-ei covered" `cat current-class.txt`-report-by-criterion.xml > tmp.txt
+      tmp=`awk 'BEGIN{FS="\""};{printf("%d",$2)}' tmp.txt`
+      let COVANEI=COVANEI+tmp
+
+      tmp=`awk 'BEGIN{FS="\""};{printf("%d",$6)}' tmp.txt`
+      let TOTANEI=TOTANEI+tmp
+
+      # All-Nodes-ed
+      grep "All-Nodes-ed covered" `cat current-class.txt`-report-by-criterion.xml > tmp.txt
+      tmp=`awk 'BEGIN{FS="\""};{printf("%d",$2)}' tmp.txt`
+      let COVANED=COVANED+tmp
+      
+      tmp=`awk 'BEGIN{FS="\""};{printf("%d",$6)}' tmp.txt`
+      let TOTANED=TOTANED+tmp
+
+      # All-Edges-ei
+      grep "All-Edges-ei covered" `cat current-class.txt`-report-by-criterion.xml > tmp.txt
+      tmp=`awk 'BEGIN{FS="\""};{printf("%d",$2)}' tmp.txt`
+      let COVAEEI=COVAEEI+tmp
+
+      tmp=`awk 'BEGIN{FS="\""};{printf("%d",$6)}' tmp.txt`
+      let TOTAEEI=TOTAEEI+tmp
+
+      # All-Edges-ed
+      grep "All-Edges-ed covered" `cat current-class.txt`-report-by-criterion.xml > tmp.txt
+      tmp=`awk 'BEGIN{FS="\""};{printf("%d",$2)}' tmp.txt`
+      let COVAEED=COVAEED+tmp
+
+      tmp=`awk 'BEGIN{FS="\""};{printf("%d",$6)}' tmp.txt`
+      let TOTAEED=TOTAEED+tmp
+
+      # All-Uses-ei
+      grep "All-Uses-ei covered" `cat current-class.txt`-report-by-criterion.xml > tmp.txt
+      tmp=`awk 'BEGIN{FS="\""};{printf("%d",$2)}' tmp.txt`
+      let COVAUEI=COVAUEI+tmp
+
+      tmp=`awk 'BEGIN{FS="\""};{printf("%d",$6)}' tmp.txt`
+      let TOTAUEI=TOTAUEI+tmp
+
+      # All-Uses-ed
+      grep "All-Uses-ed covered" `cat current-class.txt`-report-by-criterion.xml > tmp.txt
+      tmp=`awk 'BEGIN{FS="\""};{printf("%d",$2)}' tmp.txt`
+      let COVAUED=COVAUED+tmp
+
+      tmp=`awk 'BEGIN{FS="\""};{printf("%d",$6)}' tmp.txt`
+      let TOTAUED=TOTAUED+tmp
+
+      # All-Pot-Uses-ei
+      grep "All-Pot-Uses-ei covered" `cat current-class.txt`-report-by-criterion.xml > tmp.txt
+      tmp=`awk 'BEGIN{FS="\""};{printf("%d",$2)}' tmp.txt`
+      let COVAPUEI=COVAPUEI+tmp
+
+      tmp=`awk 'BEGIN{FS="\""};{printf("%d",$6)}' tmp.txt`
+      let TOTAPUEI=TOTAPUEI+tmp
+
+      # All-Pot-Uses-ed
+      grep "All-Pot-Uses-ed covered" `cat current-class.txt`-report-by-criterion.xml > tmp.txt
+      tmp=`awk 'BEGIN{FS="\""};{printf("%d",$2)}' tmp.txt`
+      let COVAPUED=COVAPUED+tmp
+
+      tmp=`awk 'BEGIN{FS="\""};{printf("%d",$6)}' tmp.txt`
+      let TOTAPUED=TOTAPUED+tmp
+    else
+      echo -n X
+      echo `cat current-class.txt` >> empty-report-by-criterion.txt
+      let contMissing=contMissing+1
+    fi
+    
+    let cont=cont+1
+  done
+
+  echo ""
+  echo ""
+  echo "Missing report of $contMissing out of $total classes"
+  echo ""
+
+  let total=total-contMissing
+
+  echo "Computaded data with respect to $total classes"
+  echo ""
+  echo "Covered All-Nodes-ei: $COVANEI"
+  echo "Total   All-Nodes-ei: $TOTANEI"
+  COVANEI=`echo $COVANEI $TOTANEI | awk '{if ($2 > 0)printf("%5.2f",$1*100/$2);else print "0.00"}'`
+  echo "Porcentagem All-Nodes-ei: $COVANEI" 
+
+  echo ""
+  echo "Covered All-Nodes-ed: $COVANED"
+  echo "Total   All-Nodes-ed: $TOTANED"
+  COVANED=`echo $COVANED $TOTANED | awk '{if ($2 > 0)printf("%5.2f",$1*100/$2);else print "0.00"}'`
+  echo "Porcentagem All-Nodes-ed: $COVANED" 
+
+  echo ""
+  echo "Covered All-Edges-ei: $COVAEEI"
+  echo "Total   All-Edges-ei: $TOTAEEI"
+  COVAEEI=`echo $COVAEEI $TOTAEEI | awk '{if ($2 > 0)printf("%5.2f",$1*100/$2);else print "0.00"}'`
+  echo "Porcentagem All-Edged-ei: $COVAEEI" 
+
+  echo ""
+  echo "Covered All-Edges-ed: $COVAEED"
+  echo "Total   All-Edges-ed: $TOTAEED"
+  COVAEED=`echo $COVAEED $TOTAEED | awk '{if ($2 > 0)printf("%5.2f",$1*100/$2);else print "0.00"}'`
+  echo "Porcentagem All-Edges-ed: $COVAEED" 
+
+  echo ""
+  echo "Covered All-Uses-ei: $COVAUEI"
+  echo "Total   All-Uses-ei: $TOTAUEI"
+  COVAUEI=`echo $COVAUEI $TOTAUEI | awk '{if ($2 > 0)printf("%5.2f",$1*100/$2);else print "0.00"}'`
+  echo "Porcentagem All-Uses-ei: $COVAUEI" 
+
+  echo ""
+  echo "Covered All-Uses-ed: $COVAUED"
+  echo "Total   All-Uses-ed: $TOTAUED"
+  COVAUED=`echo $COVAUED $TOTAUED | awk '{if ($2 > 0)printf("%5.2f",$1*100/$2);else print "0.00"}'`
+  echo "Porcentagem All-Uses-ed: $COVAUED" 
+
+  echo ""
+  echo "Covered All-Pot-Uses-ei: $COVAPUEI"
+  echo "Total   All-PotUses-ei: $TOTAPUEI"
+  COVAPUEI=`echo $COVAPUEI $TOTAPUEI | awk '{if ($2 > 0)printf("%5.2f",$1*100/$2);else print "0.00"}'`
+  echo "Porcentagem All-Pot-Uses-ei: $COVAPUEI" 
+
+  echo ""
+  echo "Covered All-Pot-Uses-ed: $COVAPUED"
+  echo "Total   All-pot-Uses-ed: $TOTAPUED"
+  COVAPUED=`echo $COVAPUED $TOTAPUED | awk '{if ($2 > 0)printf("%5.2f",$1*100/$2);else print "0.00"}'`
+  echo "Porcentagem All-Pot-Uses-ed: $COVAPUED" 
+
+
+  echo "<GenericItems>" > $prj-Spago4Q.xml
+  echo "   <GenericItem>" >> $prj-Spago4Q.xml
+  echo "      <resource>$prj</resource>" >> $prj-Spago4Q.xml
+  echo "      <metric>All-Nodes-ei</metric>" >> $prj-Spago4Q.xml 
+  echo "      <value>$COVANEI</value>" >> $prj-Spago4Q.xml
+  echo "   </GenericItem>" >> $prj-Spago4Q.xml
+  echo "   <GenericItem>" >> $prj-Spago4Q.xml
+  echo "      <resource>$prj</resource>" >> $prj-Spago4Q.xml
+  echo "      <metric>All-Nodes-ed</metric>" >> $prj-Spago4Q.xml
+  echo "      <value>$COVANED</value>" >> $prj-Spago4Q.xml
+  echo "   </GenericItem>" >> $prj-Spago4Q.xml
+  echo "   <GenericItem>"  >> $prj-Spago4Q.xml
+  echo "      <resource>$prj</resource>" >> $prj-Spago4Q.xml
+  echo "      <metric>All-Edges-ei</metric>" >> $prj-Spago4Q.xml
+  echo "      <value>$COVAEEI</value>" >> $prj-Spago4Q.xml
+  echo "   </GenericItem>" >> $prj-Spago4Q.xml  
+  echo "   <GenericItem>" >> $prj-Spago4Q.xml
+  echo "      <resource>$prj</resource>" >> $prj-Spago4Q.xml
+  echo "      <metric>All-Edges-ed</metric>" >> $prj-Spago4Q.xml
+  echo "      <value>$COVAEED</value>" >> $prj-Spago4Q.xml
+  echo "   </GenericItem>" >> $prj-Spago4Q.xml
+  echo "   <GenericItem>" >> $prj-Spago4Q.xml
+  echo "      <resource>$prj</resource>"  >> $prj-Spago4Q.xml
+  echo "      <metric>All-Uses-ei</metric>"  >> $prj-Spago4Q.xml
+  echo "      <value>$COVAUEI</value>" >> $prj-Spago4Q.xml
+  echo "   </GenericItem>" >> $prj-Spago4Q.xml  
+  echo "   <GenericItem>" >> $prj-Spago4Q.xml
+  echo "      <resource>$prj</resource>" >> $prj-Spago4Q.xml
+  echo "      <metric>All-Uses-ed</metric>" >> $prj-Spago4Q.xml
+  echo "      <value>$COVAUED</value>" >> $prj-Spago4Q.xml
+  echo "   </GenericItem>" >> $prj-Spago4Q.xml  
+  echo "   <GenericItem>" >> $prj-Spago4Q.xml
+  echo "      <resource>$prj</resource>" >> $prj-Spago4Q.xml
+  echo "      <metric>All-Pot-Uses-ei</metric>" >> $prj-Spago4Q.xml
+  echo "      <value>$COVAPUEI</value>" >> $prj-Spago4Q.xml
+  echo "   </GenericItem>" >> $prj-Spago4Q.xml  
+  echo "   <GenericItem>" >> $prj-Spago4Q.xml
+  echo "      <resource>$prj</resource>" >> $prj-Spago4Q.xml
+  echo "      <metric>All-Pot-Uses-ed</metric>" >> $prj-Spago4Q.xml
+  echo "      <value>$COVAPUED</value>" >> $prj-Spago4Q.xml
+  echo "   </GenericItem>" >> $prj-Spago4Q.xml  
+  echo "</GenericItems>" >> $prj-Spago4Q.xml
+  echo ""
+
+  cp "$prj-Spago4Q.xml" "$SPAGO_DIR/"
+  echo "Execution finished"
+}
+
+
+
+#############################################################
+#########################  MAIN  ############################
+#############################################################
+
+
+#Collecting user arguments
+
+while [ -n "$1" ]
+do
+   case "$1" in
+
+   -h | --help)
+	echo "$msg_usage"
+        exit 0
+   ;;
+
+   -cfg) if [ -e $2 ]
+          then
+	   source "$2"
+          else
+	   echo "usage: -cfg"
+           echo "$2: not such file or directory"
+           exit 0 
+         fi
+    break;;
+
+   --) shift
+       break;;
+
+   *) echo "$1 is not an option"
+     exit 0;;
+   esac
+   shift
+done
+
+if [ $# -ne "2" ]
+then
+  echo "Usage : jabuti-consolidate -cfg <script_name>"
+  exit 0
+fi
+
+# Calling Functions
+jabutiHome
+testSession
+spago4QFile
+echo "end"

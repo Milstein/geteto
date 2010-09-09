@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="urn:qpsprojectmanager" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="urn:qpsprojectmanager" xmlns:intf="urn:qpsprojectmanager" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
+
+   <wsdl:message name="addProjectRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+      <wsdl:part name="in1" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteProjectRequest">
+
+      <wsdl:part name="in0" type="soapenc:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="deleteProjectResponse">
+
+      <wsdl:part name="deleteProjectReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="addProjectResponse">
+
+      <wsdl:part name="addProjectReturn" type="xsd:boolean"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="QPSProjectManager">
+
+      <wsdl:operation name="addProject" parameterOrder="in0 in1">
+
+         <wsdl:input message="impl:addProjectRequest" name="addProjectRequest"/>
+
+         <wsdl:output message="impl:addProjectResponse" name="addProjectResponse"/>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteProject" parameterOrder="in0">
+
+         <wsdl:input message="impl:deleteProjectRequest" name="deleteProjectRequest"/>
+
+         <wsdl:output message="impl:deleteProjectResponse" name="deleteProjectResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="QPSProjectManagerSoapBinding" type="impl:QPSProjectManager">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="addProject">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="addProjectRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:qpsprojectmanager" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="addProjectResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:qpsprojectmanager" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+      <wsdl:operation name="deleteProject">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="deleteProjectRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:qpsprojectmanager" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="deleteProjectResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="urn:qpsprojectmanager" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="QPSProjectManagerService">
+
+      <wsdl:port binding="impl:QPSProjectManagerSoapBinding" name="QPSProjectManager">
+
+         <wsdlsoap:address location="http://localhost:8080/SpagoBI/sdk/QPSProjectManager"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

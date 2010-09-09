@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Template schemaLocation="http://morfeo-project.org/2007/Template">
+	<!-- Meta tags define gadgets properties -->
+	<Catalog.ResourceDescription>
+		<Vendor>ICMC - USP</Vendor>
+		<Name>JaBUTiService Gadget - Query</Name>
+		<Version>1.0</Version>
+		<Author>Andre Takeshi Endo</Author>
+		<Mail>aendo@icmc.usp.br</Mail>
+		<Description>A gadget to access the JaBUTi Service.</Description>
+		<ImageURI>http://localhost:8080/jabutiprojectSvn/jabuti.gif</ImageURI>
+		<WikiURI>http://www.labes.icmc.usp.br</WikiURI>
+	</Catalog.ResourceDescription>
+	<!-- EzWeb Gadgets Tags -->
+	<Platform.Preferences>
+	</Platform.Preferences>
+	<!-- EzWeb Gadget Persistent State -->
+	<Platform.StateProperties>
+	</Platform.StateProperties>
+	<!-- EzWeb Gadget Data Wiring -->
+	<Platform.Wiring>
+	</Platform.Wiring>
+	<Platform.Link>
+		<XHTML href="http://localhost:8080/jabutiprojectSvn/jabutiGadgetQuery.html"/>
+	</Platform.Link>
+	<Platform.Rendering width="40" height="20"/>
+</Template>

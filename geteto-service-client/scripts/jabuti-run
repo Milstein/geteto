@@ -1,0 +1,83 @@
+#!/bin/bash
+
+# ------------------------------------------------------------------------------
+# Author : Auri Vicenzi, Felipe Besson
+# Date: 04.01.2009
+# ------------------------------------------------------------------------------
+# Function : Instrument the classes
+# ------------------------------------------------------------------------------
+# version 1.0 : JaBUTi - Instrumenter
+# ------------------------------------------------------------------------------
+
+# Variables 
+
+msg_usage="
+  Usage : $(basename "$0") -cfg script_name
+
+  OPTIONS :
+      -cfg           Configuration file
+      -h, --help     Show this message and exit
+  "
+
+# Functions
+
+#############################################################
+# Run all scripts
+#############################################################
+run(){
+
+./jabuti-clean -cfg "$CONFIG_FILE"
+./jabuti-initialize -cfg "$CONFIG_FILE"
+./jabuti-instrument -cfg "$CONFIG_FILE"
+./jabuti-execute -cfg "$CONFIG_FILE"
+./jabuti-consolidate -cfg "$CONFIG_FILE"
+}
+
+
+#############################################################
+#########################  MAIN  ############################
+#############################################################
+
+
+#Collect user arguments
+
+while [ -n "$1" ]
+do
+   case "$1" in
+
+   -h | --help)
+	echo "$msg_usage"
+        exit 0
+   ;;
+
+   -cfg) if [ -e "$2" ]
+          then
+	   source "$2"
+	   CONFIG_FILE="$2"
+          else
+	   echo "usage: -cfg"
+           echo "$2: not such file or directory"
+           exit 0 
+         fi
+    break;;
+
+   --) shift
+       break;;
+
+   *) echo "$1 is not an option"
+   exit 0;;
+   esac
+   shift
+done
+
+if [ $# -ne 2 ]
+then
+  echo "Usage : jabuti-initialize -cfg <script_name>"
+  exit 0
+fi
+
+
+
+# Call Functions
+run
+exit 0

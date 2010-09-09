@@ -1,0 +1,42 @@
+<GenericItems>
+   <GenericItem>
+      <resource>Log4J-1.2R791506</resource>
+      <metric>All-Nodes-ei</metric>
+      <value>34.83</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>Log4J-1.2R791506</resource>
+      <metric>All-Nodes-ed</metric>
+      <value> 5.68</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>Log4J-1.2R791506</resource>
+      <metric>All-Edges-ei</metric>
+      <value>32.16</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>Log4J-1.2R791506</resource>
+      <metric>All-Edges-ed</metric>
+      <value> 0.93</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>Log4J-1.2R791506</resource>
+      <metric>All-Uses-ei</metric>
+      <value>35.22</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>Log4J-1.2R791506</resource>
+      <metric>All-Uses-ed</metric>
+      <value> 7.15</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>Log4J-1.2R791506</resource>
+      <metric>All-Pot-Uses-ei</metric>
+      <value>32.27</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>Log4J-1.2R791506</resource>
+      <metric>All-Pot-Uses-ed</metric>
+      <value> 4.70</value>
+   </GenericItem>
+</GenericItems>

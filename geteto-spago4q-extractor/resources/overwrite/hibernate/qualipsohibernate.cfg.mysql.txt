@@ -1,0 +1,4 @@
+<!-- QUALIPSO -->
+        <mapping resource="it/eng/spago4q/metadata/mappingmysql/QpsProjectDetail.hbm.xml" />
+        <!-- QUALIPSO -->
+        <!-- end mapping -->

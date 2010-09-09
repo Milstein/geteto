@@ -1,0 +1,18 @@
+ <service name="QPSProjectManager" provider="java:RPC" style="rpc" use="encoded">
+   <requestFlow>
+   <handler type="java:org.apache.ws.axis.security.WSDoAllReceiver">
+    <parameter name="passwordCallbackClass" 
+      value="it.eng.spagobi.sdk.callbacks.ServerPWCallback"/>
+      <parameter name="action" value="UsernameToken"/>
+   </handler>
+  	  </requestFlow>
+      <parameter name="wsdlServicePort" value="QPSProjectManager"/>
+      <parameter name="className" value="it.eng.spago4q.sdk.stub.QPSProjectManagerSoapBindingSkeleton"/>
+      <parameter name="typeMappingVersion" value="1.2"/>
+      <parameter name="allowedMethods" value="*"/>
+	  <parameter name="wsdlServiceElement" value="QPSProjectManagerService"/>
+      <parameter name="wsdlTargetNamespace" value="urn:qpsprojectmanager"/>
+      <parameter name="wsdlPortType" value="QPSProjectManager"/>
+      <parameter name="scope" value="Application"/>
+  </service>
+  <!-- end services -->

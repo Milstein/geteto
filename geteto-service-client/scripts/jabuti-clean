@@ -1,0 +1,95 @@
+#!/bin/bash
+
+# ------------------------------------------------------------------------------
+# Author : Auri Vicenzi, Felipe Besson
+# Date: 04.01.2009
+# ------------------------------------------------------------------------------
+# Function : Instrument the classes
+# ------------------------------------------------------------------------------
+# version 1.0 : JaBUTi - Instrumenter
+# ------------------------------------------------------------------------------
+
+# Variables 
+
+msg_usage="
+  Usage : $(basename "$0") -cfg script_name
+
+  OPTIONS :
+      -cfg           Configuration file
+      -h, --help     Show this message and exit
+  "
+
+# Functions
+
+#############################################################
+# Restore initial state of project under testing
+#############################################################
+jabutiClean(){
+
+if [ -d "$ORIG_DIR/../jbt-files/" ]
+then
+
+# Cleaning Jabuti directory
+rm -rf $ORIG_DIR/br
+
+# Cleaning jbt-files directory
+rm -rf "$ORIG_DIR/../jbt-files/*.txt"
+rm -rf "$ORIG_DIR/../jbt-files/*.txt"
+rm -rf "$ORIG_DIR/../jbt-files/*.xml"
+rm -rf "$ORIG_DIR/../jbt-files/*.jbt"
+
+# Restore
+cp -R $ORIG_DIR/../jbt-files/* $ORIG_DIR
+
+rm -rf $ORIG_DIR/../jbt-files/
+
+echo "cleanning..."
+fi
+}
+
+
+#############################################################
+#########################  MAIN  ############################
+#############################################################
+
+
+#Collect user arguments
+
+while [ -n "$1" ]
+do
+   case "$1" in
+
+   -h | --help)
+	echo "$msg_usage"
+        exit 0
+   ;;
+
+   -cfg) if [ -e "$2" ]
+          then
+	   source "$2"
+          else
+	   echo "usage: -cfg"
+           echo "$2: not such file or directory"
+           exit 0 
+         fi
+    break;;
+
+   --) shift
+       break;;
+
+   *) echo "$1 is not an option"
+   exit 0;;
+   esac
+   shift
+done
+
+if [ $# -ne 2 ]
+then
+  echo "Usage : jabuti-initialize -cfg <script_name>"
+  exit 0
+fi
+
+
+
+# Call Functions
+jabutiClean

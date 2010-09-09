@@ -1,0 +1,95 @@
+<project name="deploy_spago4q_qualipso" default="copy_resources" basedir=".">
+
+	<property file="../../../spago4q/repository/software/trunk/spago4q/spago4q.properties"/>
+
+	<property name="build.dir" location="build" />
+	<property name="build.prod.dir" location="${build.dir}/prod" />
+	<property name="src.dir" location="src" />
+	<property name="test.dir" location="test" />
+	<property name="vendor.lib.dir" location="lib" />
+	<property name="appName" value="spago4q-qualipso" />
+	
+	<property name="local.resources" location="resources/" />
+	<property name="local.resources.overwrite" location="${local.resources}/overwrite" />
+	<property name="local.resources.overwrite.hibernate" location="${local.resources.overwrite}/hibernate" />
+	<property name="local.resources.overwrite.wsdd" location="${local.resources.overwrite}/wsdd" />
+	
+	<property name="server.location" location="${webconteiner.dir}/webapps/" />
+	<property name="server.web-content" location="${server.location}/SpagoBI" />
+	<property name="server.classes" location="${server.web-content}/WEB-INF/classes/" />
+	<property name="server.web-inf.lib" location="${server.web-content}/WEB-INF/lib" />
+	
+
+	<path id="prod.classpath">
+		<pathelement location="${build.prod.dir}" />
+		<fileset dir="${vendor.lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+	
+	<target name="prepare">
+		<mkdir dir="${build.prod.dir}" />
+	</target>
+
+	<target name="compile" depends="prepare">
+		<javac srcdir="${src.dir}" destdir="${build.prod.dir}" debug="true" debuglevel="lines,vars,source">
+			<classpath refid="prod.classpath" />
+		</javac>
+	</target>
+	
+	<target name="jar" depends="compile">
+		<jar destfile="${local.jar}/${appName}.jar" compress="true">
+			<fileset dir="${build.prod.dir}">
+				<include name="**/*.class" />
+			</fileset>
+			<fileset dir="${src.dir}">
+				<include name="**/*.hbm.xml" />
+				<include name="**/*.MF" />
+				<include name="**/*.properties" />
+			</fileset>
+		</jar>
+	</target>
+	
+	<target name="modify_hibernate_cfg">
+		<!-- mysql -->
+		<loadfile property="to.include"
+	      	srcFile="${local.resources.overwrite.hibernate}\qualipsohibernate.cfg.mysql.txt"/>
+		      		  
+		<replaceregexp file="${server.classes}/hibernate.cfg.mysql.xml"
+			match="\x3c!-- end mapping -->" replace="@@qualipsomapping@@"
+			byline="true"/>
+		
+		<replace file="${server.classes}/hibernate.cfg.mysql.xml" token="@@qualipsomapping@@"
+			value="${to.include}"/>
+	</target>
+	
+	<target name="modify_service-config">
+		<loadfile property="to.include2"
+	      	srcFile="${local.resources.overwrite.wsdd}/server-conf.wsdd.txt"/>
+		      		  
+		<replaceregexp file="${server.web-content}/WEB-INF/server-config.wsdd"
+			match="\x3c!-- end services -->" replace="@@qualipsomapping@@"
+			byline="true"/>
+		
+		<replace file="${server.web-content}/WEB-INF/server-config.wsdd" token="@@qualipsomapping@@"
+			value="${to.include2}"/>
+	</target>
+
+	
+	
+	<target name="copy_jar" depends="jar">
+			<copy todir="${server.web-inf.lib}" overwrite="true">
+			<fileset dir="${local.jar}">
+				<include name="**/${appName}.jar" />
+			</fileset>
+			</copy>
+	</target>
+	
+	<target name="clean">
+		<delete dir="${build.dir}" />
+		<delete file="${local.jar}/${appName}.jar" />
+	</target>
+	
+	<target name="copy_resources" depends="copy_jar, modify_hibernate_cfg,modify_service-config" />
+	
+</project>

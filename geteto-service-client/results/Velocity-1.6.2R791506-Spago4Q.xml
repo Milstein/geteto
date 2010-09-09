@@ -1,0 +1,42 @@
+<GenericItems>
+   <GenericItem>
+      <resource>Velocity-1.6.2R791506</resource>
+      <metric>All-Nodes-ei</metric>
+      <value>64.65</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>Velocity-1.6.2R791506</resource>
+      <metric>All-Nodes-ed</metric>
+      <value>21.67</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>Velocity-1.6.2R791506</resource>
+      <metric>All-Edges-ei</metric>
+      <value>57.67</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>Velocity-1.6.2R791506</resource>
+      <metric>All-Edges-ed</metric>
+      <value> 4.34</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>Velocity-1.6.2R791506</resource>
+      <metric>All-Uses-ei</metric>
+      <value>59.33</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>Velocity-1.6.2R791506</resource>
+      <metric>All-Uses-ed</metric>
+      <value>19.62</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>Velocity-1.6.2R791506</resource>
+      <metric>All-Pot-Uses-ei</metric>
+      <value>54.83</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>Velocity-1.6.2R791506</resource>
+      <metric>All-Pot-Uses-ed</metric>
+      <value>16.83</value>
+   </GenericItem>
+</GenericItems>

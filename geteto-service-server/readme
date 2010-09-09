@@ -1,0 +1,15 @@
+1. Setup the database:
+	a. create database jabutiservice;
+	b. grant all on jabutiservice.* to 'jabutiservice'@'localhost' identified by 'jabutiservice';
+	c. flush privileges;
+2. Run the database script 'jabutiservice.sql':
+	a. mysql -u root -p -D jabutiservice < jabutiservice.sql
+3. Deploy to Apache Tomcat v6.0
+4. Edit the 'src/jabuti.properties' file:
+	a. Change the first parts of the JABUTI_TOMCAT_PROJECT_HOME to point to your workspace
+	b. Choose a dir for Jabuti-WS persistence; this is where testing project files will be stored.
+5. Start Tomcat. Three things should write OK:
+	a. Database connection: OK
+	b. Persistence directory: OK
+	c. Tomcat project directory: OK
+6. If one of these went wrong, check the class "br...config.TestConfiguration.java".

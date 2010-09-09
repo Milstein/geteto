@@ -1,0 +1,338 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  <title>JaBUTiGadgetQuery</title>
+<script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"></script>
+<script language="javascript" src="http://localhost:8080/jabutiprojectSvn/ajaxupload.js"></script>
+<script>
+<!--
+//--------------------------------------------------------------
+function submitForm()
+{	
+	var projname = document.forms[0].projname.value;
+	var projfile = document.forms[0].file.value;
+	var projclasses = document.forms[0].classes.value;
+	
+	var check = true;
+	// do checks...
+	if (projname == '') {
+		alert('Project name');
+		check = false;
+	}	
+	else if (projfile == '') {
+		alert('Project file');
+		check = false;
+	}
+	else if (projclasses == '') {
+		alert('Project classes');
+		check = false;
+	}
+
+	if(check == true)
+	{
+		// check ajaxupload.js
+		AsyncUpload.submitForm(document.getElementById('CreateProjectForm'), startCallback, submitCreateDocument);
+		document.getElementById('CreateProjectForm').submit();
+	}
+}
+
+function startCallback()
+{
+	//alert('startCallback');
+	return true;
+}
+
+function pausecomp(millis)
+{
+	var date = new Date();
+	var curDate = null;
+
+	do { 
+		curDate = new Date(); 
+	}
+	while(curDate-date < millis);
+} 
+
+function submitCreateDocument()
+{
+	var frameHTML = document.getElementById('frameID').contentDocument;
+	if(frameHTML.contentDocument == null||frameHTML.contentDocument=='undefined')
+	{
+		pausecomp(1000);		
+	}
+	var responseCont = '';
+	if(frameHTML.getElementsByTagName("div")[0]!=null)
+	{
+		responseCont = frameHTML.getElementsByTagName("div")[0].innerHTML;
+	}
+		
+	if(responseCont!=null&&responseCont!='')
+	{
+		var projname = document.forms[0].projname.value;
+
+		/* BEGIN CONFIGURATION PARAMETERS */
+		var params = ""; 
+		var fullPathURL = "http://localhost:8080/jabutiprojectSvn/services/JaBUTiService1_0";//service url
+		var methodName = "createProject"; //wsdl operation name
+		var param1Name1 = "projectName";
+		var param2Name1 = "projectFile";
+		var aFullNSurl = "http://service.jabuti.usp.icmc.br";
+		var uri = "http://localhost:8087/ServletQualipsoSoap2/QualipsoServletClass"; 
+		params += "FullPathURL=" + fullPathURL;
+		params += "&" + "aFullNSurl=" + aFullNSurl;
+		params += "&" + "MethodName=" + methodName;
+		params += "&" + "Param1Name1=" + param1Name1;
+		params += "&" + "Param1Name1Value=" + projname;
+		params += "&" + "Param2Name1=" + param2Name1;
+		params += "&" + "Param2Name1Value=" + responseCont;
+
+		EzWebAPI.send_post(uri, params, document.getElementById('CreateProjectForm'), successHandler, errorHandler);
+	}
+}
+
+function constructData(xmlDoc)
+{
+	var projectid = xmlDoc.getElementsByTagName('ns:return').item(0);
+	document.getElementById('cp_output').value = 'project id: ' + projectid.childNodes[0].nodeValue;
+
+	//selectClassesToInstrument
+	selectClassesToInstrument(projectid.childNodes[0].nodeValue);		
+}
+
+function selectClassesToInstrument(projectid) {
+	var projclasses = document.forms[0].classes.value;
+
+	var params = ""; 
+	var fullPathURL = "http://localhost:8080/jabutiprojectSvn/services/JaBUTiService1_0";//service url
+	var methodName = "selectClassesToInstrument"; //wsdl operation name
+	var param1Name1 = "projectId";
+	var param2Name1 = "classes";
+	var aFullNSurl = "http://service.jabuti.usp.icmc.br";
+	var uri = "http://localhost:8087/ServletQualipsoSoap2/QualipsoServletClass"; 
+	params += "FullPathURL=" + fullPathURL;
+	params += "&" + "aFullNSurl=" + aFullNSurl;
+	params += "&" + "MethodName=" + methodName;
+	params += "&" + "Param1Name1=" + param1Name1;
+	params += "&" + "Param1Name1Value=" + projectid;
+	params += "&" + "Param2Name1=" + param2Name1;
+	params += "&" + "Param2Name1Value=" + projclasses;
+
+	EzWebAPI.send_post(uri, params, document.getElementById('CreateProjectForm2'), scti_successHandler, errorHandler);		
+}
+
+function scti_successHandler(transport) {
+    try {
+    	// parse the response
+    	var xmlDoc = getParser(transport.responseText);
+    	var msg = xmlDoc.getElementsByTagName('ns:return').item(0);
+    	document.getElementById('cp_output').value += ' MSG: ' + msg.childNodes[0].nodeValue;
+    }
+    catch(ex) {
+    	showError(ex);
+    }    
+	return;
+}
+
+
+function errorHandler(transport)
+{
+	alert('An error occurred while querying the web service: ' + transport.responseText);
+	return;
+}
+
+function successHandler(transport) {
+    try {
+    	// parse the response
+    	var xmlDoc = getParser(transport.responseText);
+
+    	//handle the response
+    	constructData(xmlDoc);
+    }
+    catch(ex) {
+    	showError(ex);
+    }
+    
+	return;
+}
+
+function getParser(text)
+{
+       var xmlDoc;
+       /*
+       try //Internet Explorer
+       {
+               xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
+               xmlDoc.async="false";
+               xmlDoc.loadXML(text);
+       }catch(e)
+       {*/
+               try // Firefox, Mozilla, Opera, etc.
+               {
+                       parser = new DOMParser();
+                       xmlDoc=parser.parseFromString(text,"text/xml");
+               }catch(e)
+               {
+                       showError('Error in getParser: ' + e);
+               }
+       //}
+       return xmlDoc;
+}
+-->
+  </script>
+  
+<style>
+
+.maintb {
+	width: 750px;
+	border: 1px solid #990000;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	font-family: Verdana;
+	font-size: 12px;
+	
+}
+
+.HeaderTitle {
+	width: 750px;
+	background-color:#E9E9E9;
+	font-family: Verdana;
+	font-size: 16px;
+	color: #000000;
+	font-weight : bold;
+
+}
+
+.title {
+	background-color:#E9E9E9;
+	font-family: Verdana;
+	font-size: 14px;
+	color: #000000;
+	font-weight : bold;
+	text-align:center; 
+}
+
+.subtitle {
+	background-color:#E9E9E9;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #376CA2;
+	font-weight : bold;	
+}
+
+</style>
+  
+</head>
+<body>
+<div class="HeaderTitle">JaBUTi Gadget - Input Data</div>
+<form action="/upload.html" method="post" enctype="multipart/form-data" id="CreateProjectForm">
+  <table class="maintb">
+    <tbody>
+      <tr>
+        <td class="title" colspan="2">Creating a JaBUTi Project</td>
+      </tr>
+      <tr>
+        <td class="subtitle">Project Name:</td>
+        <td class="subtitle"><input name="projname"></td>
+      </tr>
+      <tr>
+        <td class="subtitle">Project Jar File:</td>
+        <td class="subtitle">
+          <input name="file" id="contentFile" type="file">
+        </td>
+      </tr>
+      <tr>
+        <td class="subtitle">Classes to Instrument:</td>
+        <td class="subtitle"><input name="classes" value="*"></td>
+      </tr>
+      <tr>
+        <td class="subtitle"></td>
+        <td class="subtitle"><button value="send" name="send" type="button" onclick="javascript:submitForm();">Send</button></td>
+      </tr>
+      <tr>
+        <td>Output: </td>
+        <td><input id="cp_output" name="cp_output" value="" size="60"></td>
+      </tr>
+    </tbody>
+  </table>
+</form>
+<form id="CreateProjectForm2">
+</form>
+  
+<br />
+  <table class="maintb">
+    <tbody>
+      <tr>
+        <td class="title" colspan="2">Sending test case file</td>
+      </tr>
+      <tr>
+        <td class="subtitle">Project Id:</td>
+        <td class="subtitle"><input name="projid"></td>
+      </tr>
+      <tr>
+        <td class="subtitle">Test Suite Class Name:</td>
+        <td class="subtitle"><input name="testsuitename"></td>
+      </tr>
+      <tr>
+        <td class="subtitle">Test Case Jar File:</td>
+        <td class="subtitle"><input name="testsuitefile" type="file"></td>
+      </tr>
+      <tr>
+        <td class="subtitle"></td>
+        <td class="subtitle"><button value="send" name="send" type="button" onclick="javascript:do();">Send</button></td>
+      </tr>
+      <tr>
+        <td>Output: </td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <br />
+  <table class="maintb">
+    <tbody>
+      <tr>
+        <td class="title" colspan="2">Getting the Instrumented Package</td>
+      </tr>
+      <tr>
+        <td class="subtitle">Project Id:</td>
+        <td class="subtitle"><input name="projid"></td>
+      </tr>
+      <tr>
+        <td class="subtitle"></td>
+        <td class="subtitle"><button value="send" name="send" type="button" onclick="javascript:do();">Send</button></td>
+      </tr>
+      <tr>
+        <td>Output: </td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+<br />
+  <table class="maintb">
+    <tbody>
+      <tr>
+        <td class="title" colspan="2">Sending the Trace File</td>
+      </tr>
+      <tr>
+        <td class="subtitle">Project Id:</td>
+        <td class="subtitle"><input name="projid"></td>
+      </tr>
+      <tr>
+        <td class="subtitle">Trace File:</td>
+        <td class="subtitle"><input name="tracefile" type="file"></td>
+      </tr>
+      <tr>
+        <td class="subtitle"></td>
+        <td class="subtitle"><button value="send" name="send" type="button" onclick="javascript:do();">Send</button></td>
+      </tr>
+      <tr>
+        <td>Output: </td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+</body>
+</html>

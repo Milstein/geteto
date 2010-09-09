@@ -1,0 +1,42 @@
+<GenericItems>
+   <GenericItem>
+      <resource>HttpUnit-1.7R1024</resource>
+      <metric>All-Nodes-ei</metric>
+      <value>81.08</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>HttpUnit-1.7R1024</resource>
+      <metric>All-Nodes-ed</metric>
+      <value>16.74</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>HttpUnit-1.7R1024</resource>
+      <metric>All-Edges-ei</metric>
+      <value>78.87</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>HttpUnit-1.7R1024</resource>
+      <metric>All-Edges-ed</metric>
+      <value> 6.05</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>HttpUnit-1.7R1024</resource>
+      <metric>All-Uses-ei</metric>
+      <value>77.03</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>HttpUnit-1.7R1024</resource>
+      <metric>All-Uses-ed</metric>
+      <value>21.12</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>HttpUnit-1.7R1024</resource>
+      <metric>All-Pot-Uses-ei</metric>
+      <value>74.67</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>HttpUnit-1.7R1024</resource>
+      <metric>All-Pot-Uses-ed</metric>
+      <value>18.10</value>
+   </GenericItem>
+</GenericItems>

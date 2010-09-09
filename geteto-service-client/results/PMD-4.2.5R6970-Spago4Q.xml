@@ -1,0 +1,42 @@
+<GenericItems>
+   <GenericItem>
+      <resource>PMD-4.2.5R6970</resource>
+      <metric>All-Nodes-ei</metric>
+      <value>33.67</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>PMD-4.2.5R6970</resource>
+      <metric>All-Nodes-ed</metric>
+      <value>15.60</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>PMD-4.2.5R6970</resource>
+      <metric>All-Edges-ei</metric>
+      <value>26.32</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>PMD-4.2.5R6970</resource>
+      <metric>All-Edges-ed</metric>
+      <value> 3.04</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>PMD-4.2.5R6970</resource>
+      <metric>All-Uses-ei</metric>
+      <value>20.81</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>PMD-4.2.5R6970</resource>
+      <metric>All-Uses-ed</metric>
+      <value>10.61</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>PMD-4.2.5R6970</resource>
+      <metric>All-Pot-Uses-ei</metric>
+      <value>13.52</value>
+   </GenericItem>
+   <GenericItem>
+      <resource>PMD-4.2.5R6970</resource>
+      <metric>All-Pot-Uses-ed</metric>
+      <value> 8.16</value>
+   </GenericItem>
+</GenericItems>

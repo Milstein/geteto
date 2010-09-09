@@ -12,9 +12,8 @@
 
 	<modules>
             <module>geteto-main</module>
-            <!--
-            <module>geteto-spago4q</module>
-            <module>geteto-webservice</module>
-            -->
+            <module>geteto-service-client</module>
+            <module>geteto-service-server</module>
+            <module>geteto-spago4q-extractor</module>
 	</modules>
 </project>

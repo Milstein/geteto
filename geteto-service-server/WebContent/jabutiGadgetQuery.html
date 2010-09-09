@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+  <title>JaBUTiGadgetQuery</title>
+<script language="javascript" src="/ezweb/js/EzWebAPI/EzWebAPI.js"></script>
+  <script>
+<!--
+function successHandler(transport) {
+    //alert ("success"); // to check if send_get/post is going right and successHandler is executing
+    //alert (transport); // to check if it's not null
+
+	//var res = eval( '(' + transport.responseText + ')'); 
+    //alert(transport.status);
+    //alert(transport.responseText);
+
+    try 
+    {
+    	// parse the response
+    	var xmlDoc = getParser(transport.responseText);
+
+    	//handle the response
+    	constructData(xmlDoc);
+    	
+    	// show debug
+    	//showDebug(xmlDoc);
+    }catch(ex)
+    {
+    	showError(ex);
+    }
+    
+	return;
+}
+
+function constructData(xmlDoc)
+{
+	var criteria = xmlDoc.getElementsByTagName('ns:return');
+	var critTable = document.getElementById('criteriatable');
+	//
+	
+	while(critTable.tBodies[0].rows.length > 6)
+	{	
+		var current = critTable.tBodies[0].rows[6];
+		critTable.tBodies[0].removeChild(current);		
+	}		
+	
+	for(i = 0; i < criteria.length; i++)
+	{
+		var percentage = criteria.item(i).childNodes[0].childNodes[0].nodeValue;
+		var name = criteria.item(i).childNodes[1].childNodes[0].nodeValue;
+		var coveredelems = criteria.item(i).childNodes[2].childNodes[0].nodeValue;
+		var elems = criteria.item(i).childNodes[3].childNodes[0].nodeValue;
+
+		//update table
+		var tr = document.createElement('tr');
+		var td1 = document.createElement('td');
+		td1.appendChild(document.createTextNode(name));
+		var td2 = document.createElement('td');
+		td2.appendChild(document.createTextNode(coveredelems + ' of ' + elems));
+		var td3 = document.createElement('td');
+		td3.appendChild(document.createTextNode(percentage));
+
+		tr.appendChild(td1);
+		tr.appendChild(td2);
+		tr.appendChild(td3);
+		
+		critTable.tBodies[0].appendChild(tr);			
+	}	
+
+	alert('Data were updated!');
+}
+
+
+function getParser(text)
+{
+       var xmlDoc;
+       /*
+       try //Internet Explorer
+       {
+               xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
+               xmlDoc.async="false";
+               xmlDoc.loadXML(text);
+       }catch(e)
+       {*/
+               try // Firefox, Mozilla, Opera, etc.
+               {
+                       parser = new DOMParser();
+                       xmlDoc=parser.parseFromString(text,"text/xml");
+               }catch(e)
+               {
+                       showError('Error in getParser: ' + e);
+               }
+       //}
+       return xmlDoc;
+}
+
+function errorHandler(transport)
+{
+	alert('An error occurred while querying the web service: ' + transport.responseText);
+	return;
+}   
+
+function sendRequest() {
+	//form parameters
+	var projectid = document.forms[0].projid.value;
+
+	/* BEGIN CONFIGURATION PARAMETERS */
+	var params = ""; 
+	var fullPathURL = "http://syros.eurodyn.com:9999/jabutiprojectSvn/services/JaBUTiService1_0";//service url
+	var methodName = "getCoverageByCriteria";//wsdl operation name
+	var param1Name1 = "projectId";
+	var aFullNSurl = "http://service.jabuti.usp.icmc.br";
+	var uri = "http://localhost:8087/ServletQualipsoSoap2/QualipsoServletClass"; 
+	params += "FullPathURL=" + fullPathURL;
+	params += "&" + "aFullNSurl=" + aFullNSurl;
+	params += "&" + "MethodName=" + methodName;
+	params += "&" + "Param1Name1=" + param1Name1;
+	params += "&" + "Param1Name1Value=" + projectid;
+	//uri += params;
+	//alert(uri);
+	//EzWebAPI.send_get(uri, this, successHandler, errorHandler);
+
+	// where 'thisForm' is the id of the form within you press the sendRequest
+	EzWebAPI.send_post(uri, params, document.getElementById('form1'), successHandler, errorHandler);
+	
+	return; 
+}
+-->
+  </script>
+  
+<style>
+
+.maintb {
+	width: 750px;
+	border: 1px solid #990000;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	font-family: Verdana;
+	font-size: 12px;
+	
+}
+
+.HeaderTitle {
+	width: 750px;
+	background-color:#E9E9E9;
+	font-family: Verdana;
+	font-size: 16px;
+	color: #000000;
+	font-weight : bold;
+
+}
+
+.title {
+	background-color:#E9E9E9;
+	font-family: Verdana;
+	font-size: 14px;
+	color: #000000;
+	font-weight : bold;
+	text-align:center; 
+}
+
+.subtitle {
+	background-color:#E9E9E9;
+	font-family: Verdana;
+	font-size: 12px;
+	color: #376CA2;
+	font-weight : bold;	
+	text-align:center; 
+}
+
+</style>
+  
+</head>
+<body>
+<div class="HeaderTitle">JaBUTi Gadget - Query</div>
+<form action="" id="form1" >
+  <table id="criteriatable" class="maintb"
+ cellpadding="2" cellspacing="2">
+    <tbody>
+      <tr>
+        <td><b>Project Id</b></td>
+        <td><input name="projid" value=""></td>
+        <td><button value="Update" name="send"
+ type="button" onclick="javascript:sendRequest();">Update</button></td>
+      </tr>
+      <tr>
+        <td><b>Project Name</b></td>
+        <td>Project name 1</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><b>Version</b></td>
+        <td>1.0</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td class="title" colspan="3">Structural
+Testing Criteria</td>
+      </tr>
+      <tr>
+        <td class="subtitle">Testing Criterion</td>
+        <td class="subtitle">Required Elements</td>
+        <td class="subtitle">Coverage percentage</td>
+      </tr>
+    </tbody>
+  </table>
+  
+<br />
+  <table id="metricstable" class="maintb"
+ cellpadding="2" cellspacing="2">
+    <tbody>
+      <tr>
+        <td class="title" colspan="3">OO
+Metrics</td>
+      </tr>
+      <tr>
+        <td class="subtitle">Acronym</td>
+        <td class="subtitle">Name</td>
+        <td class="subtitle">Value</td>
+      </tr>
+    </tbody>
+  </table>
+  <br>
+</form>
+</body>
+</html>
