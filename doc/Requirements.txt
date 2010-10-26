@@ -1,0 +1,32 @@
+
+O teste de aplicações impõe vários requisitos para sua
+correta execução. Uma importante questão é a configuração de
+teste, de modo a garantir a validade dos resultados obtidos.
+
+Em Java, por se tratar de uma máquina virtual, a questão
+de configuração é facilitada pelo isolamento inerente à
+virtualização da execução. No entanto, ao mesmo tempo que
+existe essa facilidade, encontra-se a imaturidade das
+implementações que preparem o ambiente de execução das
+aplicações Java adequadamente e as particularidades da
+máquina Java.
+
+Uma importante característica da máquina Java é que ela
+não permite a execução de várias processos em uma
+instância. Isso difere muito dos sistemas operacionais
+tradicionais, que provêem um ambiente distinto, uma
+verdadeira e única máquina virtual para cada aplicação.
+
+Parte dessa separação entre o virtual e o real pode ser
+simulada em Java com o uso de carregadores de classes
+(ClassLoaders) especiais. Servidores de aplicações Web
+o empregam há anos, fornecendo, a cada aplicação Web,
+um ambiente distinto de execução.
+
+Um outro exemplo de aplicação que realiza essa separação
+de aplicações Java são os ambientes de desenvolvimento,
+tal como o Eclipse e o Netbeans. Eles não apenas permitem
+a utilização de carregadores de classes específicos, como
+permitem a detalhada configuração do ambiente e das
+bibliotecas a serem utilizada.
+
