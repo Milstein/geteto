@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>ironiacorp</groupId>
+	<groupId>usp.icmc.labes</groupId>
 	<artifactId>geteto</artifactId>
 	<packaging>pom</packaging>
 
@@ -12,8 +12,10 @@
 
 	<modules>
             <module>geteto-main</module>
+	<!--
             <module>geteto-service-client</module>
             <module>geteto-service-server</module>
             <module>geteto-spago4q-extractor</module>
+	-->
 	</modules>
 </project>
