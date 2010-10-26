@@ -1,7 +1,6 @@
 package br.jabuti.probe.device;
 
 
-import br.jabuti.verifier.*;
 import org.aspectj.apache.bcel.classfile.*;
 import java.util.*;
 

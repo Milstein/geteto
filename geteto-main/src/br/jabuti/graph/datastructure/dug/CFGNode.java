@@ -27,7 +27,6 @@ import br.jabuti.graph.datastructure.ig.InstructionNode;
 import br.jabuti.util.*;
 import org.aspectj.apache.bcel.generic.IINC;
 import org.aspectj.apache.bcel.generic.Instruction;
-import br.jabuti.verifier.*;
 
 /**
  * This class represents a node of the {@link CFG} graph.

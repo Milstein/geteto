@@ -21,7 +21,6 @@ package br.jabuti.probe.desktop;
 import br.jabuti.graph.datastructure.dug.*;
 import br.jabuti.graph.datastructure.ig.InvalidInstructionException;
 import br.jabuti.graph.datastructure.ig.InvalidStackArgument;
-import br.jabuti.verifier.*;
 import org.aspectj.apache.bcel.classfile.*;
 import org.aspectj.apache.bcel.generic.*;
 import java.util.*;

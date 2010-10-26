@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
-		<groupId>ironiacorp</groupId>
+		<groupId>usp.icmc.labes</groupId>
 		<artifactId>geteto</artifactId>
 		<version>1.0</version>
 	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>ironiacorp</groupId>
-	<artifactId>geteto-main</artifactId>
+	<groupId>usp.icmc.labes</groupId>
+	<artifactId>geteto-core</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0.0</version>
 
@@ -33,8 +33,8 @@
 			<name>Marco Aurélio Graciotto Silva</name>
 			<email>magsilva@icmc.usp.br</email>
 			<url>http://www.icmc.usp.br/~magsilva/</url>
-			<organization>Ironia Corporation</organization>
-			<organizationUrl>http://www.ironiacorp.com</organizationUrl>
+			<organization>Software Engineering Laboratory</organization>
+			<organizationUrl>http://www.labes.icmc.usp.br</organizationUrl>
 			<timezone>+3</timezone>
 			<roles>
 				<role>Manager</role>
