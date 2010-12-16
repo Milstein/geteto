@@ -18,29 +18,39 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
 package br.jabuti.metrics.klass;
 
-import org.aspectj.apache.bcel.classfile.Field;
-import org.aspectj.apache.bcel.classfile.JavaClass;
+import java.util.Iterator;
 
+import org.aspectj.apache.bcel.classfile.JavaClass;
+import org.aspectj.apache.bcel.classfile.Method;
+import org.aspectj.apache.bcel.generic.ConstantPoolGen;
+import org.aspectj.apache.bcel.generic.INVOKEINTERFACE;
+import org.aspectj.apache.bcel.generic.Instruction;
+import org.aspectj.apache.bcel.generic.InstructionList;
+import org.aspectj.apache.bcel.generic.MethodGen;
+
+import br.jabuti.lookup.generic.InvokeInstruction;
 import br.jabuti.lookup.java.bytecode.Program;
 import br.jabuti.lookup.java.bytecode.RClass;
 import br.jabuti.lookup.java.bytecode.RClassCode;
 import br.jabuti.metrics.AbstractMetric;
 
 /**
- * Number of Class Variables (static variables) in a class (NCV).
+ * Average method size using the number of lines of code (lines of
+ * bytecode).
  */
-public class MetricNCV extends AbstractMetric
+public class MetricAMZNMS extends AbstractMetric
 {
-	public MetricNCV()
+	public MetricAMZNMS()
 	{
 		super();
-		name = "ncv";
-		description = "Number of Class Variables in a class (NCV)";
+		name = "amz_nms";
+		description = "Average Method Size (AMZ_NMS) - Number of Messages Sent";
 	}
 
 	@Override
 	public double getResult(Program prog, String className)
 	{
+		double theValue = 0.0;
 		RClass rc = prog.get(className);
 		if (!(rc instanceof RClassCode)) {
 			return -1.0;
@@ -48,13 +58,26 @@ public class MetricNCV extends AbstractMetric
 		int cont = 0;
 		RClassCode rcc = (RClassCode) rc;
 		JavaClass theClazz = rcc.getTheClass();
-		Field[] fields = theClazz.getFields();
-		for (int i = 0; i < fields.length; i++) {
-			if (! fields[i].isStatic()) {
+		ConstantPoolGen cp = new ConstantPoolGen(theClazz.getConstantPool());
+		Method[] methods = theClazz.getMethods();
+		for (int i = 0; i < methods.length; i++) {
+			if (methods[i].isAbstract()) {
 				continue;
+			}
+			MethodGen mg = new MethodGen(methods[i], theClazz.getClassName(), cp);
+			InstructionList instructions = mg.getInstructionList();
+			Iterator<Instruction> instructionsIterator = instructions.iterator();
+			while (instructionsIterator.hasNext()) {
+				Instruction instruction = instructionsIterator.next();
+				if (instruction instanceof InvokeInstruction) {
+					theValue++;
+				}
 			}
 			cont++;
 		}
-		return (double) cont;
+		if (cont == 0) {
+			return -1.0;
+		}
+		return theValue / cont;
 	}
 }

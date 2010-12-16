@@ -36,7 +36,7 @@ public class MetricNPIM extends AbstractMetric
 	{
 		super();
 		name = "npim";
-		description = "Number of Public Instance Methods in a class (NPIM)";
+		description = "Number of Instance Methods in a class (NIM)";
 	}
 
 	@Override
@@ -53,8 +53,6 @@ public class MetricNPIM extends AbstractMetric
 			if (methods[i].isAbstract())
 				continue;
 			if (methods[i].isStatic())
-				continue;
-			if (!methods[i].isPublic())
 				continue;
 			cont++;
 		}
