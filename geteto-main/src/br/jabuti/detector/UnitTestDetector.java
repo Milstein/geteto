@@ -24,14 +24,14 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.ironiacorp.persistence.JavaBeanUtil;
-
+import com.ironiacorp.introspector.ClassInstrospector;
 
 public class UnitTestDetector
 {
 	public boolean isTestFile(File baseDir, File file)
 	{
-		String className = JavaBeanUtil.toString(baseDir, file);
+		ClassInstrospector cIntrospector = new ClassInstrospector();
+		String className = cIntrospector.toString(baseDir, file);
 		if (className.startsWith("Test")) {
 			return true;
 		}

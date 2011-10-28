@@ -25,9 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.ironiacorp.persistence.JavaBeanUtil;
-
-
+import com.ironiacorp.introspector.ClassInstrospector;
 
 public class Matcher
 {
@@ -105,7 +103,8 @@ public class Matcher
 			if (file.isDirectory()) {
 				updateSource(baseDir, dir);
 			} else {
-				String className = JavaBeanUtil.toString(baseDir, file);
+				ClassInstrospector cIntrospector = new ClassInstrospector();
+				String className = cIntrospector.toString(baseDir, file);
 				classes.add(className);
 			}
 		}
@@ -128,7 +127,8 @@ public class Matcher
 				updateSource(baseDir, file);
 			} else {
 				if (detector.isTestFile(baseDir, file)) {
-					String className = JavaBeanUtil.toString(baseDir, file);
+					ClassInstrospector cIntrospector = new ClassInstrospector();
+					String className = cIntrospector.toString(baseDir, file);
 					tests.add(className);
 				}
 			}
