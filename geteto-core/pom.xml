@@ -290,7 +290,25 @@
 			<version>2.0.7</version>
 		</dependency>
 
-		
+		<!-- MuJava -->
+		<dependency>
+			<groupId>mujava</groupId>
+			<artifactId>openjava</artifactId>
+			<version>2005</version>
+			<scope>system</scope> 
+			<systemPath>${basedir}/lib/openjava2005.jar</systemPath>   
+		</dependency>
+
+		<dependency>
+			<groupId>mujava</groupId>
+			<artifactId>mujava</artifactId>
+			<version>3.0</version>
+			<scope>system</scope> 
+			<systemPath>${basedir}/lib/mujava.jar</systemPath>   
+		</dependency>
+
+
+		<!-- IroniaCorp helper libraries -->		
 		<dependency>
 			<groupId>ironiacorp</groupId>
 			<artifactId>commons-datastructures</artifactId>
@@ -308,6 +326,7 @@
 			<artifactId>commons-persistence</artifactId>
 			<version>4.0.0</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>ironiacorp</groupId>
 			<artifactId>commons-introspector</artifactId>
