@@ -20,14 +20,16 @@
 package br.jabuti.project;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import br.jabuti.criteria.AbstractCriterion;
@@ -49,53 +51,69 @@ import br.jabuti.util.ToolConstants;
  */
 public class JabutiProject {
 
-	private Program prog = null;
+	private Program prog;
 
-	//Persistent fields
-	private String baseClass = null, // the base class
-			classpath = null, // required classpath for base class
-			junitSrcDir = null,
-			junitBinDir = null,
-			junitTestSet = null,
-			junitJar = null;
+	private List<String > classpath;
+	
+	private String junitSrcDir;
+	
+	private String junitBinDir;
+	
+	private String junitTestSet;
+	
+	private String junitJar;
 
-	private HashSet avoidSet = null, // packages to be avoided
-			instrSet = null; // set of classes to be instrumented
+	/**
+	 * Set of packages that must be avoided.
+	 */
+	private Set<String> avoidSet;
+	
+	/**
+	 * Set of classes to be instrumented;
+	 */
+	private Set<String> instrSet = null;
 
-	// private HashMap instrClassTable = null; // set of classes to be
-	// instrumented
-	private Hashtable instrClassTable = null; // set of classes to be
-
-	// instrumented
+	/**
+	 * Cache of classfiles to be instrumented (the key is the class name). 
+	 */
+	private Map<String, ClassFile> instrClassTable;
 
 	/*
 	 * Checks whether the status of the project has changed
 	 */
-	private boolean progChanged = false, instrChanged = false,
-			execChanged = false, coverageChanged = false, mobility = false;
+	private boolean progChanged = false;
+	
+	private boolean instrChanged = false;
+	
+	private boolean execChanged = false;
+	
+	private boolean coverageChanged = false;
+			
+	private boolean mobility = false;
 
-	private int cfgOption = CFG.NO_CALL_NODE;
-
-	/**
+		/**
 	 * The coverage w.r.t the entire program... The sum of the coverage of each
 	 * class file
 	 */
 	private Coverage[] projCoverage;
 
-	private File saveName = null; // the name of the project file
+	/**
+	 * Project filename.
+	 */
+	private File saveName;
+	
+	/**
+	 * Trace filename.
+	 */
+	private String traceFileName;
 
-	private String traceFileName = null; // the name of the trace file
+	/**
+	 * Instrumented project Jar package.
+	 */
+	private String jarFileName;
 
-	private String jarFileName = null; // the name of the trace file
-
-	private String curClassName = null; // the name of current class file,
-
-	// the one being shown in the GUI
-	private String curMethodName = null; // the name of current method
-
-	// in the curClassName
-	public JabutiProject() {
-
+	public JabutiProject()
+	{
 	}
 
 	/**
@@ -107,9 +125,12 @@ public class JabutiProject {
 	 * @throw {@link Exception} in case occurs any problem on identifying the
 	 *        other classes necessary to run the base class.
 	 */
-	public JabutiProject(String cpath) throws Exception {
+	public JabutiProject(String cpath) throws Exception
+	{
 		prog = new Program(true, null, cpath);
-		classpath = new String(cpath);
+		classpath = new ArrayList<String>();
+		addPath2Classpath(cpath);
+
 		junitSrcDir = new String();
 		junitBinDir = new String();
 		junitTestSet = new String();
@@ -144,7 +165,6 @@ public class JabutiProject {
 	 */
 	public JabutiProject(JabutiProject prj) throws Exception {
 		prog = new Program(true, null, prj.getClasspath());
-		classpath = new String(prj.getClasspath());
 
 		junitSrcDir = new String(prj.getJunitSrcDir());
 		junitBinDir = new String(prj.getJunitBinDir());
@@ -171,6 +191,10 @@ public class JabutiProject {
 		}
 	}
 
+	public void addPath2Classpath(String path) {
+		classpath.add(path);
+	}
+	
 	public String getJUnitJar() {
 		return junitJar;
 	}
@@ -211,50 +235,30 @@ public class JabutiProject {
 
 	/**
 	 * This method saves a JabutiProject in a XML file. It first try to save the
-	 * project in a TMP file. If successed, the TMP file is renamed to the
+	 * project in a TMP file. If successful, the TMP file is renamed to the
 	 * correct, JabutiProject file name.
 	 */
-	public void save(File fileName, boolean force) throws Exception {
-		if (changed() || force) {
-			// Saving the XML version of the project
-			System.out.println("********* XML *********");
-			File tmpFile = null;
-			try {
-				tmpFile = File.createTempFile("_jbttmp_", null);
-				System.out.println(tmpFile.toString());
-				if (Project2XML.project2XML(this, tmpFile)) {
-					fileName.delete();
-					if (tmpFile.renameTo(fileName))
-						System.out
-								.println("Project File generated successfully!!!");
-					else {
-						try {
-							copyFile(tmpFile, fileName);
-						} catch (IOException ioe) {
-							System.out.println("Project File not generated!!!");
-						}
-					}
-				}
-			} catch (Exception pce) {
-				ToolConstants.reportException(pce, ToolConstants.STDERR);
+	public void save(File fileName, boolean force) 
+	{
+		if (! changed() && ! force) {
+			return;
+		}
+		
+		File tmpFile = null;
+		Project2XML p2xml = new Project2XML();
+		try {
+			tmpFile = File.createTempFile("_jbttmp_", null);
+			p2xml.project2XML(this, tmpFile);
+			fileName.delete();
+			if (tmpFile.renameTo(fileName)) {
+				setChanged(false);
 			}
-			System.out.println("***********************");
-
-			setChanged(false);
+		} catch (Exception e) {
+			ToolConstants.reportException(e, ToolConstants.STDERR );
+			throw new RuntimeException("Error saving project data");
+		} finally {
+			tmpFile.delete();
 		}
-	}
-
-	private void copyFile(File orig, File dest) throws IOException {
-		FileInputStream fis = new FileInputStream(orig);
-		FileOutputStream fos = new FileOutputStream(dest);
-		int k;
-		while ((k = fis.available()) > 0) {
-			byte[] b = new byte[k];
-			fis.read(b);
-			fos.write(b);
-		}
-		fis.close();
-		fos.close();
 	}
 
 	static public JabutiProject reloadProj(String fileName, String cp, boolean full) {
@@ -371,11 +375,11 @@ public class JabutiProject {
 		classpath = s;
 	}
 
-	public HashSet getAvoid() {
+	public Set<String> getAvoid() {
 		return avoidSet;
 	}
 
-	public HashSet getInstr() {
+	public Set<String> getInstr() {
 		return instrSet;
 	}
 
@@ -474,9 +478,6 @@ public class JabutiProject {
 			}
 		}
 
-		// Reseting the current active class file
-		setCurClassName(null);
-
 		// Creating new {@link ClassFile} objects if necessary
 		Iterator it = instrSet.iterator();
 		while (it.hasNext()) {
@@ -488,10 +489,6 @@ public class JabutiProject {
 				instrClassTable.put(cName, new ClassFile(this, cName,
 						getClassId(cName)));
 			}
-
-			// Setting the current active class
-			if (getCurClassName() == null)
-				setCurClassName(new String(cName));
 		}
 
 		// Updatting the coverage considering the
@@ -632,44 +629,6 @@ public class JabutiProject {
 		}
 	}
 
-	// Returns the current valida class name to be shown
-	public String getCurClassName() {
-		return curClassName;
-	}
-
-	// Set the current valida class name
-	public void setCurClassName(String n) {
-		ClassFile cf = null;
-		if ((cf = getClassFile(n)) != null) {
-			curClassName = n;
-			ClassMethod cm = cf.getMethod(0);
-
-			curMethodName = cm.getMethodName();
-		} else {
-			curClassName = null;
-			curMethodName = null;
-		}
-	}
-
-	// Returns the current valid method name to be shown
-	public String getCurMethodName() {
-		return curMethodName;
-	}
-
-	// Set the current valid method name
-	public void setCurMethodName(String n) {
-		if (getCurClassName() != null) {
-			ClassFile cf = getClassFile(getCurClassName());
-			if (cf != null) {
-				ClassMethod cm = cf.getMethod(n);
-				if (cm != null)
-					curMethodName = cm.getMethodName();
-				else
-					curMethodName = null;
-			}
-		}
-	}
-
 	public String getProjectResource(String item)
 			throws ClassNotFoundException, IOException {
 
@@ -694,8 +653,6 @@ public class JabutiProject {
 		if (url == null)
 			return null;
 		java.io.File f = new File(url.getFile());
-		if (f == null)
-			return null;
 
 		return f.getCanonicalPath();
 	}

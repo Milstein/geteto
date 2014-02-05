@@ -157,9 +157,9 @@ public class CoverageMeasurer
 	/**
 	 * Make an existent test case active
 	 */
-	public static void activateTestCase(JabutiProject prj, String label)
+	public void activateTestCase(JabutiProject prj, String label)
 	{
-		if (!isActive(label)) {
+		if (! isActive(label)) {
 			// System.out.println("Ativando caso de teste: " + label);
 			if (isDeleted(label))
 				undeleteTestCase(prj, label);
@@ -190,7 +190,7 @@ public class CoverageMeasurer
 	/**
 	 * Make an existent test case desactive
 	 */
-	public static void desactivateTestCase(JabutiProject prj, String label)
+	public void desactivateTestCase(JabutiProject prj, String label)
 	{
 		if (isActive(label)) {
 			// System.out.println("Desativando caso de teste: " + label);
@@ -221,7 +221,7 @@ public class CoverageMeasurer
 	/**
 	 * This method permanently remove a given test case
 	 */
-	public static void removeTestCase(JabutiProject prj, String label) {
+	public void removeTestCase(JabutiProject prj, String label) {
                if (!TestSet.isActive(label))
                        return;
                activeTestCases.remove(label);
@@ -255,7 +255,7 @@ public class CoverageMeasurer
 	/**
 	 * This method permanently remove all test cases
 	 */
-	public static void removeTestCases(JabutiProject prj)
+	public void removeTestCases(JabutiProject prj)
 	{
 		if (TestSet.getNumberOfDeletedTestCases() > 0) {
 			Object[] tcLabels = TestSet.getDeletedSet().toArray();
@@ -268,7 +268,7 @@ public class CoverageMeasurer
 	/**
 	 * Returns the coverage w.r.t. all effective test cases in this test set.
 	 */
-	public static Coverage getTestSetCoverage(int c)
+	public Coverage getTestSetCoverage(int c)
 	{
 		if ((c >= 0) && (c < Criterion.NUM_CRITERIA)) {
 			return testSetCoverage[c];
@@ -277,7 +277,7 @@ public class CoverageMeasurer
 		}
 	}
 
-	public static void updateTestSetCoverage(JabutiProject prj)
+	public void updateTestSetCoverage(JabutiProject prj)
 	{
 		for (int i = 0; i < Criterion.NUM_CRITERIA; i++) {
 			testSetCoverage[i] = prj.getProjectCoverage(i);
@@ -292,7 +292,7 @@ public class CoverageMeasurer
 		}
 	}
 
-	public static void updateOverallCoverage(JabutiProject prj)
+	public void updateOverallCoverage(JabutiProject prj)
 	{
 		// System.out.println("Atualizando cobertura total!!!");
 		// After loaded all test cases:

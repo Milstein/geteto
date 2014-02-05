@@ -21,7 +21,6 @@ package br.jabuti.graph.datastructure.ig;
 
 
 import java.io.PrintStream;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,9 +43,6 @@ import org.aspectj.apache.bcel.generic.JsrInstruction;
 import org.aspectj.apache.bcel.generic.MethodGen;
 import org.aspectj.apache.bcel.generic.RET;
 import org.aspectj.apache.bcel.generic.Type;
-
-import prefuse.data.Graph;
-
 
 import br.jabuti.graph.datastructure.GraphNode;
 import br.jabuti.graph.datastructure.ListGraph;
