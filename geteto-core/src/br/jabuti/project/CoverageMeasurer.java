@@ -159,7 +159,7 @@ public class CoverageMeasurer
 	 */
 	public void activateTestCase(JabutiProject prj, String label)
 	{
-		if (!isActive(label)) {
+		if (! isActive(label)) {
 			// System.out.println("Ativando caso de teste: " + label);
 			if (isDeleted(label))
 				undeleteTestCase(prj, label);

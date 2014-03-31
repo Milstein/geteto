@@ -23,7 +23,6 @@ import java.util.*;
 
 import br.jabuti.probe.desktop.ProbedNode;
 import br.jabuti.probe.mobiledevice.mobile.HostProbedNode;
-import br.jabuti.ui.gui.*;
 import br.jabuti.criteria.*;
 
 /**
@@ -220,12 +219,7 @@ public class TestCase {
 	 * by this test case, i.e., how much of the covered requirements
 	 * of a given test case is covered by this particular path.
 	 */
-	public Coverage getTestCaseCoverageByPath(
-		int c,
-		HostProbedNode pdn,
-		String path) {
-		String className = pdn.clazz;
-		ClassFile cf = JabutiGUI.getProject().getClassFile(className);
+	public Coverage getTestCaseCoverageByPath(int c, HostProbedNode pdn, String path, ClassFile cf) {
 		ClassMethod cm = cf.getMethod(pdn.metodo);
 		Criterion criterion = cm.getCriterion(c);
 		HashSet hs = criterion.getCoveredRequirements(path);

@@ -31,7 +31,7 @@ import java.util.StringTokenizer;
 
 import javax.swing.JButton;
 
-import br.jabuti.ui.gui.*;
+import br.jabuti.project.JabutiProject;
 
 import java.awt.Font;
 import java.io.*;
@@ -142,7 +142,7 @@ public class ToolConstants {
     }
 	
     static public URL getToolBaseResource(String filename) {
-        URL toolBaseDirectory = JabutiGUI.class.getResource(filename);
+        URL toolBaseDirectory = JabutiProject.class.getResource(filename);
         return toolBaseDirectory;
     }
     

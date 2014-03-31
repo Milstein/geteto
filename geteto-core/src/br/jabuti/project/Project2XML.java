@@ -48,40 +48,46 @@ import br.jabuti.util.ToolConstants;
  * @version: 1.0
  * @author: Auri Vincenzi
  */
-public class Project2XML {
-    static private Writer  out;
-    static private String indentString = "    "; // Amount to indent
-    static private int indentLevel = 0;
+public class Project2XML
+{
+    private Writer out;
+    
+    private static final String indentString = "\t";
+    
+    private int indentLevel = 0;
+    
+    private JabutiProject prj;
 	
-    public static boolean project2XML( JabutiProject prj, File xmlFile ) {
+    public boolean project2XML(JabutiProject prj, File xmlFile ) {
         try {
-            // Set up output stream
-            out = new OutputStreamWriter( new 
-            	FileOutputStream( xmlFile ), "UTF8");
+        	this.prj = prj;
+            out = new OutputStreamWriter(new FileOutputStream( xmlFile ), "UTF8");
         } catch (Throwable t) {
             ToolConstants.reportException(t, ToolConstants.STDERR );
             return false;
         }
 
-        StringBuffer xmlOut;
+        StringBuilder xmlOut = new StringBuilder();
     	
         // Saving the high level element: JABUTI
     	emit( "<" + XML2Project.JABUTI + ">" );
 
         // Saving the PROJECT and its attributes
         indentLevel++;
-        xmlOut = new StringBuffer( "<" + XML2Project.PROJECT );
-    	xmlOut.append( " name=\"" + prj.getProjectFileName() + "\"" );
-    	xmlOut.append( " type=\"research\"" );
-    	xmlOut.append( " mobility=\"" + (prj.isMobility()? "Y":"N") + "\"" );
-    	xmlOut.append( "\">" );
+        xmlOut.append("<" + XML2Project.PROJECT );
+    	xmlOut.append(" name=\"" + prj.getProjectFileName() + "\"" );
+    	xmlOut.append(" type=\"research\"" );
+    	xmlOut.append(" mobility=\"" + (prj.isMobility()? "Y":"N") + "\"" );
+    	xmlOut.append("\">" );
     	nl();
-    	emit( xmlOut.toString() );
+    	emit(xmlOut.toString());
 
 
         // Saving the CLASSPATH and its attributes
-        xmlOut = new StringBuffer( "<" + XML2Project.CLASSPATH );
+        xmlOut.setLength(0);
+        xmlOut.append("<" + XML2Project.CLASSPATH );
         
+        // TODO: save each path of the classpath as a single element
         // Converting the classpath in a system independent way (more less)
         StringTokenizer st = new StringTokenizer(prj.getClasspath(), File.pathSeparator);
         StringBuffer sb = new StringBuffer();
@@ -196,7 +202,7 @@ public class Project2XML {
 			}
 			
 			if ( cf != null )
-				Project2XML.classFile2XML( prj, cf );
+				classFile2XML( prj, cf );
 
 			// Closing the correct tag			
 			indentLevel--;
@@ -206,7 +212,7 @@ public class Project2XML {
 
 		// The TEST_SET element and its attributes
 	
-	    Project2XML.testSet2XML();
+	    testSet2XML();
 
 		indentLevel--;
 		// Closing PROJECT
@@ -236,7 +242,7 @@ public class Project2XML {
 		return true;
     }
     
-    private static void classFile2XML( JabutiProject prj, ClassFile cf ) {
+    private void classFile2XML( JabutiProject prj, ClassFile cf ) {
 		// SOURCE tag and attribute
 		ClassSourceFile cfs = cf.getSourceFile();
 		String sn = new String( "" );
@@ -253,7 +259,7 @@ public class Project2XML {
 		if ( mnames != null ) {
 			for ( int i = 0; i < mnames.length; i++ ) {
 				ClassMethod cm = cf.getMethod( mnames[i] );
-				Project2XML.classMethod2XML( cm );
+				classMethod2XML( cm );
 			}
 		}else {
 			System.out.println("Class " + cf.getClassName() + " has no method" );
@@ -261,7 +267,7 @@ public class Project2XML {
 		
     }
     
-    private static void classMethod2XML( ClassMethod cm ) {
+    private void classMethod2XML( ClassMethod cm ) {
 		// The METHOD tag and attributes
 		StringBuffer xmlOut = new StringBuffer( "<" + XML2Project.METHOD );
 		xmlOut.append( " id=\"" + 
@@ -279,28 +285,28 @@ public class Project2XML {
 
 			switch(i) {
 				case Criterion.PRIMARY_NODES:
-					Project2XML.allNodes2XML( cm, Criterion.PRIMARY_NODES );
+					allNodes2XML( cm, Criterion.PRIMARY_NODES );
 					break;
 				case Criterion.SECONDARY_NODES:
-					Project2XML.allNodes2XML( cm, Criterion.SECONDARY_NODES );
+					allNodes2XML( cm, Criterion.SECONDARY_NODES );
 					break;
 				case Criterion.PRIMARY_EDGES:
-					Project2XML.allEdges2XML( cm, Criterion.PRIMARY_EDGES );
+					allEdges2XML( cm, Criterion.PRIMARY_EDGES );
 					break;
 				case Criterion.SECONDARY_EDGES: 
-					Project2XML.allEdges2XML( cm, Criterion.SECONDARY_EDGES );
+					allEdges2XML( cm, Criterion.SECONDARY_EDGES );
 					break;
 				case Criterion.PRIMARY_USES: 
-					Project2XML.allUses2XML( cm, Criterion.PRIMARY_USES );
+					allUses2XML( cm, Criterion.PRIMARY_USES );
 					break;
 				case Criterion.SECONDARY_USES:
-					Project2XML.allUses2XML( cm, Criterion.SECONDARY_USES );
+					allUses2XML( cm, Criterion.SECONDARY_USES );
 					break;
 				case Criterion.PRIMARY_POT_USES: 
-					Project2XML.allUses2XML( cm, Criterion.PRIMARY_POT_USES );
+					allUses2XML( cm, Criterion.PRIMARY_POT_USES );
 					break;
 				case Criterion.SECONDARY_POT_USES:
-					Project2XML.allUses2XML( cm, Criterion.SECONDARY_POT_USES );
+					allUses2XML( cm, Criterion.SECONDARY_POT_USES );
 					break;
 			}
 		}
@@ -309,7 +315,7 @@ public class Project2XML {
 		emit( "</" + XML2Project.METHOD + ">" );
     }
     
-    private static void allNodes2XML(ClassMethod cm, int c ) {
+    private void allNodes2XML(ClassMethod cm, int c ) {
     							 	 	
     	String tag = AbstractCriterion.getName( c );
 
@@ -379,7 +385,7 @@ public class Project2XML {
 		emit( "</" + tag + ">" );
     }
     
-    private static void allEdges2XML( ClassMethod cm, int c ) {
+    private void allEdges2XML( ClassMethod cm, int c ) {
     	String tag = AbstractCriterion.getName( c );
 
 		if ( tag == null )
@@ -451,7 +457,7 @@ public class Project2XML {
 		emit( "</" + tag + ">" );
     }
     
-    private static void allUses2XML( ClassMethod cm, int c ) {
+    private void allUses2XML( ClassMethod cm, int c ) {
     	String tag = AbstractCriterion.getName( c );
 
 		if ( tag == null )
@@ -549,23 +555,16 @@ public class Project2XML {
     }    
 
 	/*
-	 * This method is responsible to persiste the information of the 
+	 * This method is responsible to persist the information of the 
 	 * complete test set. Observe that the test cases marked to be 
 	 * removed are not saved.
 	 */    
-    private static void testSet2XML( ) {
-    	// Currently saving all test cases.
-    	// Later it is necessary to check if some test cases
-    	// need to be remove
+    private void testSet2XML( ) {
+    	// TODO: Currently saving all test cases. Later it is necessary to check if some test cases need to be remove
     	
 		// The TEST_SET element and its attributes
 		StringBuffer xmlOut = new StringBuffer( "<" + XML2Project.TEST_SET );
 		
-		/*
-		xmlOut.append( " last_id=\"0\">" );
-		nl();
-		emit( xmlOut.toString() );
-		*/
 		xmlOut.append( " last_id=\"" + 
 			new Integer( TestSet.getTestCaseId() ).toString() + "\">" );
 		nl();

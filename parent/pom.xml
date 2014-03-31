@@ -157,11 +157,11 @@
 	</build>
 
 	<modules>
-            <module>../geteto-core</module>
-	<!--
-            <module>../geteto-service-client</module>
-            <module>../geteto-service-server</module>
-            <module>../geteto-spago4q-extractor</module>
-	-->
+		<module>../geteto-core</module>
+		<module>../geteto-service-client</module>
+		<module>../geteto-service-server</module>
+		<module>../geteto-spago4q-extractor</module>
+		<module>../geteto-ui-swing</module>
+		<module>../geteto-ui-cli</module>
 	</modules>
 </project>
