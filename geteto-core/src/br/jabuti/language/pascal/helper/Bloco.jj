@@ -1,0 +1,46 @@
+void Bloco() :
+{}
+{
+	( DeclaracaoRotulos() )?
+	( DefinicaoConstantes() )?
+	( DefinicaoTipos() )?
+	( DeclaracaoVariaveis() )?
+	DeclaracaoProcedimentosFuncoes()
+	ParteComando()	
+}
+
+void DeclaracaoRotulos() :
+{}
+{
+	<LABEL> <ROTULO> ( <VIRGULA> <ROTULO> )* <PONTO_VIRGULA>
+}
+
+void DefinicaoConstantes() :
+{}
+{
+	<CONST> ( DefinicaoConstante() <PONTO_VIRGULA> )+
+}
+
+void DefinicaoTipos() :
+{}
+{
+	<TYPE> ( DefinicaoTipo() )+
+}
+
+void DeclaracaoVariaveis() :
+{}
+{
+	<VAR> ( DeclaracaoVariavel() )+
+}
+
+void DeclaracaoProcedimentosFuncoes() :
+{}
+{
+	( ( DeclaracaoProcedimento() | DeclaracaoFuncao() ) <PONTO_VIRGULA> )*
+}
+
+void ParteComando() :
+{}
+{
+	ComandoComposto() 
+}

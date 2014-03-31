@@ -1,0 +1,18 @@
+void DefinicaoConstante() :
+{}
+{
+	<IDENTIFICADOR> <IGUAL> Constante()
+}
+
+void Constante() :
+{}
+{
+	( <SINAL> )? ( <NUMERO_SEM_SINAL> | IdentificadorConstante() )
+|	<CADEIA_CARACTERES>
+}
+
+void IdentificadorConstante() :
+{}
+{
+	<IDENTIFICADOR>
+}

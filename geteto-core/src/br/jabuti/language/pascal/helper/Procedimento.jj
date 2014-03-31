@@ -1,0 +1,31 @@
+void DeclaracaoProcedimento() :
+{}
+{
+	CabecalhoProcedimento() <PONTO_VIRGULA> <DIRETIVE>
+|	IdentificacaoProcedimento() <PONTO_VIRGULA> BlocoProcedimento()
+|	CabecalhoProcedimento() <PONTO_VIRGULA> BlocoProcedimento()
+}
+
+void CabecalhoProcedimento() :
+{}
+{
+	<PROCEDURE> <IDENTIFICADOR> ListaFormalParametro()
+}
+
+void IdentificacaoProcedimento() :
+{}
+{
+	<PROCEDURE> IdentificadorProcedimento()
+}
+
+void IdentificadorProcedimento() :
+{}
+{
+	<IDENTIFICADOR>
+}
+
+void BlocoProcedimento() :
+{}
+{
+	Bloco()
+}

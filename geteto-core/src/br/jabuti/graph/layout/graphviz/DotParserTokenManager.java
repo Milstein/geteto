@@ -3,10 +3,9 @@ package br.jabuti.graph.layout.graphviz;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.io.*;
+
 import br.jabuti.graph.view.gvf.GVFNode;
 import br.jabuti.graph.view.gvf.GVFLink;
-import br.jabuti.graph.view.gvf.BoundingBox;
-import br.jabuti.graph.view.gvf.Position;
 
 /** Token Manager. */
 class DotParserTokenManager implements DotParserConstants

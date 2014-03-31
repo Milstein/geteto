@@ -1,0 +1,23 @@
+void Programa() :
+{}
+{
+     CabecalhoPrograma() <PONTO_VIRGULA> BlocoPrograma() <PONTO>
+}
+
+void CabecalhoPrograma() :
+{}
+{
+	<PROGRAM> <IDENTIFICADOR> ( <ABRE_PARENTESES> ListaParametroPrograma() <FECHA_PARENTESES> )?
+}
+
+void ListaParametroPrograma() :
+{}
+{
+	ListaIdentificador()
+}
+
+void BlocoPrograma() :
+{}
+{
+	Bloco()
+}

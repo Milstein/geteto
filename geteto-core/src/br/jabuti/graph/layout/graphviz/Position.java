@@ -1,4 +1,4 @@
-package br.jabuti.graph.view.gvf;
+package br.jabuti.graph.layout.graphviz;
 
 public class Position
 {

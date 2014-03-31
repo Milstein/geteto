@@ -1,0 +1,198 @@
+void DefinicaoTipo() :
+{}
+{
+	<IDENTIFICADOR> <IGUAL> DenotadorTipo()
+}
+
+
+void DenotadorTipo() :
+{}
+{
+	IdentificadorTipo() | NovoTipo()
+}
+
+void NovoTipo() :
+{}
+{
+	NovoTipoOrdinal() | NovoTipoEstruturado()
+}
+
+void IdentificadorTipoSimples() :
+{}
+{
+	IdentificadorTipo()
+}
+
+void IdentificadorTipoEstruturado() :
+{}
+{
+	IdentificadorTipo()
+}
+
+void IdentificadorTipo() :
+{}
+{
+	<IDENTIFICADOR>
+}
+
+void TipoSimples() :
+{}
+{
+	TipoOrdinal() | IdentificadorTipoReal()
+}
+
+void TipoOrdinal() :
+{}
+{
+	NovoTipoOrdinal() | IdentificadorTipoOrdinal()
+}
+
+void NovoTipoOrdinal() :
+{}
+{
+	TipoEnumerado() | TipoIntervalo()
+}
+
+void IdentificadorTipoOrdinal() :
+{}
+{
+	IdentificadorTipo()
+}
+
+void IdentificadorTipoReal() :
+{}
+{
+	IdentificadorTipo()
+}
+
+void TipoEnumerado()
+{}
+{
+	<ABRE_PARENTESES> ListaIdentificador() <FECHA_PARENTESES>
+}
+
+void ListaIdentificador()
+{}
+{
+	<IDENTIFICADOR> ( <VIRGULA> <IDENTIFICADOR> )*
+}
+
+void TipoIntervalo()
+{}
+{
+	Constante() <PONTO_PONTO> Constante()
+}
+
+void TipoEstruturado() :
+{}
+{
+	NovoTipoEstruturado() | IdentificadorTipoEstruturado()
+}
+
+void NovoTipo() :
+{}
+{
+	NovoTipoOrdinal() | NovoTipoEstruturado()
+}
+
+void NovoTipoEstruturado() :
+{}
+{
+	( <PACKED> )? TipoEstruturadoUnpacked()
+}
+
+void TipoEstruturadoUnpacked()
+{}
+{
+	TipoArray() | TipoRegistro() | TipoConjunto()
+}
+
+void TipoArray() :
+{}
+{
+	<ARRAY> <ABRE_COLCHETE> TipoOrdinal() ( <VIRGULA> TipoOrdinal() )* <FECHA_COLCHETE> <OF> DenotadorTipo()
+}
+
+void TipoRegistro() :
+{}
+{
+	<RECORD> ( ListaCampo() )?  <END>
+}
+
+void ListaCampo() :
+{}
+{
+	( ParteFixa() ( <PONTO_VIRGULA> ParteVariavel() )? | ParteVariavel() ) ( <PONTO_VIRGULA> )?
+}
+
+void ParteFixa() :
+{}
+{
+	SecaoRegistro() ( <PONTO_VIRGULA> SecaoRegistro() )?
+}
+
+void SecaoRegistro() :
+{}
+{
+	ListaIdentificador() <DOIS_PONTOS> DenotadorTipo()
+}
+
+void IdentificadorCampo() :
+{}
+{
+	<IDENTIFICADOR>
+}
+
+void ParteVariavel() :
+{}
+{
+	<CASE> SelecionadorVariacao() <OF> Variacao() ( <PONTO_VIRGULA> Variacao )?
+}
+
+void SelecionadorVariacao() :
+{}
+{
+	( CampoTag() <DOIS_PONTOS> )? TipoTag()
+}
+
+void CampoTag() :
+{}
+{
+	<IDENTIFICADOR>
+}
+
+void TipoTag() :
+{}
+{
+	IdentificadorTipoOrdinal()
+}
+
+void Variacao() :
+{}
+{
+	ListaConstanteCase() <DOIS_PONTOS> <ABRE_PARENTESES> ListaCampo() <FECHA_PARENTESES>
+}
+
+void ListaConstanteCase() :
+{}
+{
+	ConstanteCase() ( <VIRGULA> ConstanteCase() )*
+}
+
+void ConstanteCase() :
+{}
+{
+	Constante()
+}
+
+void TipoConjunto() :
+{}
+{
+	<SET> <OF> TipoBase()
+}
+
+void TipoBase() :
+{}
+{
+	TipoOrdinal()
+}

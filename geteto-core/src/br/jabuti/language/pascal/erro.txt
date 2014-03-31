@@ -1,0 +1,182 @@
+Compilador Pascal
+Lendo arquivo teste1.pas
+Call:   Programa
+  Call:   CabecalhoPrograma
+    Consumed token: <"program">
+    Consumed token: <<IDENTIFICADOR>: "teste">
+  Return: CabecalhoPrograma
+  Consumed token: <";">
+  Call:   Bloco
+    Call:   DefinicaoConstantes
+      Consumed token: <"const">
+      Call:   DefinicaoConstante
+        Consumed token: <<IDENTIFICADOR>: "a">
+        Consumed token: <"=">
+        Call:   Constante
+          Consumed token: <<NUMERO>: "3">
+        Return: Constante
+      Return: DefinicaoConstante
+      Consumed token: <";">
+    Return: DefinicaoConstantes
+    Call:   DefinicaoTipos
+      Consumed token: <"type">
+      Call:   DefinicaoTipo
+        Consumed token: <<IDENTIFICADOR>: "a">
+        Consumed token: <"=">
+        Call:   DenotadorTipo
+          Consumed token: <<IDENTIFICADOR>: "integer">
+        Return: DenotadorTipo
+      Return: DefinicaoTipo
+      Consumed token: <";">
+      Call:   DefinicaoTipo
+        Consumed token: <<IDENTIFICADOR>: "b">
+        Consumed token: <"=">
+        Call:   DenotadorTipo
+          Call:   NovoTipo
+            Call:   TipoRegistro
+              Consumed token: <"record">
+              Call:   ListaCampo
+                Call:   SecaoRegistro
+                  Call:   ListaIdentificador
+                    Consumed token: <<IDENTIFICADOR>: "a">
+                  Return: ListaIdentificador
+                  Consumed token: <":">
+                  Call:   DenotadorTipo
+                    Consumed token: <<IDENTIFICADOR>: "int">
+                  Return: DenotadorTipo
+                Return: SecaoRegistro
+                Consumed token: <";">
+              Return: ListaCampo
+              Consumed token: <"end">
+            Return: TipoRegistro
+          Return: NovoTipo
+        Return: DenotadorTipo
+      Return: DefinicaoTipo
+      Consumed token: <";">
+    Return: DefinicaoTipos
+    Call:   DeclaracaoVariaveis
+      Consumed token: <"var">
+      Call:   DeclaracaoVariavel
+        Call:   ListaIdentificador
+          Consumed token: <<IDENTIFICADOR>: "a">
+        Return: ListaIdentificador
+        Consumed token: <":">
+        Call:   DenotadorTipo
+          Call:   NovoTipo
+            Call:   TipoArray
+              Consumed token: <"array">
+              Consumed token: <"[">
+              Consumed token: <<INTERVALO>: "1..3">
+              Consumed token: <"]">
+              Consumed token: <"of">
+              Call:   DenotadorTipo
+                Consumed token: <<IDENTIFICADOR>: "integer">
+              Return: DenotadorTipo
+            Return: TipoArray
+          Return: NovoTipo
+        Return: DenotadorTipo
+      Return: DeclaracaoVariavel
+      Consumed token: <";">
+    Return: DeclaracaoVariaveis
+    Call:   ComandoComposto
+      Consumed token: <"begin">
+      Call:   SequenciaComando
+        Call:   Comando
+          Call:   ComandoSimples
+            Call:   ComandoAtribuicao
+              Call:   AcessoVariavel
+                Consumed token: <<IDENTIFICADOR>: "a">
+              Return: AcessoVariavel
+              Consumed token: <":=">
+              Call:   Expressao
+                Call:   ExpressaoSimples
+                  Call:   Termo
+                    Call:   Fator
+                      Call:   ConstanteSemSinal
+                        Consumed token: <<NUMERO>: "3">
+                      Return: ConstanteSemSinal
+                    Return: Fator
+                  Return: Termo
+                  Call:   OperadorAdicao
+                    Consumed token: <"+">
+                  Return: OperadorAdicao
+                  Call:   Termo
+                    Call:   Fator
+                      Consumed token: <"(">
+                      Call:   Expressao
+                        Call:   ExpressaoSimples
+                          Call:   Termo
+                            Call:   Fator
+                              Call:   ConstanteSemSinal
+                                Consumed token: <<NUMERO>: "2">
+                              Return: ConstanteSemSinal
+                            Return: Fator
+                            Call:   OperadorMultiplicacao
+                              Consumed token: <"/">
+                            Return: OperadorMultiplicacao
+                            Call:   Fator
+                              Call:   ConstanteSemSinal
+                                Consumed token: <<NUMERO>: "4">
+                              Return: ConstanteSemSinal
+                            Return: Fator
+                          Return: Termo
+                        Return: ExpressaoSimples
+                      Return: Expressao
+                      Consumed token: <")">
+                    Return: Fator
+                  Return: Termo
+                  Call:   OperadorAdicao
+                    Consumed token: <"+">
+                  Return: OperadorAdicao
+                  Call:   Termo
+                    Call:   Fator
+                      Call:   AcessoVariavel
+                        Call:   VariavelIndexada
+                          Consumed token: <<IDENTIFICADOR>: "b">
+                          Consumed token: <"[">
+                          Call:   Expressao
+                            Call:   ExpressaoSimples
+                              Call:   Termo
+                                Call:   Fator
+                                  Call:   ConstanteSemSinal
+                                    Consumed token: <<NUMERO>: "1">
+                                  Return: ConstanteSemSinal
+                                Return: Fator
+                              Return: Termo
+                            Return: ExpressaoSimples
+                          Return: Expressao
+                          Consumed token: <"]">
+                        Return: VariavelIndexada
+                      Return: AcessoVariavel
+                    Return: Fator
+                  Return: Termo
+                Return: ExpressaoSimples
+              Return: Expressao
+            Return: ComandoAtribuicao
+          Return: ComandoSimples
+        Return: Comando
+      Return: SequenciaComando
+    Return: ComandoComposto
+  Return: Bloco
+Return: Programa
+Encountered "." at line 22, column 32.
+Was expecting one of:
+    "and" ...
+    "div" ...
+    "end" ...
+    "in" ...
+    "mod" ...
+    "or" ...
+    "+" ...
+    "-" ...
+    "*" ...
+    "/" ...
+    "=" ...
+    "<" ...
+    ">" ...
+    ";" ...
+    "<>" ...
+    "<=" ...
+    ">=" ...
+    
+Foram encontrados erros em teste1.pas (440 ms).

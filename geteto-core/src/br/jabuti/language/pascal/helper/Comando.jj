@@ -1,0 +1,150 @@
+void Comando() :
+{
+	System.out.println("Comando");
+}
+{
+	( <ROTULO> <DOIS_PONTOS> )? (ComandoSimples() | ComandoEstruturado())
+}
+
+void ComandoSimples() :
+{}
+{
+	ComandoVazio() | ComandoAtribuicao() | ComandoProcedimento() | ComandoGoto()
+}
+
+void ComandoVazio() :
+{}
+{
+}
+
+void ComandoAtribuicao():
+{}
+{
+	( AcessoVariavel() | IdentificadorFuncao() ) <ATRIBUICAO> Expressao()
+}
+
+void ComandoProcedimento() :
+{}
+{
+	IdentificadorProcedimento() ( ListaParametroVerdadeiro() )?
+}
+
+void ComandoGoto() :
+{}
+{
+	<GOTO> <ROTULO>
+}
+
+void ComandoEstruturado() :
+{}
+{
+	ComandoComposto() | ComandoCondicional() | ComandoRepetitivo() | ComandoWith()
+}
+
+void SequenciaComando() :
+{}
+{
+	Comando ( <PONTO_VIRGULA> Comando() )*
+}
+
+void ComandoComposto() :
+{}
+{
+	<BEGIN> SequenciaComando() <END>
+}
+
+void ComandoCondicional() :
+{}
+{
+	ComandoIf() | ComandoCase()
+}
+
+void ComandoIf() :
+{}
+{
+	<IF> ExpressaoBooleana() <THEN> Comando() ( ParteElse() )?
+}
+
+void ParteElse() :
+{}
+{
+	<ELSE> Comando()
+}
+
+void ComandoCase() :
+{}
+{
+	<CASE> IndiceCase() <OF> ElementoListaCase() ( <PONTOVIRGULA> ElementoListaCase() )* ( <PONTOVIRGULA> )? <END>
+}
+
+void ElementoListaCase() :
+{}
+{
+	ListaConstantesCase() <DOISPONTOS> Comando()
+}
+
+void IndiceCase() :
+{}
+{
+	Expressao()
+}
+
+void ComandoRepetitivo() :
+{}
+{
+	ComandoRepeat() | ComandoWhile() | ComandoFor()
+}
+
+void ComandoRepeat() :
+{}
+{
+	<REPEAT> SequenciaComando() <UNTIL> ExpressaoBooleana()
+}
+
+void ComandoWhile() :
+{}
+{
+	<WHILE> ExpressaoBooleana() <DO> Comando()
+}
+
+void ComandoFor() :
+{}
+{
+	<FOR> VariavelControle() <ATRIBUICAO> ValorInicial() ( <TO> | <DOWNTO> ) ValorFinal() <DO> Comando()
+}
+
+void VariavelControle() :
+{}
+{
+	VariavelInteira()
+}
+
+void ValorInicial() :
+{}
+{
+	Expressao()
+}
+
+void ValorFinal() :
+{}
+{
+	Expressao()
+}
+
+void  ComandoWith() :
+{}
+{
+	<WITH> ListaVariavelRegistro <DO> Comando()
+}
+
+void ListaVariavelRegistro() :
+{}
+{
+	VariavelRegistro() ( <VIRGULA> VariavelRegistro() )*
+}
+
+void IdentificadorDesignadorCampo() :
+{}
+{
+	<IDENTIFICADOR>
+}

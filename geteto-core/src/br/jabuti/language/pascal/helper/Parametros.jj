@@ -1,0 +1,35 @@
+void ListaFormalParametro() :
+{}
+{
+	<ABRE_PARENTESES> SecaoParametroFormal() ( <PONTO_VIRGULA> SecaoParametroFormal() )* <FECHA_PARENTESES>
+}
+
+void SecaoParametroFormal() :
+{}
+{
+	EspecificacaoParametroValor() | EspecificacaoParametroVariavel() | EspecificacaoParametroProcedimento() | EspecificacaoParametroFuncao()
+}
+
+void EspecificacaoParametroValor() :
+{}
+{
+	ListaIdentificador() <DOIS_PONTOS> IdentificadorTipo()
+}
+
+void EspecificacaoParametroVariavel() :
+{}
+{
+	<VAR> ListaIdentificador() <DOIS_PONTOS> IdentificadorTipo()
+}
+
+void EspecificacaoParametroProcedimento() :
+{}
+{
+	CabecalhoProcedimento()
+}
+
+void EspecificacaoParametroFuncao() :
+{}
+{
+	CabecalhoFuncao()
+}

@@ -1,0 +1,37 @@
+void DeclaracaoFuncao() :
+{}
+{
+	CabecalhoFuncao() <PONTO_VIRGULA> <DIRETIVA>
+|	IdentificacaoFuncao() <PONTO_VIRGULA> BlocoFuncao()
+|	IdentificadorFuncao() <PONTO_VIRGULA> BlocoFuncao()
+}
+
+void CabecalhoFuncao() :
+{}
+{
+	<FUNCTION> <IDENTIFICADOR> ( ListaFormalParametro() )? <DOIS_PONTOS> TipoResultado()
+}
+
+void IdentificacaoFuncao() :
+{}
+{
+	<FUNCTION> IdentificadorFuncao()
+}
+
+void IdentificadorFuncao() :
+{}
+{
+	<IDENTIFICADOR>
+}
+
+void TipoResultado() :
+{}
+{
+	IdentificadorTipoSimples()
+}
+
+void BlocoFuncao() :
+{}
+{
+	Bloco()
+}

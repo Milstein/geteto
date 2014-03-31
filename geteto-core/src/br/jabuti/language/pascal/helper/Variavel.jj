@@ -1,0 +1,66 @@
+void DeclaracaoVariavel() :
+{}
+{
+	ListaIdentificador() <DOIS_PONTOS> DenotadorTipo()
+}
+
+void AcessoVariavel() :
+{}
+{
+	VariavelInteira() | ComponenteDaVariavel() | VariavelIndexada()
+}
+
+void VariavelInteira() :
+{}
+{
+	IdentificadorVariavel()
+}
+
+void IdentificadorVariavel() :
+{}
+{
+	<IDENTIFICADOR>
+}
+
+void ComponenteVariavel() :
+{}
+{
+	VariavelIndexada() | DesignadorCampo()
+}
+
+
+void VariavelIndexada() :
+{}
+{
+	VariavelArray() <ABRE_COLCHETE> ExpressaoIndice() ( <VIRGULA> ExpressaoIndice() )* <FECHACOLCHETE>
+}
+
+void ExpressaoIndice() :
+{}
+{
+	Expressao()
+}
+
+void VariavelArray() :
+{}
+{
+	AcessoVariavel()
+}
+
+void DesignadorCampo() :
+{}
+{
+	VariavelRegistro() <PONTO> EspecificadorCampo() | IdentificadorDesignadorCampo()
+}
+
+void VariavelRegistro() :
+{}
+{
+	AcessoVariavel()
+}
+
+void EspecificadorCampo() :
+{}
+{
+	IdentificadorCampo()
+}

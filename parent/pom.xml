@@ -1,0 +1,167 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>usp.icmc.labes</groupId>
+	<artifactId>geteto</artifactId>
+	<packaging>pom</packaging>
+
+	<version>1.0</version>
+	<name>Generic test tool</name>
+	<description>Test tool aimed at Software Testing education</description>
+	<url>http://dacom.cm.utfpr.edu.br/tools/geteto</url>
+	<inceptionYear>2009</inceptionYear>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+			<comments />
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>magsilva</id>
+			<name>Marco Aurélio Graciotto Silva</name>
+			<email>magsilva@icmc.usp.br</email>
+			<url>http://www.icmc.usp.br/~magsilva/</url>
+			<organization>Ironia Corporation</organization>
+			<organizationUrl>http://www.ironiacorp.com</organizationUrl>
+			<timezone>+3</timezone>
+			<roles>
+				<role>Manager</role>
+				<role>Main developer</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<distributionManagement>
+		<repository>
+			<id>IroniaCorp</id>
+			<url>dav:http://www.ironiacorp.com/repo/maven2</url>
+		</repository>
+	</distributionManagement>
+
+	<repositories>
+                <repository>
+                        <id>repo1</id>
+                        <url>http://repo1.maven.org/maven2/</url>
+                        <releases>
+                                <updatePolicy>never</updatePolicy>
+                        </releases>
+                </repository>
+
+		<repository>
+			<id>IroniaCorp</id>
+			<url>http://www.ironiacorp.com/repo/maven2</url>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>[4.0,)</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<finalName>${project.artifactId}-${project.version}</finalName>
+
+		<directory>${project.basedir}/target</directory>
+
+		<sourceDirectory>${project.basedir}/src</sourceDirectory>
+		<testSourceDirectory>${project.basedir}/test</testSourceDirectory>
+
+		<outputDirectory>${project.build.directory}/target/classes</outputDirectory>
+		<testOutputDirectory>${project.build.directory}/target/test-classes</testOutputDirectory>
+
+		<resources>
+			<resource>
+				<directory>${project.basedir}/resources</directory>
+				<filtering>false</filtering>
+			</resource>
+		</resources>
+
+		<testResources>
+			<testResource>
+				<directory>${project.basedir}/test-resources</directory>
+				<filtering>false</filtering>
+			</testResource>
+		</testResources>
+
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-webdav-jackrabbit</artifactId>
+				<version>2.4</version>
+			</extension>
+
+			<extension>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-nop</artifactId>
+				<version>1.6.6</version>
+			</extension>
+		</extensions>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>javacc-maven-plugin</artifactId>
+										<versionRange>[2.0,)</versionRange>
+										<goals>
+											<goal>javacc</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<execute />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<fork>true</fork>
+					<meminitial>128m</meminitial>
+					<maxmem>512m</maxmem>
+					<source>1.7</source>
+					<target>1.7</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<modules>
+            <module>../geteto-core</module>
+	<!--
+            <module>../geteto-service-client</module>
+            <module>../geteto-service-server</module>
+            <module>../geteto-spago4q-extractor</module>
+	-->
+	</modules>
+</project>

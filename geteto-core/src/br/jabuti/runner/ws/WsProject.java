@@ -24,7 +24,6 @@ import java.util.zip.ZipFile;
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 
-
 import br.jabuti.criteria.AbstractCriterion;
 import br.jabuti.criteria.Criterion;
 import br.jabuti.criteria.Requirement;
@@ -33,6 +32,7 @@ import br.jabuti.probe.desktop.ProberInstrum;
 import br.jabuti.project.ClassFile;
 import br.jabuti.project.ClassMethod;
 import br.jabuti.project.Coverage;
+import br.jabuti.project.CoverageMeasurer;
 import br.jabuti.project.JabutiProject;
 import br.jabuti.project.TestSet;
 import br.jabuti.runner.junit.JUnitJabutiCore;
@@ -292,9 +292,11 @@ public class WsProject {
 		//load the new coverage
 		String projfilename = JABUTI_PROJECT_HOME + id + "/proj.jbt";
 		JabutiProject jbtProject = JabutiProject.reloadProj(projfilename, true);
-
-		TestSet.loadTraceFile(jbtProject);
-		TestSet.updateOverallCoverage( jbtProject );
+		TestSet ts = new TestSet();
+		
+		CoverageMeasurer cm = new CoverageMeasurer();
+		cm.loadTraceFile(jbtProject, traceFile);
+		cm.updateOverallCoverage( jbtProject );
 
 		// Saving the updated project
 		try {

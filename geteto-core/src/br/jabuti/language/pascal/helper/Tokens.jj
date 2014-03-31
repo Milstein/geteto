@@ -1,0 +1,109 @@
+TOKEN : {
+	< LETRA : [a-z] >
+|	< DIGITO : [0-9] >
+}
+
+/* Palavras reservadas */
+TOKEN : {
+	< AND : "and" >
+|	< ARRAY : "array" >
+|	< BEGIN : "begin" >
+|	< CASE : "case" >
+|	< CHAR : "char" >
+|	< CONST : "const" >
+|	< DIV : "div" >
+|	< DO : "do" >
+|	< DOWNTO : "downto" >
+|	< ELSE : "else" >
+|	< END : "end" >
+|	< FOR : "for" >
+|	< FUNCTION : "function" >
+|	< GOTO : "goto" >
+|	< IF : "if" >
+|	< IN : "in" >
+|	< LABEL : "labe"
+|	< MOD : "mod" >
+|	< NOT : "not" >
+|	< OF : "of" >
+|	< OR : "or" >
+|	< PACKED : "packed" >
+|	< PROCEDURE : "procedure" >
+|	< PROGRAM : "program" >
+|	< RECORD : "record" >
+|	< REPEAT : "repeat">
+|	< SET : "set" >
+|	< THEN : "then">
+|	< TO : "to" >
+|	< TYPE : "type" >
+|	< UNTIL : "until">
+|	< VAR : "var" >
+|	< WHILE : "while" >
+|	< WITH : "with" >
+}
+
+/* Simbolos especiais */
+TOKEN : {
+	< MAIS : "+" >
+|	< MENOS : "-" >
+|	< ASTERISCO : "*" >
+|	< BARRA : "/" >
+|	< IGUAL : "=" >
+|	< MENOR : "<" >
+|	< MAIOR : ">" >
+|	< ABRE_COLCHETE : "[" >
+|	< FECHA_COLCHETE : "]" >
+|	< PONTO : "." >
+|	< VIRGULA : "," >
+|	< DOIS_PONTOS : ":" >
+|	< PONTO_VIRGULA : ";" >
+|	< ABRE_PARENTESES : "(" >
+|	< FECHA_PARENTESES : ")" >
+|	< DIFERENTE : "<>" >
+|	< MENOR_IGUAL : "<=" >
+|	< MAIOR_IGUAL : ">=" >
+|	< ATRIBUICAO : ":=" >
+|	< PONTO_PONTO : ".." >
+|	< E : "e" >
+|	< APOSTROFE : "'" >
+}
+
+TOKEN : {
+	< IDENTIFICADOR: <LETRA> ( <LETRA> | <DIGITO> )* >
+}
+
+TOKEN : {
+	< DIRETIVA: <LETRA> ( <LETRA> | <DIGITO> )* >
+}
+
+TOKEN : {
+	< NUMERO_COM_SINAL : ( <INTEIRO_COM_SINAL> | <REAL_COM_SINAL> ) >
+|	< REAL_COM_SINAL : ( <SINAL> )? <REAL_SEM_SINAL > >
+|	< INTEIRO_COM_SINAL : ( <SINAL> )? <INTEIRO_SEM_SINAL> >
+|	< NUMERO_SEM_SINAL : ( <INTEIRO_SEM_SINAL> | <REAL_SEM_SINAL> ) >
+|	< SINAL : ( <MAIS> | <MENOS> ) >
+|	< REAL_SEM_SINAL : <SEQUENCIA_DIGITOS> <PONTO> <PARTE_FRACIONARIA> ( <E> <FATOR_ESCALA> )? >
+|	< INTEIRO_SEM_SINAL : <SEQUENCIA_DIGITOS> >
+|	< PARTE_FRACIONARIA : <SEQUENCIA_DIGITOS> >
+|	< FATOR_ESCALA : <SINAL> <SEQUENCIA_DIGITOS> >
+|	< SEQUENCIA_DIGITOS : <DIGITO> ( <DIGITO> )* >
+}
+
+TOKEN : {
+	<ROTULO : <SEQUENCIA_DIGITOS> >
+}
+
+TOKEN : {
+	< CADEIA_CARACTERES : <APOSTROFO> ( <ELEMENTO_CADEIA_CARACTERES> )+ <APOSTROFO>
+	< #ELEMENTO_CADEIA_CARACTERES : <APOSTROFO> <APOSTROFO> | <LETRA> >
+}
+
+SKIP : {
+|	<COMENTARIO:
+		<INICIO_COMENTARIO_CHAVE> (~[])* <FIM_COMENTARIO_CHAVE>
+	|	<INICIO_COMENTARIO_PARENTESE_ASTERISCO> (~[])* <FIM_COMENTARIO_PARENTESE_ASTERISCO>
+	>
+|	<#INICIO_COMENTARIO_CHAVE : "{" >
+|	<#INICIO_COMENTARIO_PARENTESE_ASTERISCO : "(*" >
+|	<#FIM_COMENTARIO_CHAVE : "}" >
+|	<#FIM_COMENTARIO_PARENTESE_ASTERISCO : "*)" >
+}

@@ -218,8 +218,9 @@ public class CoverageSummary {
 					}
 						
 					if ( v != null ) {
-						// Desabling the complete test set							
-						String[] labels = TestSet.getTestCaseLabels();
+						// Desabling the complete test set
+						TestSet ts = new TestSet();
+						String[] labels = ts.getTestCaseLabels();
 						for( int j = 0; j < labels.length; j++ ) {
 							TestSet.desactivateTestCase( project, labels[j] );
 						}

@@ -1,0 +1,562 @@
+PARSER_BEGIN(Pascal)
+
+public class Pascal {
+	public static void main (String[] args) {
+		Pascal parser;
+		String filename = null;
+		long initTime = 0;
+		long parseTime = 0;
+		long startTime = 0;
+		long stopTime = 0;
+ 		if (args.length == 1) {
+	            filename = args[0];
+      	      System.out.println("Compilador Pascal\nLendo arquivo " + filename);
+            
+			try {
+      	          parser = new Pascal(new java.io.FileInputStream(filename));
+      	      } catch (java.io.FileNotFoundException e) {
+            	    System.out.println("Arquivo nao encontrado.");
+	                return;
+			}
+		} else {
+			System.out.println("Argumento invalido.");
+			System.out.println("Como usar: java Pascal <arquivo>");
+			return;
+		}
+
+		try {
+			startTime = System.currentTimeMillis();
+			parser.Programa();
+			System.out.println("Nao foram encontrados erros em " + filename + " (" + parseTime + " ms).");
+		} catch (ParseException e) {
+			stopTime = System.currentTimeMillis();
+			parseTime = stopTime - startTime;
+			System.out.println(e.getMessage());
+			System.out.println("Foram encontrados erros em " + filename + " (" + parseTime + " ms).");
+		}
+	}
+}
+PARSER_END(Pascal)
+
+/* Palavras reservadas */
+TOKEN : {
+	< AND : "and" >
+|	< ARRAY : "array" >
+|	< BEGIN : "begin" >
+|	< CASE : "case" >
+|	< CHAR : "char" >
+|	< CONST : "const" >
+|	< DIV : "div" >
+|	< DO : "do" >
+|	< DOWNTO : "downto" >
+|	< ELSE : "else" >
+|	< END : "end" >
+|	< FOR : "for" >
+|	< FUNCTION : "function" >
+|	< GOTO : "goto" >
+|	< IF : "if" >
+|	< IN : "in" >
+|	< LABEL : "label" >
+|	< MOD : "mod" >
+|	< NOT : "not" >
+|	< OF : "of" >
+|	< OR : "or" >
+|	< PACKED : "packed" >
+|	< PROCEDURE : "procedure" >
+|	< PROGRAM : "program" >
+|	< RECORD : "record" >
+|	< REPEAT : "repeat">
+|	< SET : "set" >
+|	< THEN : "then">
+|	< TO : "to" >
+|	< TYPE : "type" >
+|	< UNTIL : "until">
+|	< VAR : "var" >
+|	< WHILE : "while" >
+|	< WITH : "with" >
+}
+
+/* Simbolos especiais */
+TOKEN : {
+	< MAIS : "+" >
+|	< MENOS : "-" >
+|	< ASTERISCO : "*" >
+|	< BARRA : "/" >
+|	< IGUAL : "=" >
+|	< MENOR : "<" >
+|	< MAIOR : ">" >
+|	< ABRE_COLCHETE : "[" >
+|	< FECHA_COLCHETE : "]" >
+|	< PONTO : "." >
+|	< VIRGULA : "," >
+|	< DOIS_PONTOS : ":" >
+|	< PONTO_VIRGULA : ";" >
+|	< ABRE_PARENTESE : "(" >
+|	< FECHA_PARENTESE : ")" >
+|	< DIFERENTE : "<>" >
+|	< MENOR_IGUAL : "<=" >
+|	< MAIOR_IGUAL : ">=" >
+|	< ATRIBUICAO : ":=" >
+|	< PONTO_PONTO : ".." >
+|	< APOSTROFE : "'" >
+}
+
+TOKEN : {
+	< IDENTIFICADOR: <LETRA> ( <LETRA> | <DIGITO> )* >
+}
+
+TOKEN : {
+	< NUMERO : <INTEIRO_LITERAL> | <FLOATING_POINT_LITERAL> >
+|	< #INTEIRO_LITERAL : <DECIMAL_LITERAL> >
+|	< #DECIMAL_LITERAL : (["0"-"9"])+ >
+|	< #FLOATING_POINT_LITERAL :
+		(["0"-"9"])+ "." (["0"-"9"])* (<EXPOENTE>)?
+      |	"." (["0"-"9"])+ (<EXPOENTE>)?
+      |	(["0"-"9"])+ <EXPOENTE>
+      |	(["0"-"9"])+ (<EXPOENTE>)?
+	>
+|	< #EXPOENTE : ["e","E"] (["+","-"])? (["0"-"9"])+ >
+|	< #LETRA : ["a"-"z"] >
+|	< #DIGITO : ["0"-"9"] >
+}
+
+
+TOKEN : {
+	<ROTULO : <INTEIRO_LITERAL> >
+}
+
+TOKEN : {
+	< CADEIA_CARACTER : <APOSTROFE> ( <ELEMENTO_CADEIA_CARACTER> )* <APOSTROFE> >
+|	< #ELEMENTO_CADEIA_CARACTER : ( <APOSTROFE> <APOSTROFE> ) | <LETRA> >
+}
+
+SKIP : {
+	<COMENTARIO: <INICIO_COMENTARIO_CHAVE> (~[])* <FIM_COMENTARIO_CHAVE> | <INICIO_COMENTARIO_PARENTESE_ASTERISCO> (~[])* <FIM_COMENTARIO_PARENTESE_ASTERISCO>	>
+|	<#INICIO_COMENTARIO_CHAVE : "{" >
+|	<#INICIO_COMENTARIO_PARENTESE_ASTERISCO : "(*" >
+|	<#FIM_COMENTARIO_CHAVE : "}" >
+|	<#FIM_COMENTARIO_PARENTESE_ASTERISCO : "*)" >
+}
+
+SKIP :
+{
+	" "
+|	"\t"
+|	"\n"
+|	"\r"
+|	"\f"
+}
+
+void AcessoVariavel() :
+{}
+{
+	LOOKAHEAD(2)<IDENTIFICADOR> | LOOKAHEAD(2)DesignadorCampo() | LOOKAHEAD(2)VariavelIndexada()
+}
+
+void Bloco() :
+{}
+{
+	( DeclaracaoRotulos() )?
+	( DefinicaoConstantes() )?
+	( DefinicaoTipos() )?
+	( DeclaracaoVariaveis() )?
+	DeclaracaoProcedimentosFuncoes()
+	ComandoComposto()
+}
+
+void CabecalhoFuncao() :
+{}
+{
+	<FUNCTION> <IDENTIFICADOR> ( ListaFormalParametro() )? <DOIS_PONTOS> <IDENTIFICADOR>
+}
+
+void CabecalhoProcedimento() :
+{}
+{
+	<PROCEDURE> <IDENTIFICADOR> ListaFormalParametro()
+}
+
+void CabecalhoPrograma() :
+{}
+{
+	<PROGRAM> <IDENTIFICADOR> ( <ABRE_PARENTESE> ListaIdentificador() <FECHA_PARENTESE> )?
+}
+
+void Comando() :
+{}
+{
+	( <ROTULO> <DOIS_PONTOS> )? (ComandoSimples() | ComandoEstruturado())
+}
+
+void ComandoAtribuicao():
+{}
+{
+	(LOOKAHEAD(2)AcessoVariavel() | LOOKAHEAD(2)<IDENTIFICADOR> ) <ATRIBUICAO> Expressao()
+}
+
+void ComandoCase() :
+{}
+{
+	<CASE> Expressao() <OF> ElementoListaCase() ( LOOKAHEAD(2)<PONTO_VIRGULA> ElementoListaCase() )* ( <PONTO_VIRGULA> )? <END>
+}
+
+void ComandoComposto() :
+{}
+{
+	<BEGIN> SequenciaComando() <END>
+}
+
+void ComandoCondicional() :
+{}
+{
+	ComandoIf() | ComandoCase()
+}
+
+void ComandoEstruturado() :
+{}
+{
+	ComandoComposto() | ComandoCondicional() | ComandoRepetitivo() | ComandoWith()
+}
+
+void ComandoFor() :
+{}
+{
+	<FOR> <IDENTIFICADOR> <ATRIBUICAO> Expressao() ( <TO> | <DOWNTO> ) Expressao() <DO> Comando()
+}
+
+void ComandoGoto() :
+{}
+{
+	<GOTO> <ROTULO>
+}
+
+void ComandoIf() :
+{}
+{
+	<IF> Expressao() <THEN> Comando() ( LOOKAHEAD(2)<ELSE> Comando() )?
+}
+
+void ComandoProcedimento() :
+{}
+{
+	<IDENTIFICADOR> ( ListaParametroVerdadeiro() )?
+}
+
+void ComandoRepeat() :
+{}
+{
+	<REPEAT> SequenciaComando() <UNTIL> Expressao()
+}
+
+void ComandoRepetitivo() :
+{}
+{
+	ComandoRepeat() | ComandoWhile() | ComandoFor()
+}
+
+void ComandoSimples() :
+{}
+{
+	ComandoVazio() | LOOKAHEAD(2)ComandoAtribuicao() | LOOKAHEAD(2)ComandoProcedimento() | ComandoGoto()
+}
+
+void ComandoVazio() :
+{}
+{
+	""	
+}
+
+void ComandoWhile() :
+{}
+{
+	<WHILE> Expressao() <DO> Comando()
+}
+
+void  ComandoWith() :
+{}
+{
+	<WITH> ListaVariavelRegistro() <DO> Comando()
+}
+
+void Constante() :
+{}
+{
+	( ( <MAIS> | <MENOS> )? <NUMERO> ) | <IDENTIFICADOR> | <CADEIA_CARACTER>
+}
+
+void ConstanteSemSinal() :
+{}
+{
+	<NUMERO> | <CADEIA_CARACTER> | <IDENTIFICADOR>
+}
+
+void DeclaracaoFuncao() :
+{}
+{
+	LOOKAHEAD(2)IdentificacaoFuncao() <PONTO_VIRGULA> Bloco()
+|	LOOKAHEAD(2)<IDENTIFICADOR> <PONTO_VIRGULA> Bloco()
+}
+
+void DeclaracaoProcedimento() :
+{}
+{
+	LOOKAHEAD(2)IdentificacaoProcedimento() <PONTO_VIRGULA> Bloco()
+|	LOOKAHEAD(2)CabecalhoProcedimento() <PONTO_VIRGULA> Bloco()
+}
+
+void DeclaracaoProcedimentosFuncoes() :
+{}
+{
+	( ( DeclaracaoProcedimento() | DeclaracaoFuncao() ) <PONTO_VIRGULA> )*
+}
+
+void DeclaracaoRotulos() :
+{}
+{
+	<LABEL> <ROTULO> ( <VIRGULA> <ROTULO> )* <PONTO_VIRGULA>
+}
+
+void DeclaracaoVariaveis() :
+{}
+{
+	<VAR> (LOOKAHEAD(2)DeclaracaoVariavel() <PONTO_VIRGULA> )+
+}
+
+void DeclaracaoVariavel() :
+{}
+{
+	ListaIdentificador() <DOIS_PONTOS> DenotadorTipo()
+}
+
+void DefinicaoConstante() :
+{}
+{
+	<IDENTIFICADOR> <IGUAL> Constante()
+}
+
+void DefinicaoConstantes() :
+{}
+{
+	<CONST> (LOOKAHEAD(2)DefinicaoConstante() <PONTO_VIRGULA> )+
+}
+
+void DefinicaoTipo() :
+{}
+{
+	<IDENTIFICADOR> <IGUAL> DenotadorTipo()
+}
+
+void DefinicaoTipos() :
+{}
+{
+	<TYPE> (LOOKAHEAD(2)DefinicaoTipo() <PONTO_VIRGULA> )+
+}
+
+void DenotadorTipo() :
+{}
+{
+	LOOKAHEAD(2) <IDENTIFICADOR> | LOOKAHEAD(2)NovoTipo()
+}
+
+void DesignadorCampo() :
+{}
+{
+	<IDENTIFICADOR> <PONTO> <IDENTIFICADOR>
+}
+
+void DesignadorFuncao() :
+{}
+{
+	 ( ListaParametroVerdadeiro() )? <IDENTIFICADOR>
+}
+
+void DesignadorMembro() :
+{}
+{
+	Expressao() ( <PONTO_PONTO> Expressao() )?
+}
+
+void ElementoListaCase() :
+{}
+{
+	ListaConstante() <DOIS_PONTOS> Comando()
+}
+
+void EspecificacaoParametroValor() :
+{}
+{
+	ListaIdentificador() <DOIS_PONTOS> <IDENTIFICADOR>
+}
+
+void EspecificacaoParametroVariavel() :
+{}
+{
+	<VAR> ListaIdentificador() <DOIS_PONTOS> <IDENTIFICADOR>
+}
+
+void Expressao() :
+{}
+{
+      ExpressaoSimples() ( OperadorRelacional() ExpressaoSimples() )?
+}
+
+void ExpressaoSimples() :
+{}
+{
+	( <MAIS> | <MENOS>)? Termo() ( OperadorAdicao() Termo() )*
+}
+
+void Fator() :
+{}
+{
+	LOOKAHEAD(2)ConstanteSemSinal()
+|	LOOKAHEAD(2)AcessoVariavel()
+|	LOOKAHEAD(3)DesignadorFuncao()
+|	LOOKAHEAD(3)<ABRE_PARENTESE> Expressao() <FECHA_PARENTESE>
+}
+
+void IdentificacaoFuncao() :
+{}
+{
+	<FUNCTION> <IDENTIFICADOR>
+}
+
+void IdentificacaoProcedimento() :
+{}
+{
+	<PROCEDURE> <IDENTIFICADOR>
+}
+
+void ListaCampo() :
+{}
+{
+	SecaoRegistro() ( LOOKAHEAD(2)<PONTO_VIRGULA> SecaoRegistro() )? ( <PONTO_VIRGULA> )?
+}
+
+void ListaConstante() :
+{}
+{
+	Constante() ( <VIRGULA> Constante() )*
+}
+
+void ListaFormalParametro() :
+{}
+{
+	<ABRE_PARENTESE> SecaoParametroFormal() ( <PONTO_VIRGULA> SecaoParametroFormal() )* <FECHA_PARENTESE>
+}
+
+void ListaIdentificador() :
+{}
+{
+	<IDENTIFICADOR> ( <VIRGULA> <IDENTIFICADOR> )*
+}
+
+void ListaParametroVerdadeiro() :
+{}
+{
+	<ABRE_PARENTESE> ParametroVerdadeiro() ( <VIRGULA> ParametroVerdadeiro() )* <FECHA_PARENTESE>
+}
+
+void ListaVariavelRegistro() :
+{}
+{
+	AcessoVariavel() ( <VIRGULA> AcessoVariavel() )*
+}
+
+void NovoTipo() :
+{}
+{
+	TipoIntervalo() | TipoArray() | TipoRegistro()
+}
+
+void OperadorAdicao() :
+{}
+{
+	<MAIS> | <MENOS> | <OR>
+} 
+
+void OperadorMultiplicacao() :
+{}
+{
+	<BARRA> | <ASTERISCO> | <DIV> | <MOD> | <AND>
+}
+
+void OperadorRelacional():
+{}
+{
+	<IGUAL> | <MENOR> | <MAIOR> | <DIFERENTE> | <MENOR_IGUAL> | <MAIOR_IGUAL> | <IN>
+}
+
+void ParametroVerdadeiro() :
+{}
+{
+	LOOKAHEAD(2)Expressao()
+|	LOOKAHEAD(2)AcessoVariavel()
+|	LOOKAHEAD(2)<IDENTIFICADOR>
+}
+
+void Programa() :
+{}
+{
+     CabecalhoPrograma() <PONTO_VIRGULA> Bloco() <PONTO>
+}
+
+void SecaoParametroFormal() :
+{}
+{
+	EspecificacaoParametroValor() | EspecificacaoParametroVariavel() | CabecalhoProcedimento() | CabecalhoFuncao()
+}
+
+void SecaoRegistro() :
+{}
+{
+	ListaIdentificador() <DOIS_PONTOS> DenotadorTipo()
+}
+
+void SequenciaComando() :
+{}
+{
+	Comando() ( <PONTO_VIRGULA> Comando() )*
+}
+
+void Termo() :
+{}
+{
+	Fator() ( OperadorMultiplicacao() Fator()  )*
+}
+
+void TipoArray() :
+{}
+{
+	<ARRAY> <ABRE_COLCHETE> TipoOrdinal() ( <VIRGULA> TipoOrdinal() )* <FECHA_COLCHETE> <OF> DenotadorTipo()
+}
+
+void TipoEstruturado() :
+{}
+{
+	TipoArray() | TipoRegistro() | <IDENTIFICADOR>
+}
+
+void TipoIntervalo() :
+{}
+{
+	Constante() <PONTO_PONTO> Constante()
+}
+
+void TipoOrdinal() :
+{}
+{
+	LOOKAHEAD(2)TipoIntervalo() | LOOKAHEAD(2)<IDENTIFICADOR>
+}
+
+void TipoRegistro() :
+{}
+{
+	<RECORD> ( ListaCampo() )? <END>
+}
+
+void VariavelIndexada() :
+{}
+{
+	<IDENTIFICADOR> <ABRE_COLCHETE> Expressao() ( <VIRGULA> Expressao() )* <FECHA_COLCHETE>
+}

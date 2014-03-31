@@ -1,0 +1,93 @@
+void Expressao():
+{}
+{
+      ExpressaoSimples() ( OperadorRelacional() ExpressaoSimples() )?
+}
+
+void ExpressaoSimples() :
+{}
+{
+	( <MAIS> | <MENOS>)? Termo() ( OperadorAdicao() Termo() )*
+}
+
+void Termo() :
+{}
+{
+	Fator() ( OperadorMultiplicacao() Fator()  )*
+}
+
+void Fator() :
+{}
+{
+	AcessoVariavel()
+|	ConstanteSemSinal()
+|	DesignadorFuncao()
+|	ConstrutorConjunto()
+|	<ABREPARENTESES> Expressao() <FECHAPARENTESES>
+|	<NOT> Fator()
+}
+
+void ConstanteSemSinal() :
+{}
+{
+	<NUMERO_SEM_SINAL> | <CADEIA_CARACTER> | IdentificadorConstante()
+}
+
+void ConstrutorConjunto() :
+{}
+{
+	<ABRE_COLCHETE> ( DesignadorMembro() ( <VIRGULA> DesignadorMembro() )* )? <FECHA_COLCHETE>
+}
+
+void DesignadorMembro() :
+{}
+{
+	Expressao() ( <PONTO_PONTO> Expressao() )?
+}
+
+void OperadorRelacional():
+{}
+{
+	<IGUAL> | <MENOR> | <MAIOR> | <DIFERENTE> | <MENOR_IGUAL> | <MAIOR_IGUAL> | <IN>
+}
+
+void OperadorAdicao() :
+{
+	System.out.println("\tOperador matematico utilizado");
+}
+{
+	<MAIS> | <MENOS> | <OR>
+} 
+
+void OperadorMultiplicacao() :
+{}
+{
+	<BARRA> | <ASTERISCO> | <DIV> | <MOD> | <AND>
+}
+
+void ExpressaoBooleana() :
+{}
+{
+	Expressao()
+}
+
+void DesignadorFuncao() :
+{}
+{
+	IdentificadorFuncao() ( ListaParametroVerdadeiro() )?
+}
+
+void ListaParametroVerdadeiro() :
+{}
+{
+	<ABRE_PARENTESE> ParametroVerdadeiro() ( <VIRGULA> ParametroVerdadeiro() )* <FECHA_PARENTESE>
+}
+
+void ParametroVerdadeiro() :
+{}
+{
+	Expressao()
+|	AcessoVariavel()
+|	IdentificadorProcedimento()
+|	IdentificadorFuncao()
+}
